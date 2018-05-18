@@ -54,5 +54,12 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Bishopm\\Bookclub\\Providers\\ChurchnetServiceProvider"
+            ]
+        }
     }
 }
