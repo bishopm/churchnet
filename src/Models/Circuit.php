@@ -1,0 +1,35 @@
+<?php
+
+namespace Bishopm\Churchnet\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Circuit extends Model
+{
+    protected $guarded = array('id');
+
+    public function societies()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Society');
+    }
+
+    public function district()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\District');
+    }
+
+    public function preachers()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Preacher');
+    }
+
+    public function meetings()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Meeting');
+    }
+
+    public function settings()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Setting', 'relatable');
+    }
+}
