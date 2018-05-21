@@ -48,15 +48,13 @@
             "php artisan migrate"
         ]
     },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.0-dev"
-        }
-    },
     "config": {
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        },
         "laravel": {
             "providers": [
                 "Bishopm\\Churchnet\\Providers\\ChurchnetServiceProvider"
