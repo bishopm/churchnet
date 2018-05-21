@@ -80,6 +80,13 @@ class ChurchnetServiceProvider extends ServiceProvider
             }
         );
         $this->app->bind(
+            'Bishopm\Churchnet\Repositories\LabelsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\LabelsRepository(new \Bishopm\Churchnet\Models\Label());
+                return $repository;
+            }
+        );
+        $this->app->bind(
             'Bishopm\Churchnet\Repositories\MeetingsRepository',
             function () {
                 $repository = new \Bishopm\Churchnet\Repositories\MeetingsRepository(new \Bishopm\Churchnet\Models\Meeting());
@@ -132,13 +139,6 @@ class ChurchnetServiceProvider extends ServiceProvider
             'Bishopm\Churchnet\Repositories\SocietiesRepository',
             function () {
                 $repository = new \Bishopm\Churchnet\Repositories\SocietiesRepository(new \Bishopm\Churchnet\Models\Society());
-                return $repository;
-            }
-        );
-        $this->app->bind(
-            'Bishopm\Churchnet\Repositories\LabelsRepository',
-            function () {
-                $repository = new \Bishopm\Churchnet\Repositories\LabelsRepository(new \Bishopm\Churchnet\Models\Label());
                 return $repository;
             }
         );

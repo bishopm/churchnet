@@ -2,6 +2,6 @@
 
 use Bishopm\Churchnet\Repositories\EloquentBaseRepository;
 
-class TagsRepository extends EloquentBaseRepository
+class LabelsRepository extends EloquentBaseRepository
 {
 }

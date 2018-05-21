@@ -4,7 +4,10 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Page;
+use Bishopm\Churchnet\Models\Resource;
 use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Requests\CreatePageRequest;
+use Bishopm\Churchnet\Http\Requests\UpdatePageRequest;
 
 class PagesController extends Controller
 {
@@ -30,12 +33,30 @@ class PagesController extends Controller
 
     public function edit(Page $page)
     {
-        return view('churchnet::pages.edit', compact('page'));
+        $tags=Resource::allTags()->get();
+        $rtags=array();
+        foreach ($page->tags as $tag) {
+            $rtags[]=$tag->name;
+        }
+        return view('churchnet::pages.edit', compact('page', 'tags', 'rtags'));
     }
 
     public function create()
     {
-        return view('churchnet::pages.create');
+        $tags=Resource::allTags()->get();
+        return view('churchnet::pages.create', compact('tags'));
+    }
+
+    public function addtag($id, $tag)
+    {
+        $page=$this->page->find($id);
+        $page->tag($tag);
+    }
+
+    public function removetag($id, $tag)
+    {
+        $page=$this->page->find($id);
+        $page->untag($tag);
     }
 
     public function show($id)
@@ -46,14 +67,16 @@ class PagesController extends Controller
 
     public function store(CreatePageRequest $request)
     {
-        $page = $this->page->create($request->all());
+        $page = $this->page->create($request->except('tags'));
+        $page->tag($request->tags);
         return redirect()->route('admin.pages.index')
             ->withSuccess('New page added');
     }
     
     public function update(Page $page, UpdatePageRequest $request)
     {
-        $this->page->update($page, $request->all());
+        $this->page->update($page, $request->except('tags'));
+        $page->setTags($request->tags);
         return redirect()->route('admin.pages.index')->withSuccess('Page has been updated');
     }
 

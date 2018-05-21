@@ -3,8 +3,13 @@
 namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Cartalyst\Tags\TaggableTrait;
+use Cartalyst\Tags\TaggableInterface;
+use Actuallymab\LaravelComment\Commentable;
 
-class Page extends Model
+class Page extends Model implements TaggableInterface
 {
+    use TaggableTrait, Commentable;
+
     protected $guarded = array('id');
 }

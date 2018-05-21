@@ -29,7 +29,7 @@
         </li>
         <form class="form-inline">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
-          <button class="btn btn-outline-success my-2 my-sm-0" type="submit"><i class="fa fa-search"></i> Search</button>
+          <button class="btn btn-outline-secondary my-2 my-sm-0" type="submit"><i class="fa fa-search"></i> Search</button>
         </form>
       </ul>
       <ul class="navbar-nav ml-auto">
@@ -39,6 +39,7 @@
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
               <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
+              <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
               <form id="logout-form" action="{{url('/')}}/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="{{csrf_token()}}"></form>

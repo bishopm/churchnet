@@ -47,6 +47,8 @@ Route::group(['middleware' => ['web']], function () {
         Route::get('admin/pages/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@create','as'=>'admin.pages.create']);
         Route::get('methodist/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);
         Route::get('admin/pages/{page}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@edit','as'=>'admin.pages.edit']);
+        Route::get('admin/pages/addtag/{page}/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PagesController@addtag','as' => 'admin.pages.addtag']);
+        Route::get('admin/pages/removetag/{page}/{tag}', ['uses' => 'ishopm\Churchnet\Http\Controllers\Web\PagesController@removetag','as' => 'admin.pages.removetag']);
         Route::put('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@update','as'=>'admin.pages.update']);
         Route::post('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@store','as'=>'admin.pages.store']);
         Route::delete('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@destroy','as'=>'admin.pages.destroy']);
