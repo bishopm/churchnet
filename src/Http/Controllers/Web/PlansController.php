@@ -14,7 +14,7 @@ use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\PlansRepository;
 use Bishopm\Churchnet\Repositories\ServicesRepository;
 use Bishopm\Churchnet\Repositories\CircuitsRepository;
-use Bishopm\Churchnet\Repositories\TagsRepository;
+use Bishopm\Churchnet\Repositories\LabelsRepository;
 
 class PlansController extends Controller
 {
@@ -37,7 +37,7 @@ class PlansController extends Controller
         PlansRepository $plans,
         ServicesRepository $services,
         CircuitsRepository $circuit,
-        TagsRepository $tags
+        LabelsRepository $tags
     ) {
         $this->settings=$settings;
         $this->weekdays=$weekdays;

@@ -8,8 +8,8 @@ class Plan extends Model
 {
     protected $guarded = array('id');
 
-    public function tag()
+    public function label()
     {
-        return $this->hasOne('Bishopm\Churchnet\Models\Tag');
+        return $this->hasOne('Bishopm\Churchnet\Models\Label');
     }
 }

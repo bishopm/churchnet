@@ -7,6 +7,10 @@
     <div class="row">
         <div class="col-sm">
             Welcome to the churchnet wiki
+            <h3>Added recently</h3>
+            @foreach ($recents as $recent)
+                <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
+            @endforeach
         </div>
     </div>
 </div>

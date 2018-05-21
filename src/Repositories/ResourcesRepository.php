@@ -5,4 +5,8 @@ use Bishopm\Churchnet\Models\Resource;
 
 class ResourcesRepository extends EloquentBaseRepository
 {
+    public function recents($num)
+    {
+        return $this->model->orderBy('created_at', 'DESC')->get()->take($num);
+    }
 }

@@ -62,11 +62,11 @@ Route::middleware(['handlecors','bindings'])->group(function () {
         Route::delete('api/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@destroy','as'=>'api.societies.destroy']);
 
         // Tags
-        Route::get('/api/circuits/{circuit}/tags', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\TagsController@index','as'=>'api.tags.index']);
-        Route::get('/api/circuits/{circuit}/tags/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\TagsController@show','as'=>'api.tags.show']);
-        Route::post('api/circuits/{circuit}/tags', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\TagsController@store','as'=>'api.tags.store']);
-        Route::put('/api/circuits/{circuit}/tags/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\TagsController@update','as'=>'api.tags.update']);
-        Route::delete('api/circuits/{circuit}/tags/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\TagsController@destroy','as'=>'api.tags.destroy']);
+        Route::get('/api/circuits/{circuit}/labels', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@index','as'=>'api.labels.index']);
+        Route::get('/api/circuits/{circuit}/labels/{label}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@show','as'=>'api.labels.show']);
+        Route::post('api/circuits/{circuit}/labels', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@store','as'=>'api.labels.store']);
+        Route::put('/api/circuits/{circuit}/labels/{label}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@update','as'=>'api.labels.update']);
+        Route::delete('api/circuits/{circuit}/labels/{label}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@destroy','as'=>'api.labels.destroy']);
 
         // Weekdays
         Route::get('/api/circuits/{circuit}/weekdays', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@index','as'=>'api.weekdays.index']);

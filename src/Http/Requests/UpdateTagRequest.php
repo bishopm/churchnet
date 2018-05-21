@@ -9,7 +9,7 @@ class UpdateTagRequest extends FormRequest
     public function rules()
     {
         return [
-            'tag' => 'required',
+            'label' => 'required',
             'description' => 'required'
         ];
     }

@@ -6,7 +6,7 @@
     <title>@yield('title')</title>
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-    <link rel="stylesheet" href="{{ asset('/vendor/bishopm/bootstrap.min.css')}}">
+    <link rel="stylesheet" href="{{ asset('/vendor/bishopm/css/bootstrap.min.css')}}">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     @yield('css')
 
@@ -58,7 +58,7 @@
 </body>
 <section class="section">
   <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
-  <script src="{{asset('/vendor/bishopm/bootstrap.min.js')}}"></script>
+  <script src="{{asset('/vendor/bishopm/js/bootstrap.min.js')}}"></script>
   @yield('js')
 </section>
 </html>

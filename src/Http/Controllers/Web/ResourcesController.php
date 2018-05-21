@@ -32,12 +32,30 @@ class ResourcesController extends Controller
 
     public function edit(Resource $resource)
     {
-        return view('churchnet::resources.edit', compact('resource'));
+        $tags=Resource::allTags()->get();
+        $rtags=array();
+        foreach ($resource->tags as $tag) {
+            $rtags[]=$tag->name;
+        }
+        return view('churchnet::resources.edit', compact('resource', 'tags', 'rtags'));
     }
 
     public function create()
     {
-        return view('churchnet::resources.create');
+        $tags=Resource::allTags()->get();
+        return view('churchnet::resources.create', compact('tags'));
+    }
+
+    public function addtag($id, $tag)
+    {
+        $resource=$this->resource->find($id);
+        $resource->tag($tag);
+    }
+
+    public function removetag($id, $tag)
+    {
+        $resource=$this->resource->find($id);
+        $resource->untag($tag);
     }
 
     public function show($id)
@@ -48,14 +66,16 @@ class ResourcesController extends Controller
 
     public function store(CreateResourceRequest $request)
     {
-        $resource = $this->resource->create($request->all());
+        $resource = $this->resource->create($request->except('tags'));
+        $resource->tag($request->tags);
         return redirect()->route('admin.resources.index')
             ->withSuccess('New resource added');
     }
     
     public function update(Resource $resource, UpdateResourceRequest $request)
     {
-        $this->resource->update($resource, $request->all());
+        $resource = $this->resource->update($resource, $request->except('tags'));
+        $resource->setTags($request->tags);
         return redirect()->route('admin.resources.index')->withSuccess('Resource has been updated');
     }
 

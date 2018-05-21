@@ -136,9 +136,9 @@ class ChurchnetServiceProvider extends ServiceProvider
             }
         );
         $this->app->bind(
-            'Bishopm\Churchnet\Repositories\TagsRepository',
+            'Bishopm\Churchnet\Repositories\LabelsRepository',
             function () {
-                $repository = new \Bishopm\Churchnet\Repositories\TagsRepository(new \Bishopm\Churchnet\Models\Tag());
+                $repository = new \Bishopm\Churchnet\Repositories\LabelsRepository(new \Bishopm\Churchnet\Models\Label());
                 return $repository;
             }
         );

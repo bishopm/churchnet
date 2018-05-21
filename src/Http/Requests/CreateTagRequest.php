@@ -4,12 +4,12 @@ namespace Bishopm\Churchnet\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateTagRequest extends FormRequest
+class CreateLabelRequest extends FormRequest
 {
     public function rules()
     {
         return [
-            'tag' => 'required',
+            'label' => 'required',
             'description' => 'required'
         ];
     }
