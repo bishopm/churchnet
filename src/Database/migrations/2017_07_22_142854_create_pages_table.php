@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateResourcesTable extends Migration
+class CreatePagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,11 @@ class CreateResourcesTable extends Migration
      */
     public function up()
     {
-        Schema::create('resources', function (Blueprint $table) {
+        Schema::create('pages', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
             $table->string('title');
-            $table->string('url')->nullable();
-            $table->text('description')->nullable();
+            $table->text('body')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -30,6 +29,6 @@ class CreateResourcesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('resources');
+        Schema::drop('pages');
     }
 }

@@ -1,17 +1,17 @@
 @extends('churchnet::templates.frontend')
 
-@section('title',$circuit->circuit)
+@section('title',$resource->resource)
 
 @section('content')
 <div class="container mt-5">
     <div class="row">
         <div class="col-12">
-            <h4>{{$circuit->circuitnumber}} {{$circuit->circuit}} <small><a href="{{url('/')}}/methodist/districts/{{$circuit->district_id}}">{{$circuit->district->district}} District</a></small></h4>
-            @if ($circuit->office_contact)
-                {{$circuit->office_contact}} 
+            <h4>{{$resource->resourcenumber}} {{$resource->resource}} <small><a href="{{url('/')}}/methodist/districts/{{$resource->district_id}}">{{$resource->district->district}} District</a></small></h4>
+            @if ($resource->office_contact)
+                {{$resource->office_contact}} 
             @endif
             @if ($plan)
-                <a href="{{url('/')}}/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
+                <a href="{{url('/')}}/plan/{{$resource->slug}}" target="_blank">Current preaching plan</a>
             @endif
             <hr>
         </div>
@@ -20,8 +20,8 @@
         <div class="col-xs-12 col-sm-6">
             <h4>Societies</h4>
             <ul class="list-unstyled">
-            @foreach ($circuit->societies as $society)
-                <li><a href="{{url('/')}}/methodist/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a></li>
+            @foreach ($resource->societies as $society)
+                <li><a href="{{url('/')}}/methodist/{{$resource->slug}}/{{$society->slug}}">{{$society->society}}</a></li>
             @endforeach
             </ul>
         </div>
@@ -53,18 +53,18 @@
                 @if ((isset($settings['superintendent'])) and ($settings['superintendent']<>""))
                     <li><i>Superintendent Minister:</i> {{$settings['superintendent']}}</li>
                 @endif
-                @if ((isset($settings['circuit_stewards'])) and ($settings['circuit_stewards']<>""))
-                    <li><i>Circuit Stewards:</i>
-                     @foreach(explode(',',$settings['circuit_stewards']) as $cs)
+                @if ((isset($settings['resource_stewards'])) and ($settings['resource_stewards']<>""))
+                    <li><i>Resource Stewards:</i>
+                     @foreach(explode(',',$settings['resource_stewards']) as $cs)
                         <li>- {{$cs}}</li>
                      @endforeach
                     </li>
                 @endif
-                @if ((isset($settings['circuit_secretary'])) and ($settings['circuit_secretary']<>""))
-                    <li><i>Circuit Secretary:</i> {{$settings['circuit_secretary']}}</li>
+                @if ((isset($settings['resource_secretary'])) and ($settings['resource_secretary']<>""))
+                    <li><i>Resource Secretary:</i> {{$settings['resource_secretary']}}</li>
                 @endif
-                @if ((isset($settings['circuit_treasurer'])) and ($settings['circuit_treasurer']<>""))
-                    <li><i>Circuit Treasurer:</i> {{$settings['circuit_treasurer']}}</li>
+                @if ((isset($settings['resource_treasurer'])) and ($settings['resource_treasurer']<>""))
+                    <li><i>Resource Treasurer:</i> {{$settings['resource_treasurer']}}</li>
                 @endif
                 @if ((isset($settings['local_preachers_secretary'])) and ($settings['local_preachers_secretary']<>""))
                     <li><i>Local Preachers Secretary:</i> {{$settings['local_preachers_secretary']}}</li>

@@ -9,7 +9,7 @@
             <h1 class="title">District {{$district->id}}: {{$district->district}}</h1>
             <ul>
             @foreach ($district->circuits as $circuit)
-                <li><a href="{{url('/')}}/circuits/{{$circuit->slug}}">{{$circuit->circuitnumber}} {{$circuit->circuit}}</a> ({{count($circuit->societies)}})</li>
+                <li><a href="{{url('/')}}/methodist/circuits/{{$circuit->slug}}">{{$circuit->circuitnumber}} {{$circuit->circuit}}</a> ({{count($circuit->societies)}})</li>
             @endforeach
             </ul>
         </div>

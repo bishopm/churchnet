@@ -9,7 +9,7 @@
             <h1 class="title">MCSA Districts</h1>
             <ul>
             @foreach ($districts as $district)
-                <li><a href="{{url('/')}}/districts/{{$district->id}}">{{$district->id}} {{$district->district}}</a></li>
+                <li><a href="{{url('/')}}/methodist/districts/{{$district->id}}">{{$district->id}} {{$district->district}}</a></li>
             @endforeach
             </ul>
         </div>

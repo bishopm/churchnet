@@ -27,28 +27,46 @@ Route::group(['middleware' => ['web']], function () {
         // Circuits
         Route::get('admin/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@index','as'=>'admin.circuits.index']);
         Route::get('admin/circuits/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@create','as'=>'admin.circuits.create']);
-        Route::get('circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
+        Route::get('methodist/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
         Route::get('admin/circuits/{circuit}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@edit','as'=>'admin.circuits.edit']);
         Route::put('admin/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@update','as'=>'admin.circuits.update']);
         Route::post('admin/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@store','as'=>'admin.circuits.store']);
         Route::delete('admin/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@destroy','as'=>'admin.circuits.destroy']);
 
         // Districts
-        Route::get('districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@index','as'=>'districts.index']);
-        Route::get('districts/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@create','as'=>'districts.create']);
-        Route::get('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
-        Route::get('districts/{district}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@edit','as'=>'districts.edit']);
-        Route::put('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@update','as'=>'districts.update']);
-        Route::post('districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@store','as'=>'districts.store']);
-        Route::delete('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@destroy','as'=>'districts.destroy']);
+        Route::get('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@index','as'=>'districts.index']);
+        Route::get('methodist/districts/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@create','as'=>'districts.create']);
+        Route::get('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
+        Route::get('methodist/districts/{district}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@edit','as'=>'districts.edit']);
+        Route::put('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@update','as'=>'districts.update']);
+        Route::post('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@store','as'=>'districts.store']);
+        Route::delete('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@destroy','as'=>'districts.destroy']);
+
+        // Pages
+        Route::get('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@index','as'=>'admin.pages.index']);
+        Route::get('admin/pages/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@create','as'=>'admin.pages.create']);
+        Route::get('methodist/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);
+        Route::get('admin/pages/{page}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@edit','as'=>'admin.pages.edit']);
+        Route::put('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@update','as'=>'admin.pages.update']);
+        Route::post('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@store','as'=>'admin.pages.store']);
+        Route::delete('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@destroy','as'=>'admin.pages.destroy']);
+
+        // Resources
+        Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
+        Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
+        Route::get('methodist/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
+        Route::get('admin/resources/{resource}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@edit','as'=>'admin.resources.edit']);
+        Route::put('admin/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@update','as'=>'admin.resources.update']);
+        Route::post('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@store','as'=>'admin.resources.store']);
+        Route::delete('admin/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@destroy','as'=>'admin.resources.destroy']);
 
         // Societies
-        Route::get('societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@index','as'=>'societies.index']);
-        Route::get('societies/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@create','as'=>'societies.create']);
-        Route::get('societies/{society}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@edit','as'=>'societies.edit']);
-        Route::put('societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@update','as'=>'societies.update']);
-        Route::post('societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@store','as'=>'societies.store']);
-        Route::delete('societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@destroy','as'=>'societies.destroy']);
-        Route::get('{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
+        Route::get('methodist/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@index','as'=>'societies.index']);
+        Route::get('methodist/societies/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@create','as'=>'societies.create']);
+        Route::get('methodist/societies/{society}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@edit','as'=>'societies.edit']);
+        Route::put('methodist/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@update','as'=>'societies.update']);
+        Route::post('methodist/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@store','as'=>'societies.store']);
+        Route::delete('methodist/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@destroy','as'=>'societies.destroy']);
+        Route::get('methodist/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
     });
 });

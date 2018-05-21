@@ -25,7 +25,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav">  
         <li class="nav-item">
-          <a class="nav-link" href="{{url('/')}}/add" title="Add new content"><i class="fa fa-plus"></i> Add new content</a>
+          <a class="nav-link" href="{{url('/')}}/admin/resources/create" title="Add new content"><i class="fa fa-plus"></i> Add new content</a>
         </li>
         <form class="form-inline">
           <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

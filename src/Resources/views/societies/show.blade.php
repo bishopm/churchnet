@@ -7,7 +7,7 @@
     <div class="box">
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <h1 class="title">{{$society->society}} <span class="subtitle small"><a href="{{url('/')}}/circuits/{{$society->circuit->slug}}">{{$society->circuit->circuit}}</a></span></h1>
+                <h1 class="title">{{$society->society}} <span class="subtitle small"><a href="{{url('/')}}/methodist/circuits/{{$society->circuit->slug}}">{{$society->circuit->circuit}}</a></span></h1>
                 <ul class="list-unstyled">
                     @if ($society->address)
                         <li>{{$society->address}}</li>
