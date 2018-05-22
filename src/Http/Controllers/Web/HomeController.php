@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ResourcesRepository;
+use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Resource;
 use Bishopm\Churchnet\Models\Page;
 use Cartalyst\Tags\IlluminateTag;
@@ -12,10 +13,12 @@ use LithiumDev\TagCloud\TagCloud;
 class HomeController extends Controller
 {
     private $resource;
+    private $page;
     
-    public function __construct(ResourcesRepository $resource)
+    public function __construct(ResourcesRepository $resource, PagesRepository $page)
     {
         $this->resource = $resource;
+        $this->page = $page;
     }
 
     /**
@@ -42,7 +45,8 @@ class HomeController extends Controller
             return "<span class='tag size{$size}'>{$link}</span> ";
         });
         $data['cloud'] = $cloud;
-        $data['recents'] = $this->resource->recents(10);
+        $data['recentresources'] = $this->resource->recents(5);
+        $data['recentpages'] = $this->page->recents(5);
         return view('churchnet::home', $data);
     }
 

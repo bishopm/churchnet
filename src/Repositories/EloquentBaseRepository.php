@@ -153,7 +153,7 @@ abstract class EloquentBaseRepository implements BaseRepository
     public function allforcircuitonly($circuitnumber)
     {
         $circuit=Circuit::find($circuitnumber);
-        return $this->model->orderBy('tag', 'ASC')->where('circuit_id', '=', $circuit->id)->get();
+        return $this->model->orderBy('label', 'ASC')->where('circuit_id', '=', $circuit->id)->get();
     }
 
     public function findforcircuit($circuit, $id)
