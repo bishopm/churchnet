@@ -5,7 +5,7 @@
 @section('content')
 <div class="container mt-5">
     <div class="row">
-        <div class="col-sm">
+        <div class="col">
             <h3>{{$tag}}</h3>
             <table class="table table-striped table-sm table-responsive">
                 <tr><th colspan="2">Resources</th></tr>

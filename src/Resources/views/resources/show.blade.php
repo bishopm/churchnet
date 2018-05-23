@@ -7,7 +7,7 @@
     <div class="row">
         <div class="col-sm">
             <h2>{{$resource->title}}</h2>
-            <p>{{$resource->description}}</p>
+            <p><a target="_blank" href="{!!$resource->url!!}"><i class="fa fa-lg fa-globe"></i></a> {{$resource->description}}</p>
             @foreach ($resource->tags as $tag)
                 <span><a href="{{route('tag',$tag->slug)}}">{{$tag->name}}</a></span>
             @endforeach
