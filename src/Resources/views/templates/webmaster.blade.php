@@ -17,7 +17,7 @@
     <![endif]-->
 </head>
 <body class="fixed-nav sticky-footer" id="page-top">
-<nav class="navbar navbar-expand-lg fixed-top bg-dark" id="mainNav">
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
     <a class="navbar-brand" href="{{url('/')}}"><b>Church</b>Net</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -28,6 +28,12 @@
           <a class="nav-link" href="{{url('/')}}/admin/resources/create">
             <i class="fa fa-fw fa-plus"></i>
             <span class="nav-link-text">Add new content</span>
+          </a>
+        </li>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Free church management software">
+          <a class="nav-link" target="_blank" href="http://connexion.church.net.za">
+            <i class="fa fa-fw fa-home"></i>
+            <span class="nav-link-text">Connexion software</span>
           </a>
         </li>
         @auth

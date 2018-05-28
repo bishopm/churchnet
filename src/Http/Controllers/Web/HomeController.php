@@ -41,10 +41,11 @@ class HomeController extends Controller
         $baseUrl=url('/');
         $cloud->setOrder('tag', 'ASC');
         $cloud->setHtmlizeTagFunction(function ($tag, $size) use ($baseUrl) {
-            $link = '<a href="'.$baseUrl.'/tag/'.$tag['url'].'">'.$tag['tag'].'</a>';
-            return "<span class='tag size{$size}'>{$link}</span> ";
+            $size = intval($size) + 10;
+            $link = '<a size="'.$size.'" href="'.$baseUrl.'/tag/'.$tag['url'].'">'.$tag['tag'].'</a>';
+            return "{$link} ";
         });
-        $data['cloud'] = $cloud;
+        $data['cloud'] = $cloud->render();
         $data['recentresources'] = $this->resource->recents(5);
         $data['recentpages'] = $this->page->recents(5);
         return view('churchnet::home', $data);

@@ -17,26 +17,54 @@
 </style>
 <div class="container mt-5">
     <div class="row">
-        <div class="col">
-            <p><h3>Welcome to church.net.za</h3> We're collecting useful resources for local church ministry. Have a look around and then feel free to register and make your own contribution :)</p>
+        <div class="jumbotron">
+            <h3>Welcome to church.net.za</h3>
+            <p>We're collecting useful resources for local church ministry. Have a look around and then feel free to make your own contribution :)</p>
         </div>
     </div>
     <div class="row">
-        <div class="col-9">
-            {!!$cloud->render()!!}
+        <div class="col-8 col-12-sm">
+            <div id="myCanvasContainer">
+                <canvas width="400" height="400" id="myCanvas">
+                    <p>{!! $cloud !!}</p>
+                </canvas>
+            </div>
         </div>
-        <div class="col-3 bg-dark">
+        <div class="col-4">
             <h3>Added recently</h3>
-            <h5>Resources</h5>
-            @foreach ($recentresources as $recent)
-                <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
-            @endforeach
-            <h5>Pages</h5>
-            @foreach ($recentpages as $recentp)
-                <li><a href="{{route('resources.show',$recentp->id)}}">{{$recentp->title}}</a></li>
-            @endforeach
+            <div>
+                <h5>Resources</h5>
+                @foreach ($recentresources as $recent)
+                    <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
+                @endforeach
+            </div>
+            <div class="mt-2">
+                <h5>Pages</h5>
+                @foreach ($recentpages as $recentp)
+                    <li><a href="{{route('resources.show',$recentp->id)}}">{{$recentp->title}}</a></li>
+                @endforeach
+            </div>
         </div>
         
     </div>
 </div>
 @endsection
+
+@section('js')
+<script src="{{asset('/vendor/bishopm/js/tagcanvas.js')}}"></script>
+<script type="text/javascript">
+var options = {
+  weight: true,
+  textColour: 'red',
+  weightFrom: 'size'
+};
+window.onload = function() {
+    try {
+      TagCanvas.Start('myCanvas','',options);
+    } catch(e) {
+      // something went wrong, hide the canvas container
+      document.getElementById('myCanvasContainer').style.display = 'none';
+    }
+};
+</script>
+@stop

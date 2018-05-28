@@ -359,7 +359,7 @@ html {
   
   @media (min-width: 992px) {
     #mainNav.navbar-dark .navbar-collapse .navbar-sidenav {
-      background: #343a40;
+      background: #fff;
     }
     #mainNav.navbar-dark .navbar-collapse .navbar-sidenav li.active a {
       color: white !important;
