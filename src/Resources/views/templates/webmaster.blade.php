@@ -7,7 +7,7 @@
     <!-- Tell the browser to be responsive to screen width -->
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
     <link rel="stylesheet" href="{{ asset('/vendor/bishopm/css/bootstrap.min.css')}}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('/vendor/bishopm/css/admin.css')}}">
     @yield('css')
 
@@ -36,13 +36,19 @@
             <span class="nav-link-text">Connexion software</span>
           </a>
         </li>
-        @auth
-          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add new page">
-          <a class="nav-link" href="{{url('/')}}/admin/pages/create">
-            <i class="fa fa-fw fa-file-o"></i>
-            <span class="nav-link-text">Add new page</span>
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Methodist churches in SA">
+          <a class="nav-link" href="methodist/districts">
+            <i class="fa fa-fw fa-church"></i>
+            <span class="nav-link-text">Methodist churches</span>
           </a>
         </li>
+        @auth
+          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add new page">
+            <a class="nav-link" href="{{url('/')}}/admin/pages/create">
+              <i class="fa fa-fw fa-file-o"></i>
+              <span class="nav-link-text">Add new page</span>
+            </a>
+          </li>
         @endauth
       </ul>
       <ul class="navbar-nav sidenav-toggler">
