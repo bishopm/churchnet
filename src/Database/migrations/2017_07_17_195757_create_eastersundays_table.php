@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateReadingsTable extends Migration
+class CreateEastersundaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,9 @@ class CreateReadingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('readings', function (Blueprint $table) {
+        Schema::create('eastersundays', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('ldate');
-            $table->string('description');
-            $table->string('a');
-            $table->string('b');
-            $table->string('c');
+            $table->date('eastersunday');
         });
     }
 
@@ -29,6 +25,6 @@ class CreateReadingsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('readings');
+        Schema::drop('eastersundays');
     }
 }
