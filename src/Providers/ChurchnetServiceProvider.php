@@ -115,6 +115,13 @@ class ChurchnetServiceProvider extends ServiceProvider
             }
         );
         $this->app->bind(
+            'Bishopm\Churchnet\Repositories\ReadingsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\ReadingsRepository(new \Bishopm\Churchnet\Models\Reading());
+                return $repository;
+            }
+        );
+        $this->app->bind(
             'Bishopm\Churchnet\Repositories\ResourcesRepository',
             function () {
                 $repository = new \Bishopm\Churchnet\Repositories\ResourcesRepository(new \Bishopm\Churchnet\Models\Resource());

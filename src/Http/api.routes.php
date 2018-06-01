@@ -16,6 +16,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     // Societies
     Route::get('/api/methodist/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);
     Route::get('api/methodist/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
+    Route::get('api/sunday', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@sunday','as'=>'api.lectionary.sunday']);
     Route::group(['middleware' => ['jwt.auth','handlecors']], function () {
         Route::get('api/methodist/check', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check','as'=>'api.check']);
 
