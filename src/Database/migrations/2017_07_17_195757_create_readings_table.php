@@ -14,11 +14,12 @@ class CreateReadingsTable extends Migration
     {
         Schema::create('readings', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('ldate');
+            $table->date('daterange');
             $table->string('description');
             $table->string('a');
             $table->string('b');
             $table->string('c');
+            $table->integer('priority');
         });
     }
 
