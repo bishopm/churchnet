@@ -5,6 +5,8 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ReadingsRepository;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Exception\GuzzleException;
+use GuzzleHttp\Client;
 
 class LectionaryController extends Controller
 {
@@ -34,6 +36,19 @@ class LectionaryController extends Controller
         foreach ($readings as $reading) {
             echo "<li>" . $reading . "</li>";
         }*/
+    }
+
+    public function reading($reading)
+    {
+        $reading = urldecode($reading);
+        $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
+        $client = new Client(['auth' => [$api_secret,'']]);
+        $reading=trim($reading);
+        $response=json_decode($client->request('GET', 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=eng-GNBDC')->getBody()->getContents(), true);
+        $dum['reading']=$reading;
+        $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
+        $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Daily Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
+        return $dum;
     }
 
     private function lectionaryYear()
