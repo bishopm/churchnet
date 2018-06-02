@@ -25,11 +25,15 @@ class LectionaryController extends Controller
         $this->lectionaryYear();
         $this->setUpArray();
         $fin = $this->buildYear();
-        echo "<h1>" . $fin['date'] . ": " . $fin['lection']['description'] . " (" . $fin['lection']['year'] . ")</h1>";
+        $res['date']=date("j F Y", strtotime($fin['date']));
+        $res['description']=$fin['lection']['description'] . $fin['lection']['year'];
+        $res['readings']=explode(';', $fin['lection']['readings']);
+        return $res;
+        /*echo "<h1>" . $fin['date'] . ": " . $fin['lection']['description'] . " (" . $fin['lection']['year'] . ")</h1>";
         $readings = explode(';', $fin['lection']['readings']);
         foreach ($readings as $reading) {
             echo "<li>" . $reading . "</li>";
-        }
+        }*/
     }
 
     private function lectionaryYear()
