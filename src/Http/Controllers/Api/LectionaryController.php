@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ReadingsRepository;
+use Bishopm\Churchnet\Models\Cache;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
@@ -28,27 +29,59 @@ class LectionaryController extends Controller
         $this->setUpArray();
         $fin = $this->buildYear();
         $res['date']=date("j F Y", strtotime($fin['date']));
-        $res['description']=$fin['lection']['description'] . $fin['lection']['year'];
+        $res['description']=$fin['lection']['description'] . ' [' . $fin['lection']['year'] . ']';
         $res['readings']=explode(';', $fin['lection']['readings']);
         return $res;
-        /*echo "<h1>" . $fin['date'] . ": " . $fin['lection']['description'] . " (" . $fin['lection']['year'] . ")</h1>";
-        $readings = explode(';', $fin['lection']['readings']);
-        foreach ($readings as $reading) {
-            echo "<li>" . $reading . "</li>";
-        }*/
+    }
+
+    public function wholeYear()
+    {
+        $this->sunday = strtotime(date('Y-m-d', strtotime('sunday')));
+        $this->lectionaryYear();
+        $this->setUpArray();
+        $this->buildYear();
+        return $this->data;
     }
 
     public function reading($reading)
     {
         $reading = urldecode($reading);
-        $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
-        $client = new Client(['auth' => [$api_secret,'']]);
+        if ((strpos($reading, ',')>1) or (strpos($reading, '[')>1)) {
+            $base = explode(':', $reading)[0] . ":";
+            $remainder = substr($reading, 1+strpos($reading, ':'));
+            $sections = array_filter(preg_split('/[,[]+/', $remainder));
+            foreach ($sections as $section) {
+                $readings[]=$this->fetchReading($base . $section);
+            }
+        } else {
+            $readings[]=$this->fetchReading($reading);
+        }
+        return $readings;
+    }
+
+    private function fetchReading($reading)
+    {
         $reading=trim($reading);
-        $response=json_decode($client->request('GET', 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=eng-GNBDC')->getBody()->getContents(), true);
-        $dum['reading']=$reading;
-        $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
-        $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Daily Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
-        return $dum;
+        if (substr($reading, -1)=="]") {
+            $reading=substr($reading, 0, strlen($reading)-1);
+            $dum['type']="optional";
+        } else {
+            $dum['type']="required";
+        }
+        $cache=Cache::where('ndx', $reading)->first();
+        if ($cache) {
+            return json_decode($cache->cached);
+        } else {
+            $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
+            $client = new Client(['auth' => [$api_secret,'']]);
+            $response=json_decode($client->request('GET', 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=eng-GNBDC')->getBody()->getContents(), true);
+            $dum['reading']=$reading;
+            $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
+            $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Daily Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
+            $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum)]);
+            $dum['source']="API";
+            return $dum;
+        }
     }
 
     private function lectionaryYear()
@@ -59,7 +92,9 @@ class LectionaryController extends Controller
         $ndx = $this->yr % 3;
         $this->advent=$this->adventThisYear;
         $this->nextAdvent=$this->adventOne($this->yr+1);
+        $this->easteryr = $this->yr+1;
         if ($this->sunday < $this->adventThisYear) {
+            $this->easteryr = $this->yr;
             $ndx = $ndx -1;
             $this->advent=$this->adventOne($this->yr-1);
             $this->nextAdvent=$this->adventOne($this->yr);
@@ -103,7 +138,7 @@ class LectionaryController extends Controller
         $this->data[4]['lection']=$this->reading->findByDesc($this->lyear, 'First Sunday after Christmas Day');
         $this->data[5]['lection']=$this->reading->findByDesc($this->lyear, 'Epiphany Sunday');
         // Lent
-        $eastersunday = DB::table('eastersundays')->whereRaw('SUBSTRING(eastersunday, 1,  4) = '.$this->yr)->first()->eastersunday;
+        $eastersunday = DB::table('eastersundays')->whereRaw('SUBSTRING(eastersunday, 1,  4) = '.$this->easteryr)->first()->eastersunday;
         $this->data[$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Resurrection of the Lord - Easter Day');
         $this->data[-1+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Fifth Sunday in Lent');
         $this->data[-2+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Fourth Sunday in Lent');
