@@ -48,9 +48,16 @@ class LectionaryController extends Controller
         $reading = urldecode($reading);
         if ((strpos($reading, ',')>1) or (strpos($reading, '[')>1)) {
             $base = explode(':', $reading)[0] . ":";
+            $book=substr($base, 0, strrpos($base, ' '));
+            $chapter=substr($base, 1+strrpos($base, ' '), -1);
             $remainder = substr($reading, 1+strpos($reading, ':'));
             $sections = array_filter(preg_split('/[,[]+/', $remainder));
             foreach ($sections as $section) {
+                if (strpos($section, ':')!==false) {
+                    $chapter = substr($section, 0, strpos($section, ':'));
+                    $section = substr($section, 1+strpos($section, ':'));
+                }
+                $dum = $book . " " . $chapter . ":" . $section;
                 $readings[]=$this->fetchReading($base . $section);
             }
         } else {
