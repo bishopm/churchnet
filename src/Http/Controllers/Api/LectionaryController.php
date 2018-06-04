@@ -43,8 +43,9 @@ class LectionaryController extends Controller
         return $this->data;
     }
 
-    public function reading($reading)
+    public function reading($reading, $translation)
     {
+        $this->translation = $translation;
         $reading = urldecode($reading);
         if ((strpos($reading, ',')>1) or (strpos($reading, '[')>1)) {
             $base = explode(':', $reading)[0] . ":";
@@ -75,17 +76,18 @@ class LectionaryController extends Controller
         } else {
             $dum['type']="required";
         }
-        $cache=Cache::where('ndx', $reading)->first();
+        $cache=Cache::where('ndx', $reading)->where('translation', $this->translation)->first();
         if ($cache) {
             return json_decode($cache->cached);
         } else {
             $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
             $client = new Client(['auth' => [$api_secret,'']]);
-            $response=json_decode($client->request('GET', 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=eng-GNBDC')->getBody()->getContents(), true);
+            $query = 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=' . $this->translation;
+            $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
             $dum['reading']=$reading;
             $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
             $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Daily Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
-            $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum)]);
+            $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
             $dum['source']="API";
             return $dum;
         }
