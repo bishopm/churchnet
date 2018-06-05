@@ -32,6 +32,21 @@ class MeetingsController extends Controller
         return $this->meeting->allWithRelation('society');
     }
 
+    public function upcoming($circuit)
+    {
+        $now = time();
+        $upcomings = Meeting::with('society')->where('meetingdatetime', '>', $now)->where('circuit_id', $circuit)->orderBy('meetingdatetime')->get();
+        $data = array();
+        foreach ($upcomings as $upcoming) {
+            $dum['start'] = date("j F Y (H:i)", $upcoming->meetingdatetime);
+            $dum['details'] = $upcoming->description;
+            $dum['society'] = $upcoming->society->society;
+            $dum['society_id'] = $upcoming->society->id;
+            $data[]=$dum;
+        }
+        return $data;
+    }
+
     public function edit($circuit, $meeting)
     {
         return $this->meeting->find($meeting);
