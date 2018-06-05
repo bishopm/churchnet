@@ -31,12 +31,30 @@ class LectionaryController extends Controller
         $res['date']=date("j F Y", strtotime($fin['date']));
         $res['description']=$fin['lection']['description'] . ' [' . $fin['lection']['year'] . ']';
         $res['readings']=explode(';', $fin['lection']['readings']);
+        if ($fin['lection']['description'] == "Resurrection of the Lord - Easter Day") {
+            $res['extras'][date("j F Y", strtotime($fin['date'])-6*24*3600)]=$this->reading->findByDesc($this->lyear, 'Holy Week Monday');
+            $res['extras'][date("j F Y", strtotime($fin['date'])-5*24*3600)]=$this->reading->findByDesc($this->lyear, 'Holy Week Tuesday');
+            $res['extras'][date("j F Y", strtotime($fin['date'])-4*24*3600)]=$this->reading->findByDesc($this->lyear, 'Holy Week Wednesday');
+            $res['extras'][date("j F Y", strtotime($fin['date'])-3*24*3600)]=$this->reading->findByDesc($this->lyear, 'Maundy Thursday');
+            $res['extras'][date("j F Y", strtotime($fin['date'])-2*24*3600)]=$this->reading->findByDesc($this->lyear, 'Good Friday');
+        } elseif ($fin['lection']['description'] == "Seventh Sunday of Easter") {
+            $res['extras'][date("j F Y", strtotime($fin['date'])-3*24*3600)]=$this->reading->findByDesc($this->lyear, 'Ascension Day');
+        } elseif (($fin['lection']['description'] == "First Sunday after Christmas Day") and (substr($fin['date'], 5)<>"01-01")) {
+            $res['extras'][date("Y", strtotime($fin['date'])) . "-12-24"]=$this->reading->findByDesc($this->lyear, 'Christmas Eve');
+            $res['extras'][date("Y", strtotime($fin['date'])) . "-12-25"]=$this->reading->findByDesc($this->lyear, 'Christmas Day');
+        } elseif ($fin['lection']['description'] == "Christmas Day") {
+            $res['extras'][date("Y", strtotime($fin['date'])) . "-12-24"]=$this->reading->findByDesc($this->lyear, 'Christmas Eve');
+        }
         return $res;
     }
 
-    public function wholeYear()
+    public function wholeYear($ldate="")
     {
-        $this->sunday = strtotime(date('Y-m-d', strtotime('sunday')));
+        if ($ldate=="") {
+            $this->sunday = strtotime(date('Y-m-d', strtotime('sunday')));
+        } else {
+            $this->sunday = strtotime($ldate);
+        }
         $this->lectionaryYear();
         $this->setUpArray();
         $this->buildYear();
@@ -149,7 +167,11 @@ class LectionaryController extends Controller
         $this->data[1]['lection']=$this->reading->findByDesc($this->lyear, 'Advent 2');
         $this->data[2]['lection']=$this->reading->findByDesc($this->lyear, 'Advent 3');
         $this->data[3]['lection']=$this->reading->findByDesc($this->lyear, 'Advent 4');
-        $this->data[4]['lection']=$this->reading->findByDesc($this->lyear, 'First Sunday after Christmas Day');
+        if (substr($this->data[4]['date'], 5) == "12-25") {
+            $this->data[4]['lection']=$this->reading->findByDesc($this->lyear, 'Christmas Day');
+        } else {
+            $this->data[4]['lection']=$this->reading->findByDesc($this->lyear, 'First Sunday after Christmas Day');
+        }
         $this->data[5]['lection']=$this->reading->findByDesc($this->lyear, 'Epiphany Sunday');
         // Lent
         $eastersunday = DB::table('eastersundays')->whereRaw('SUBSTRING(eastersunday, 1,  4) = '.$this->easteryr)->first()->eastersunday;

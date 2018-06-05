@@ -22,8 +22,9 @@ class ReadingsRepository extends EloquentBaseRepository
             $data['readings']=$lection[0][$yr];
             $data['year']=strtoupper($yr);
         } else {
+            dd($sunday);
             $lection = $this->model->where('daterange', 'like', '%' . $sdate . '%')->where('priority', 1)->first();
-            $data['description']=$description;
+            $data['description']=$lection->description;
             $data['readings']=$lection->$yr;
             $data['year']=strtoupper($yr);
         }
