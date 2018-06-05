@@ -26,7 +26,7 @@ class PlansController extends Controller
     private $services;
     private $circuit;
     private $plans;
-    private $tags;
+    private $labels;
   
     public function __construct(
   
@@ -37,7 +37,7 @@ class PlansController extends Controller
         ServicesRepository $services,
         CircuitsRepository $circuit,
         PlansRepository $plans,
-        LabelsRepository $tags
+        LabelsRepository $labels
     ) {
         $this->weekdays=$weekdays;
         $this->meetings=$meetings;
@@ -46,7 +46,7 @@ class PlansController extends Controller
         $this->services=$services;
         $this->circuit=$circuit;
         $this->plans=$plans;
-        $this->tags=$tags;
+        $this->labels=$labels;
     }
 
     /**
@@ -210,7 +210,7 @@ class PlansController extends Controller
             if ($p1->servicetype) {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['tname']=$p1->servicetype;
             } else {
-                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['tag']="";
+                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['label']="";
             }
             if ($p1->trialservice) {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['trial']=$p1->trialservice;
@@ -236,7 +236,7 @@ class PlansController extends Controller
             if ($p2->servicetype) {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['tname']=$p2->servicetype;
             } else {
-                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['tag']="";
+                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['label']="";
             }
             if ($p2->trialservice) {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['trial']=$p2->trialservice;
@@ -262,14 +262,14 @@ class PlansController extends Controller
             if ($p3->servicetype) {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['tname']=$p3->servicetype;
             } else {
-                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['tag']="";
+                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['label']="";
             }
             if ($p3->trialservice) {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['trial']=$p3->trialservice;
             }
         }
-        foreach ($this->tags->allforcircuitonly($circuit) as $tag) {
-            $data['tags'][]=$tag->tag;
+        foreach ($this->labels->allforcircuitonly($circuit) as $label) {
+            $data['labels'][]=$label->label;
         }
         if ($qq==1) {
             $data['prev']="plan/" . strval($yy-1) . "/4";

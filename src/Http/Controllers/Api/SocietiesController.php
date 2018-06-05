@@ -41,8 +41,10 @@ class SocietiesController extends Controller
                 $plan = Plan::with('preacher')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
                 if ($plan) {
                     $service->preacher=$plan->preacher;
+                    $service->servicetype=$plan->servicetype;
                 } else {
                     $service->preacher="";
+                    $service->servicetype="";
                 }
             }
         }
