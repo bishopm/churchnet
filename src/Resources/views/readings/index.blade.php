@@ -21,12 +21,12 @@
                         <table id="indexTable" class="table table-striped table-hover table-condensed" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Description</th><th>Year A</th><th>Year B</th><th>Year C</th><th>Updated</th>
+                                    <th>Description</th><th>Year A</th><th>Year B</th><th>Year C</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Description</th><th>Year A</th><th>Year B</th><th>Year C</th><th>Updated</th>
+                                    <th>Description</th><th>Year A</th><th>Year B</th><th>Year C</th>
                                 </tr>
                             </tfoot>
                             <tbody>
@@ -36,7 +36,6 @@
                                         <td><a href="{{route('admin.readings.edit',$reading->id)}}">{{$reading->a}}</a></td>
                                         <td><a href="{{route('admin.readings.edit',$reading->id)}}">{{$reading->b}}</a></td>
                                         <td><a href="{{route('admin.readings.edit',$reading->id)}}">{{$reading->c}}</a></td>
-                                        <td><a href="{{route('admin.readings.edit',$reading->id)}}">{{$reading->updated_at}}</a></td>
                                     </tr>
                                 @empty
                                     <tr><td>No readings have been added yet</td></tr>
