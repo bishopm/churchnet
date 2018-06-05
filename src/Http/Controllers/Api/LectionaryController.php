@@ -47,24 +47,29 @@ class LectionaryController extends Controller
     {
         $this->translation = $translation;
         $reading = urldecode($reading);
-        if ((strpos($reading, ',')>1) or (strpos($reading, '[')>1)) {
-            $base = explode(':', $reading)[0] . ":";
-            $book=substr($base, 0, strrpos($base, ' '));
-            $chapter=substr($base, 1+strrpos($base, ' '), -1);
-            $remainder = substr($reading, 1+strpos($reading, ':'));
-            $sections = array_filter(preg_split('/[,[]+/', $remainder));
-            foreach ($sections as $section) {
-                if (strpos($section, ':')!==false) {
-                    $chapter = substr($section, 0, strpos($section, ':'));
-                    $section = substr($section, 1+strpos($section, ':'));
+        $readingset=explode(' or ', $reading);
+        foreach ($readingset as $thisreading) {
+            $readings=array();
+            if ((strpos($thisreading, ',')>1) or (strpos($thisreading, '[')>1)) {
+                $base = explode(':', $thisreading)[0] . ":";
+                $book=substr($base, 0, strrpos($base, ' '));
+                $chapter=substr($base, 1+strrpos($base, ' '), -1);
+                $remainder = substr($thisreading, 1+strpos($thisreading, ':'));
+                $sections = array_filter(preg_split('/[,[]+/', $remainder));
+                foreach ($sections as $section) {
+                    if (strpos($section, ':')!==false) {
+                        $chapter = substr($section, 0, strpos($section, ':'));
+                        $section = substr($section, 1+strpos($section, ':'));
+                    }
+                    $dum = $book . " " . $chapter . ":" . $section;
+                    $readings[]=$this->fetchReading($base . $section);
                 }
-                $dum = $book . " " . $chapter . ":" . $section;
-                $readings[]=$this->fetchReading($base . $section);
+            } else {
+                $readings[]=$this->fetchReading($thisreading);
             }
-        } else {
-            $readings[]=$this->fetchReading($reading);
+            $data[$thisreading]=$readings;
         }
-        return $readings;
+        return $data;
     }
 
     private function fetchReading($reading)
@@ -86,7 +91,7 @@ class LectionaryController extends Controller
             $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
             $dum['reading']=$reading;
             $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
-            $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Daily Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
+            $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
             $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
             $dum['source']="API";
             return $dum;

@@ -10,7 +10,11 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
     <link rel="stylesheet" href="{{ asset('/vendor/bishopm/css/admin.css')}}">
     @yield('css')
-
+    <style>
+      .dropdown-toggle::after {
+        display: none;
+      }
+    </style>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -75,6 +79,7 @@
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
               <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
+              <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
               <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
               <div class="dropdown-divider"></div>
               <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>

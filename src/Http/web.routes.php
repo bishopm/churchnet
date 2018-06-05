@@ -53,6 +53,15 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@store','as'=>'admin.pages.store']);
         Route::delete('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@destroy','as'=>'admin.pages.destroy']);
 
+        // Readings
+        Route::get('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@index','as'=>'admin.readings.index']);
+        Route::get('admin/readings/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@create','as'=>'admin.readings.create']);
+        Route::get('methodist/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@show','as'=>'readings.show']);
+        Route::get('admin/readings/{reading}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@edit','as'=>'admin.readings.edit']);
+        Route::put('admin/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@update','as'=>'admin.readings.update']);
+        Route::post('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@store','as'=>'admin.readings.store']);
+        Route::delete('admin/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@destroy','as'=>'admin.readings.destroy']);
+
         // Resources
         Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
         Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
