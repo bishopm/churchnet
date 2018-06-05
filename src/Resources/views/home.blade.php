@@ -23,14 +23,14 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-8 col-12-sm">
+        <div class="col-md-8">
             <div id="myCanvasContainer">
-                <canvas width="400" height="400" id="myCanvas">
+                <canvas width="400" height="400" style="width:100%" id="myCanvas">
                     <p>{!! $cloud !!}</p>
                 </canvas>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-md-4">
             <h3>Added recently</h3>
             <div>
                 <h5>Resources</h5>
@@ -56,7 +56,9 @@
 var options = {
   weight: true,
   textColour: 'red',
-  weightFrom: 'size'
+  weightFrom: 'size',
+  initial: [-0.080, 0.280],
+  maxSpeed: 0.04
 };
 window.onload = function() {
     try {

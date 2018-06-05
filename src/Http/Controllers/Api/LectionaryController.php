@@ -86,7 +86,7 @@ class LectionaryController extends Controller
             return json_decode($cache->cached);
         } else {
             $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
-            $client = new Client(['auth' => [$api_secret,'']]);
+            $client = new Client(['auth' => [$api_secret,''],'verify' => false]);
             $query = 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=' . $this->translation;
             $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
             $dum['reading']=$reading;
