@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateSocietyRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSocietyRequest;
@@ -27,6 +28,25 @@ class SocietiesController extends Controller
     public function index($circuit)
     {
         return json_decode($this->society->allforcircuit($circuit));
+    }
+
+    public function thisweek($circuit)
+    {
+        $yy=date("Y", strtotime('sunday'));
+        $mm=date("n", strtotime('sunday'));
+        $dd=date("j", strtotime('sunday'));
+        $societies = Society::with('services')->where('circuit_id', $circuit)->get();
+        foreach ($societies as $society) {
+            foreach ($society->services as $service) {
+                $plan = Plan::with('preacher')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
+                if ($plan) {
+                    $service->preacher=$plan->preacher;
+                } else {
+                    $service->preacher="";
+                }
+            }
+        }
+        return $societies;
     }
 
     public function edit($circuit, Society $society)

@@ -12,4 +12,9 @@ class Plan extends Model
     {
         return $this->hasOne('Bishopm\Churchnet\Models\Label');
     }
+
+    public function preacher()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Preacher');
+    }
 }
