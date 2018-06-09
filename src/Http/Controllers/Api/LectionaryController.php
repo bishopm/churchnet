@@ -106,12 +106,17 @@ class LectionaryController extends Controller
             $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
             $client = new Client(['auth' => [$api_secret,''],'verify' => false]);
             $query = 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=' . $this->translation;
-            $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
-            $dum['reading']=$reading;
-            $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
-            $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
-            $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
-            $dum['source']="API";
+            try {
+                $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
+                $dum['reading']=$reading;
+                $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
+                $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
+                $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
+                $dum['source']="API";
+            } catch (GuzzleException $e) {
+                $dum['text'] = "Sorry - we're not able to access bibles.org at the moment, please try again later";
+                return $dum;
+            }
             return $dum;
         }
     }

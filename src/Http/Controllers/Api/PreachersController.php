@@ -6,6 +6,7 @@ use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Preacher;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreatePreacherRequest;
 use Bishopm\Churchnet\Http\Requests\UpdatePreacherRequest;
 
@@ -31,6 +32,11 @@ class PreachersController extends Controller
     public function index($circuit)
     {
         return json_decode($this->preacher->allforcircuit($circuit));
+    }
+
+    public function phone($circuit, Request $request)
+    {
+        return Preacher::where('phone', $request->phone)->where('circuit_id', $circuit)->first();
     }
 
     public function edit($circuit, Preacher $preacher)
