@@ -22,4 +22,9 @@ class Preacher extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
     }
+
+    public function plans()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Plan');
+    }
 }

@@ -17,4 +17,14 @@ class Plan extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Preacher');
     }
+
+    public function society()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Society');
+    }
+
+    public function service()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Service');
+    }
 }

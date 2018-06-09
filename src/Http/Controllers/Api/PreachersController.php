@@ -5,6 +5,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Preacher;
+use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreatePreacherRequest;
@@ -36,7 +37,20 @@ class PreachersController extends Controller
 
     public function phone($circuit, Request $request)
     {
-        return Preacher::where('phone', $request->phone)->where('circuit_id', $circuit)->first();
+        $preacher = Preacher::with('society')->where('phone', $request->phone)->where('circuit_id', $circuit)->first();
+        $yy=date('Y');
+        $mm=date('n');
+        $dd=date('j');
+        $plans = Plan::with('society', 'service')->where('preacher_id', $preacher->id)->where('planyear', '>=', $yy)->where('planmonth', '>=', $mm)->where('planday', '>=', $dd)->orderBy('planyear', 'planmonth', 'planday')->get()->take(12);
+        foreach ($plans as $plan) {
+            $dum['id'] = $plan->id;
+            $dum['society'] = $plan->society->society;
+            $dum['servicetime'] = $plan->service->servicetime;
+            $dum['servicedate'] = date('Y-m-d', strtotime($plan->planmonth . "/" . $plan->planday . "/" . $plan->planyear));
+            $data[]=$dum;
+        }
+        $preacher->upcoming=$data;
+        return $preacher;
     }
 
     public function edit($circuit, Preacher $preacher)
