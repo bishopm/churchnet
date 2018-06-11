@@ -72,7 +72,15 @@ class SocietiesController extends Controller
         $soc->circuit_id=$circuit;
         $soc->slug = $soc->id;
         $soc->save();
-        return "New society added";
+        return $soc;
+    }
+
+    public function appstore(CreateSocietyRequest $request)
+    {
+        $soc=$this->society->create($request->all());
+        $soc->slug = $soc->id;
+        $soc->save();
+        return $soc;
     }
     
     public function update($circuit, Society $society, UpdateSocietyRequest $request)

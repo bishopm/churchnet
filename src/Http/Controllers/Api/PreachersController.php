@@ -47,7 +47,7 @@ class PreachersController extends Controller
             $dum['society'] = $plan->society->society;
             $dum['servicetime'] = $plan->service->servicetime;
             $dum['servicedate'] = date('Y-m-d', strtotime($plan->planmonth . "/" . $plan->planday . "/" . $plan->planyear));
-            $data[]=$dum;
+            $data[$dum['servicedate']][]=$dum;
         }
         $preacher->upcoming=$data;
         return $preacher;
