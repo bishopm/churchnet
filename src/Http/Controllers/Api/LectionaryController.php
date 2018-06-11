@@ -68,19 +68,27 @@ class LectionaryController extends Controller
         $readingset=explode(' or ', $reading);
         foreach ($readingset as $thisreading) {
             $readings=array();
-            if ((strpos($thisreading, ',')>1) or (strpos($thisreading, '[')>1)) {
+            if ((strpos($thisreading, ',')>0) or (strpos($thisreading, '[')!==false)) {
                 $base = explode(':', $thisreading)[0] . ":";
                 $book=substr($base, 0, strrpos($base, ' '));
                 $chapter=substr($base, 1+strrpos($base, ' '), -1);
                 $remainder = substr($thisreading, 1+strpos($thisreading, ':'));
-                $sections = array_filter(preg_split('/[,[]+/', $remainder));
+                //$sections = array_filter(preg_split('/[,[]+/', $remainder));
+                $sections = explode(',', $remainder);
+                $optional='';
                 foreach ($sections as $section) {
+                    if (substr($section, 0, 1)=="[") {
+                        $optional='*';
+                    }
                     if (strpos($section, ':')!==false) {
                         $chapter = substr($section, 0, strpos($section, ':'));
                         $section = substr($section, 1+strpos($section, ':'));
                     }
-                    $dum = $book . " " . $chapter . ":" . $section;
-                    $readings[]=$this->fetchReading($base . $section);
+                    $readings[]=$this->fetchReading($optional . $base . $section);
+                    $readings[]=$optional . $base . $section;
+                    if (substr($section, -1)=="]") {
+                        $optional='';
+                    }
                 }
             } else {
                 $readings[]=$this->fetchReading($thisreading);
@@ -92,9 +100,10 @@ class LectionaryController extends Controller
 
     private function fetchReading($reading)
     {
-        $reading=trim($reading);
-        if (substr($reading, -1)=="]") {
-            $reading=substr($reading, 0, strlen($reading)-1);
+        $reading=str_replace('[', '', $reading);
+        $reading=str_replace(']', '', $reading);
+        if (strpos($reading, '*')!==false) {
+            $reading=str_replace('*', '', $reading);
             $dum['type']="optional";
         } else {
             $dum['type']="required";
