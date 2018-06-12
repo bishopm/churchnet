@@ -8,6 +8,6 @@ class PreachersRepository extends EloquentBaseRepository
     public function allforcircuit($circuitnumber)
     {
         $circuit=Circuit::find($circuitnumber);
-        return $this->model->with('circuit', 'society')->where('circuit_id', '=', $circuit->id)->orderBy('surname')->get();
+        return $this->model->with('circuit', 'society', 'person')->where('persons.circuit_id', '=', $circuit->id)->orderBy('surname')->get();
     }
 }

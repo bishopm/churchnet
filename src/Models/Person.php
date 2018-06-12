@@ -6,21 +6,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Preacher extends Model
+class Person extends Model
 {
     use SoftDeletes;
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');
+    protected $table = "persons";
 
-    public function society()
+    public function preacher()
     {
-        return $this->belongsTo('Bishopm\Churchnet\Models\Society');
-    }
-
-    public function person()
-    {
-        return $this->belongsTo('Bishopm\Churchnet\Models\Person');
+        return $this->hasOne('Bishopm\Churchnet\Models\Preacher');
     }
     
     public function circuit()
@@ -28,8 +24,8 @@ class Preacher extends Model
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
     }
 
-    public function plans()
+    public function positions()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Plan');
+        return $this->belongsToMany('Bishopm\Churchnet\Models\Position');
     }
 }

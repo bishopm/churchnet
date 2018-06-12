@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePreachersTable extends Migration
+class CreatePersonsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,13 +12,15 @@ class CreatePreachersTable extends Migration
      */
     public function up()
     {
-        Schema::create('preachers', function (Blueprint $table) {
+        Schema::create('persons', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->integer('person_id');
-            $table->text('fullplan')->nullable();
-            $table->string('deletion_type');
-            $table->string('deletion_notes');
+            $table->string('firstname');
+            $table->string('surname');
+            $table->string('title');
+            $table->string('phone')->nullable();
+            $table->string('slug');
+            $table->integer('society_id')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -31,6 +33,6 @@ class CreatePreachersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('preachers');
+        Schema::drop('persons');
     }
 }
