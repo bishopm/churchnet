@@ -20,7 +20,9 @@ class CreatePersonsTable extends Migration
             $table->string('title');
             $table->string('phone')->nullable();
             $table->string('slug');
+            $table->integer('individual_id')->nullable();
             $table->integer('society_id')->default(0);
+            $table->integer('circuit_id');
             $table->softDeletes();
             $table->timestamps();
         });
