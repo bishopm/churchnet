@@ -7,6 +7,11 @@ class PersonsRepository extends EloquentBaseRepository
 {
     public function find($id)
     {
-        return $this->model->with('positions')->find($id);
+        return $this->model->with('preacher', 'positions')->find($id);
+    }
+
+    public function preachers()
+    {
+        return $this->model->with('preacher', 'positions')->get();
     }
 }

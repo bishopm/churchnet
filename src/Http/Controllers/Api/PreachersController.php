@@ -77,7 +77,7 @@ class PreachersController extends Controller
 
     public function show($circuit, $preacher)
     {
-        return $this->person->findPreacher($circuit, $preacher);
+        return $this->person->find($preacher);
     }
 
     public function store(CreatePreacherRequest $request)
