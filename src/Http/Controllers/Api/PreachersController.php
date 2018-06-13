@@ -42,6 +42,7 @@ class PreachersController extends Controller
         $mm=date('n');
         $dd=date('j');
         $plans = Plan::with('society', 'service')->where('preacher_id', $preacher->id)->where('planyear', '>=', $yy)->where('planmonth', '>=', $mm)->where('planday', '>=', $dd)->orderBy('planyear', 'planmonth', 'planday')->get()->take(12);
+        $data=array();
         foreach ($plans as $plan) {
             $dum['id'] = $plan->id;
             $dum['society'] = $plan->society->society;
