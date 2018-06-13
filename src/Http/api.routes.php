@@ -43,6 +43,13 @@ Route::middleware(['handlecors','bindings'])->group(function () {
         Route::get('/api/methodist/circuits/{circuit}/plans/{year}/{quarter}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@show','as'=>'api.plans.show']);
         Route::get('/api/methodist/circuits/{circuit}/planupdate/{box}/{val}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@update','as'=>'api.plans.update']);
 
+        // Persons
+        Route::get('/api/methodist/circuits/{circuit}/persons', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PersonsController@index','as'=>'api.persons.index']);
+        Route::get('/api/methodist/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PersonsController@show','as'=>'api.persons.show']);
+        Route::post('api/methodist/circuits/{circuit}/persons', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PersonsController@store','as'=>'api.persons.store']);
+        Route::put('/api/methodist/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PersonsController@update','as'=>'api.persons.update']);
+        Route::delete('api/methodist/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PersonsController@destroy','as'=>'api.persons.destroy']);
+
         // Preachers
         Route::get('/api/methodist/circuits/{circuit}/preachers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@index','as'=>'api.preachers.index']);
         Route::get('/api/methodist/circuits/{circuit}/preachers/{preacher}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@show','as'=>'api.preachers.show']);

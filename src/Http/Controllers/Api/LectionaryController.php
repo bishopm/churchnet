@@ -64,7 +64,7 @@ class LectionaryController extends Controller
     public function reading($reading, $translation)
     {
         $this->translation = $translation;
-        $reading = urldecode($reading);
+        $reading = trim(urldecode($reading));
         $readingset=explode(' or ', $reading);
         foreach ($readingset as $thisreading) {
             $readings=array();
@@ -73,7 +73,6 @@ class LectionaryController extends Controller
                 $book=substr($base, 0, strrpos($base, ' '));
                 $chapter=substr($base, 1+strrpos($base, ' '), -1);
                 $remainder = substr($thisreading, 1+strpos($thisreading, ':'));
-                //$sections = array_filter(preg_split('/[,[]+/', $remainder));
                 $sections = explode(',', $remainder);
                 $optional='';
                 foreach ($sections as $section) {
@@ -81,11 +80,19 @@ class LectionaryController extends Controller
                         $optional='*';
                     }
                     if (strpos($section, ':')!==false) {
-                        $chapter = substr($section, 0, strpos($section, ':'));
-                        $section = substr($section, 1+strpos($section, ':'));
+                        // ie there is a change of chapter in this section
+                        if (strpos($section, ':') < strpos($section, '-')) {
+                            $chapter = substr($section, 0, strpos($section, ':'));
+                            $section = substr($section, 1+strpos($section, ':'));
+                            $readings[]=$this->fetchReading($optional . $base . $section);
+                        } else {
+                            $readings[]=$this->fetchReading($optional . $base . $section);
+                            $chapter = substr($section, 1+strpos($section, '-'), strpos($section, ':')-1-strpos($section, '-'));
+                        }
+                    } else {
+                        $readings[]=$this->fetchReading($optional . $base . $section);
                     }
-                    $readings[]=$this->fetchReading($optional . $base . $section);
-                    $readings[]=$optional . $base . $section;
+                    //$readings[]=$optional . $base . $section;
                     if (substr($section, -1)=="]") {
                         $optional='';
                     }

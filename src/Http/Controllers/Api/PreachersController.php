@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
+use Bishopm\Churchnet\Repositories\PersonsRepository;
 use Bishopm\Churchnet\Models\Preacher;
 use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
@@ -21,18 +22,20 @@ class PreachersController extends Controller
      */
 
     private $preacher;
+    private $person;
     private $individuals;
     private $societies;
 
-    public function __construct(PreachersRepository $preacher, SocietiesRepository $societies)
+    public function __construct(PreachersRepository $preacher, SocietiesRepository $societies, PersonsRepository $person)
     {
+        $this->person = $person;
         $this->preacher = $preacher;
         $this->societies = $societies;
     }
 
     public function index($circuit)
     {
-        return json_decode($this->preacher->allforcircuit($circuit));
+        return json_decode($this->person->preachers($circuit));
     }
 
     public function phone($circuit, Request $request)
@@ -74,7 +77,7 @@ class PreachersController extends Controller
 
     public function show($circuit, $preacher)
     {
-        return $this->preacher->findforcircuit($circuit, $preacher);
+        return $this->person->findPreacher($circuit, $preacher);
     }
 
     public function store(CreatePreacherRequest $request)
