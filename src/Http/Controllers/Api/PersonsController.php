@@ -85,15 +85,16 @@ class PersonsController extends Controller
 
     public function store(CreatePersonRequest $request)
     {
-        $this->person->create($request->except('image', 'token'));
-
-        return "New person added";
+        $person = $this->person->create($request->except('image', 'token', 'positions'));
+        $person->positions()->sync($request->positions);
+        return $person;
     }
     
     public function update($circuit, Person $person, UpdatePersonRequest $request)
     {
-        $this->person->update($person, $request->except('token'));
-        return "Person has been updated";
+        $this->person->update($person, $request->except('token', 'positions'));
+        $person->positions()->sync($request->positions);
+        return $person;
     }
 
     public function destroy($circuit, Person $person)

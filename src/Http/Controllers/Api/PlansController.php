@@ -163,11 +163,11 @@ class PlansController extends Controller
         $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
         deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Local preacher' or positions.position='On trial preacher' or positions.position='Emeritus preacher') ORDER BY persons.surname,persons.firstname");
         $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
-        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Minister' or positions.position='Superintendent') ORDER BY persons.surname,persons.firstname");
+        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Circuit minister' or positions.position='Superintendent minister') ORDER BY persons.surname,persons.firstname");
         $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
         deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Supernumerary minister' ORDER BY persons.surname,persons.firstname");
         $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
-        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Guest' ORDER BY persons.surname,persons.firstname");
+        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Guest preacher' ORDER BY persons.surname,persons.firstname");
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
             $dum['dt']=$lastSunday;

@@ -38,6 +38,22 @@ class PositionsController extends Controller
         return $this->person->find($position);
     }
 
+    public function identify($circuit, $position)
+    {
+        $position = Position::with('persons')->where('position', urldecode($position))->first();
+        $persons=array();
+        if (count($position->persons)) {
+            foreach ($position->persons as $person) {
+                if ($person->circuit_id==$circuit) {
+                    $persons[]=$person->title . " " . $person->firstname . " " . $person->surname . " (" . $person->phone . ")";
+                }
+            }
+        } else {
+            $persons[]="";
+        }
+        return $persons;
+    }
+
     public function store(CreatePositionRequest $request)
     {
         $this->position->create($request->except('image', 'token'));

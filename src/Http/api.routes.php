@@ -52,6 +52,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
 
         // Positions
         Route::get('/api/methodist/circuits/{circuit}/positions', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PositionsController@index','as'=>'api.positions.index']);
+        Route::get('/api/methodist/circuits/{circuit}/positions/identify/{position}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PositionsController@identify','as'=>'api.positions.identify']);
         Route::get('/api/methodist/circuits/{circuit}/positions/{position}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PositionsController@show','as'=>'api.positions.show']);
         Route::post('api/methodist/circuits/{circuit}/positions', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PositionsController@store','as'=>'api.positions.store']);
         Route::put('/api/methodist/circuits/{circuit}/positions/{position}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PositionsController@update','as'=>'api.positions.update']);
