@@ -5,12 +5,13 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Repositories\PersonsRepository;
+use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Preacher;
 use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Bishopm\Churchnet\Http\Requests\CreatePreacherRequest;
-use Bishopm\Churchnet\Http\Requests\UpdatePreacherRequest;
+use Bishopm\Churchnet\Http\Requests\CreatePersonRequest;
+use Bishopm\Churchnet\Http\Requests\UpdatePersonRequest;
 
 class PreachersController extends Controller
 {
@@ -80,18 +81,22 @@ class PreachersController extends Controller
         return $this->person->find($preacher);
     }
 
-    public function store(CreatePreacherRequest $request)
+    public function store(CreatePersonRequest $request)
     {
-        $this->preacher->create($request->except('image', 'token'));
+        $person = $this->person->create($request->except('image', 'token', 'positions', 'fullplan', 'deletion_type', 'deletion_notes'));
+        $preacher = $this->preacher->create(['person_id'=>$person->id,'fullplan'=>$request->fullplan]);
+        $person->positions()->sync($request->positions);
+        return $person;
+    }
 
-        return "New preacher added";
-    }
-    
-    public function update($circuit, Preacher $preacher, UpdatePreacherRequest $request)
+    public function update($circuit, Preacher $preacher, UpdatePersonRequest $request)
     {
-        $this->preacher->update($preacher, $request->except('token'));
-        return "Preacher has been updated";
+        $person = $preacher->person;
+        $this->person->update($person, $request->except('fullplan', 'positions', 'token', 'image', 'deletion_type', 'deletion_notes'));
+        $person->positions()->sync($request->positions);
+        $this->preacher->update($preacher, ['fullplan'=>$request->fullplan]);
     }
+
 
     public function destroy($circuit, Preacher $preacher)
     {

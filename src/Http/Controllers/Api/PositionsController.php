@@ -45,7 +45,7 @@ class PositionsController extends Controller
         if (count($position->persons)) {
             foreach ($position->persons as $person) {
                 if ($person->circuit_id==$circuit) {
-                    $persons[]=$person->title . " " . $person->firstname . " " . $person->surname . " (" . $person->phone . ")";
+                    $persons[]=$person->title . " " . substr($person->firstname, 0, 1) . " " . $person->surname . " (" . $person->phone . ")";
                 }
             }
         } else {
