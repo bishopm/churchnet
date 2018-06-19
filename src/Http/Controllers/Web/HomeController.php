@@ -9,6 +9,7 @@ use Bishopm\Churchnet\Models\Resource;
 use Bishopm\Churchnet\Models\Page;
 use Cartalyst\Tags\IlluminateTag;
 use LithiumDev\TagCloud\TagCloud;
+use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -49,6 +50,15 @@ class HomeController extends Controller
         $data['recentresources'] = $this->resource->recents(5);
         $data['recentpages'] = $this->page->recents(5);
         return view('churchnet::home', $data);
+    }
+
+    public function search(Request $request)
+    {
+        $data['resources'] = Resource::where('title', 'like', '%' . $request->search . '%')->orWhere('description', 'like', '%' . $request->search . '%')->orderBy('title')->get();
+        $data['pages'] = Page::where('title', 'like', '%' . $request->search . '%')->orWhere('body', 'like', '%' . $request->search . '%')->orderBy('title')->get();
+        $data['tags'] = IlluminateTag::where('name', 'like', '%' . $request->search . '%')->get();
+        $data['search'] = $request->search;
+        return view('churchnet::search', $data);
     }
 
     public function tag($tag)

@@ -14,6 +14,9 @@
       .dropdown-toggle::after {
         display: none;
       }
+      #sidenavToggler {
+        background-color: white;
+      }
     </style>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -63,11 +66,12 @@
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
-        <form class="form-inline my-2 my-lg-0 mr-lg-2">
+        <form method="POST" action="{{route('search')}}" class="form-inline my-2 my-lg-0 mr-lg-2">
+          @csrf
           <div class="input-group">
-            <input class="form-control" type="text" placeholder="Search for...">
+            <input class="form-control" name="search" type="text" placeholder="Search for resources...">
             <span class="input-group-append">
-              <button class="btn btn-primary" type="button">
+              <button class="btn btn-primary" type="button submit">
                 <i class="fa fa-search"></i>
               </button>
             </span>
@@ -77,7 +81,7 @@
           <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
+              <a class="dropdown-item" href="}" {{url('/')}}/admin/circuits">Circuits</a>
               <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
               <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
               <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>

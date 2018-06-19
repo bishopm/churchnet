@@ -10,6 +10,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('password/reset/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ResetPasswordController@showResetForm','as'=>'showResetForm']);
     Route::post('logout', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@logout','as'=>'logout']);
     Route::get('plan/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@plan','as'=>'plan']);
+    Route::post('search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@search','as'=>'search']);
 
     Route::middleware(['auth'])->group(function () {
         // Settings
