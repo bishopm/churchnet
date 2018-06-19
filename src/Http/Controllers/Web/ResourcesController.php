@@ -6,6 +6,7 @@ use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Models\Resource;
 use Bishopm\Churchnet\Http\Requests\CreateResourceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateResourceRequest;
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 class ResourcesController extends Controller
@@ -61,6 +62,7 @@ class ResourcesController extends Controller
     public function show($id)
     {
         $data['resource'] = $this->resource->find($id);
+        $data['comments'] = $data['resource']->comments();
         return view('churchnet::resources.show', $data);
     }
 
@@ -70,6 +72,20 @@ class ResourcesController extends Controller
         $resource->tag($request->tags);
         return redirect()->route('admin.resources.index')
             ->withSuccess('New resource added');
+    }
+
+    public function addcomment(Resource $resource, Request $request)
+    {
+        dd($request);
+        $user=$this->user->find($request->user);
+        $user->comment($request, $request->newcomment);
+    }
+
+    public function deletecomment(Request $request)
+    {
+        $comment=Comment::find($request->id);
+        $comment->delete();
+        return $request->id;
     }
     
     public function update(Resource $resource, UpdateResourceRequest $request)

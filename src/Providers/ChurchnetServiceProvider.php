@@ -43,6 +43,12 @@ class ChurchnetServiceProvider extends ServiceProvider
         config(['jwt.refresh_ttl' => 525600]);
         config(['auth.providers.users.model'=>'Bishopm\Churchnet\Models\User']);
         config(['jwt.user' => 'Bishopm\Churchnet\Models\User']);
+        config(['services.facebook.client_id' => env('FB_CLIENT_ID')]);
+        config(['services.facebook.client_secret' => env('FB_CLIENT_SECRET')]);
+        config(['services.facebook.redirect' => env('FB_REDIRECT')]);
+        config(['services.google.client_id' => env('G+_CLIENT_ID')]);
+        config(['services.google.client_secret' => env('G+_CLIENT_SECRET')]);
+        config(['services.google.redirect' => env('G+_REDIRECT')]);
     }
 
     /**
@@ -57,6 +63,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         AliasLoader::getInstance()->alias("JWTAuth", 'Tymon\JWTAuth\Facades\JWTAuth');
         AliasLoader::getInstance()->alias("Form", 'Collective\Html\FormFacade');
         AliasLoader::getInstance()->alias("HTML", 'Collective\Html\HtmlFacade');
+        AliasLoader::getInstance()->alias("Socialite", 'Laravel\Socialite\Facades\Socialite');
         $this->app['router']->aliasMiddleware('handlecors', 'Barryvdh\Cors\HandleCors');
         $this->app['router']->aliasMiddleware('jwt.auth', 'Tymon\JWTAuth\Middleware\GetUserFromToken');
         $this->registerBindings();

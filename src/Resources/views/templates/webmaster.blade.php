@@ -31,26 +31,20 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarResponsive">
       <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
+        @if (Auth::user())
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add new content">
           <a class="nav-link" href="{{url('/')}}/admin/resources/create">
             <i class="fa fa-fw fa-plus"></i>
             <span class="nav-link-text">Add new content</span>
           </a>
         </li>
+        @endif
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Methodist churches in SA">
           <a class="nav-link" href="methodist/districts">
             <i class="fa fa-fw fa-church"></i>
             <span class="nav-link-text">Methodist churches</span>
           </a>
         </li>
-        @auth
-          <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Add new page">
-            <a class="nav-link" href="{{url('/')}}/admin/pages/create">
-              <i class="fa fa-fw fa-file-o"></i>
-              <span class="nav-link-text">Add new page</span>
-            </a>
-          </li>
-        @endauth
       </ul>
       <ul class="navbar-nav sidenav-toggler">
         <li class="nav-item">
@@ -71,22 +65,32 @@
             </span>
           </div>
         </form>
-        @if(Auth::check())
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
-            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href="}" {{url('/')}}/admin/circuits">Circuits</a>
-              <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
-              <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
-              <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-              <form id="logout-form" action="{{url('/')}}/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="{{csrf_token()}}"></form>
-            </div>
-          </li>
+        @if(Auth::user())
+          @if(Auth::user()->isadmin)
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
+                <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
+                <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
+                <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                <form id="logout-form" action="{{url('/')}}/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="{{csrf_token()}}"></form>
+              </div>
+            </li>
+          @else
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{Auth::user()->name}}</a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
+                <form id="logout-form" action="{{url('/')}}/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="{{csrf_token()}}"></form>
+              </div>
+            </li>
+          @endif
         @else
           <li class="nav-item">
-            <a class="nav-link" href="{{url('/')}}/login" title="User login"><i class="fa fa-sign-in"></i> Login / Register</a>
+            <a class="nav-link" href="{{url('/')}}/login" title="User login"><i class="fa fa-sign-in"></i> Login</a>
           </li>
         @endif
       </ul>

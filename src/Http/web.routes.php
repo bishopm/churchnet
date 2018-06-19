@@ -11,8 +11,23 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('logout', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@logout','as'=>'logout']);
     Route::get('plan/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@plan','as'=>'plan']);
     Route::post('search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@search','as'=>'search']);
+    Route::get('/redirect/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@redirect');
+    Route::get('/callback/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@callback');
 
-    Route::middleware(['auth'])->group(function () {
+    Route::middleware(['auth','handlecors'])->group(function () {
+        // Resources
+        Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
+        Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
+        Route::post('admin/resources/{resource}/addcomment', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addcomment','as' => 'admin.resources.addcomment']);
+        Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
+        Route::get('admin/resources/{resource}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@edit','as'=>'admin.resources.edit']);
+        Route::get('admin/resources/addtag/{resource}/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addtag','as' => 'admin.resources.addtag']);
+        Route::get('admin/resources/removetag/{resource}/{tag}', ['uses' => 'ishopm\Churchnet\Http\Controllers\Web\ResourcesController@removetag','as' => 'admin.resources.removetag']);
+        Route::put('admin/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@update','as'=>'admin.resources.update']);
+        Route::post('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@store','as'=>'admin.resources.store']);
+        Route::delete('admin/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@destroy','as'=>'admin.resources.destroy']);
+        Route::post('/comments', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourecesController@deletecomment','as' => 'deletecomment']);
+    
         // Settings
         Route::get('admin/settings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@index','as'=>'admin.settings.index']);
         Route::get('admin/settings/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@create','as'=>'admin.settings.create']);
@@ -21,9 +36,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('admin/settings/{setting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@update','as'=>'admin.settings.update']);
         Route::post('admin/settings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@store','as'=>'admin.settings.store']);
         Route::delete('admin/settings/{setting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@destroy','as'=>'admin.settings.destroy']);
-    });
-
-    Route::middleware(['handlecors'])->group(function () {
 
         // Circuits
         Route::get('admin/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@index','as'=>'admin.circuits.index']);
@@ -62,17 +74,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('admin/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@update','as'=>'admin.readings.update']);
         Route::post('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@store','as'=>'admin.readings.store']);
         Route::delete('admin/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@destroy','as'=>'admin.readings.destroy']);
-
-        // Resources
-        Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
-        Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
-        Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
-        Route::get('admin/resources/{resource}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@edit','as'=>'admin.resources.edit']);
-        Route::get('admin/resources/addtag/{resource}/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addtag','as' => 'admin.resources.addtag']);
-        Route::get('admin/resources/removetag/{resource}/{tag}', ['uses' => 'ishopm\Churchnet\Http\Controllers\Web\ResourcesController@removetag','as' => 'admin.resources.removetag']);
-        Route::put('admin/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@update','as'=>'admin.resources.update']);
-        Route::post('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@store','as'=>'admin.resources.store']);
-        Route::delete('admin/resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@destroy','as'=>'admin.resources.destroy']);
 
         // Societies
         Route::get('methodist/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@index','as'=>'societies.index']);
