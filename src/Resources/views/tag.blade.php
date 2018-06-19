@@ -13,13 +13,13 @@
                     <tr><td><a href="{{route('resources.show',$resource->id)}}">{{$resource->title}}</a></td><td>{{$resource->description}}</td></tr>
                 @empty
                     <tr><td colspan="2">There are no resources with this subject tag</td></tr>
-                @endforlse
+                @endforelse
                 <tr><th colspan="2">Pages</th></tr>
                 @forelse ($pages as $page)
                     <tr><td colspan="2"><a href="{{route('pages.show',$page->id)}}">{{$page->title}}</a></td></tr>
                 @empty
                     <tr><td colspan="2">There are no pages with this subject tag</td></tr>
-                @endforlse
+                @endforelse
             </table>
         </div>
     </div>
