@@ -37,12 +37,6 @@
             <span class="nav-link-text">Add new content</span>
           </a>
         </li>
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Free church management software">
-          <a class="nav-link" target="_blank" href="http://connexion.church.net.za">
-            <i class="fa fa-fw fa-home"></i>
-            <span class="nav-link-text">Connexion software</span>
-          </a>
-        </li>
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Methodist churches in SA">
           <a class="nav-link" href="methodist/districts">
             <i class="fa fa-fw fa-church"></i>

@@ -17,7 +17,7 @@
 </style>
 <div class="container mt-5">
     <div class="row">
-        <div class="jumbotron">
+        <div class="card">
             <h3>Welcome to church.net.za</h3>
             <p>We're collecting useful resources for local church ministry. Have a look around and then feel free to make your own contribution :)</p>
         </div>
@@ -41,7 +41,7 @@
             <div class="mt-2">
                 <h5>Pages</h5>
                 @foreach ($recentpages as $recentp)
-                    <li><a href="{{route('resources.show',$recentp->id)}}">{{$recentp->title}}</a></li>
+                    <li><a href="{{route('pages.show',$recentp->id)}}">{{$recentp->title}}</a></li>
                 @endforeach
             </div>
         </div>
