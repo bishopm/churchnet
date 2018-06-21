@@ -11,7 +11,7 @@
                 {{$circuit->office_contact}} 
             @endif
             @if ($plan)
-                <a href="{{url('/')}}/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
+                <a href="{{url('/')}}/methodist/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
             @endif
             <hr>
         </div>
@@ -39,43 +39,33 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            @if (isset($Minister))
+            @if ((isset($Circuit_minister)) or (isset($Superintendent_minister)))
                 <h3>Ministers</h3>
                 <ul class="list-unstyled">
-                    @foreach ($Minister as $min)
+                    @if (isset($Superintendent_minister))
+                        <li>{{$Superintendent_minister[0]->title}} {{$Superintendent_minister[0]->firstname}} {{$Superintendent_minister[0]->surname}} [Supt]</li>
+                    @endif
+                    @foreach ($Circuit_minister as $min)
                         <li>{{$min->title}} {{$min->firstname}} {{$min->surname}}</li>
                     @endforeach
                 </ul>
             @endif
-            @if (isset($Supernumerary))
+            @if (isset($Supernumerary_minister))
                 <h3>Supernumerary Ministers</h3>
                 <ul class="list-unstyled">
-                    @foreach ($Supernumerary as $sup)
+                    @foreach ($Supernumerary_minister as $sup)
                         <li>{{$sup->title}} {{$sup->firstname}} {{$sup->surname}}</li>
                     @endforeach
                 </ul>
             @endif
-            <ul class="list-unstyled">
-                @if ((isset($settings['superintendent'])) and ($settings['superintendent']<>""))
-                    <li><i>Superintendent Minister:</i> {{$settings['superintendent']}}</li>
-                @endif
-                @if ((isset($settings['circuit_stewards'])) and ($settings['circuit_stewards']<>""))
-                    <li><i>Circuit Stewards:</i>
-                     @foreach(explode(',',$settings['circuit_stewards']) as $cs)
-                        <li>- {{$cs}}</li>
-                     @endforeach
-                    </li>
-                @endif
-                @if ((isset($settings['circuit_secretary'])) and ($settings['circuit_secretary']<>""))
-                    <li><i>Circuit Secretary:</i> {{$settings['circuit_secretary']}}</li>
-                @endif
-                @if ((isset($settings['circuit_treasurer'])) and ($settings['circuit_treasurer']<>""))
-                    <li><i>Circuit Treasurer:</i> {{$settings['circuit_treasurer']}}</li>
-                @endif
-                @if ((isset($settings['local_preachers_secretary'])) and ($settings['local_preachers_secretary']<>""))
-                    <li><i>Local Preachers Secretary:</i> {{$settings['local_preachers_secretary']}}</li>
-                @endif
-            </ul>
+            @if (isset($Circuit_steward))
+                <h3>Circuit stewards</h3>
+                <ul class="list-unstyled">
+                    @foreach ($Circuit_steward as $stw)
+                        <li>{{$stw->title}} {{$stw->firstname}} {{$stw->surname}}</li>
+                    @endforeach
+                </ul>
+            @endif
         </div>
         <div class="col-xs-12 col-sm-6">
             @if (isset($preachers))
