@@ -46,7 +46,8 @@ class CircuitsController extends Controller
     public function edit(Circuit $circuit)
     {
         $districts=$this->districts->all();
-        return view('churchnet::circuits.edit', compact('circuit', 'districts'));
+        $leaders = $circuit->persons;
+        return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders'));
     }
 
     public function create()

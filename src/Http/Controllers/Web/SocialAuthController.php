@@ -5,13 +5,20 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 use App\Http\Controllers\Controller;
 use Socialite;
 use Auth;
+use App;
 use Bishopm\Churchnet\Models\User;
 
 class SocialAuthController extends Controller
 {
     public function redirect($service)
     {
-        return Socialite::driver($service)->redirect();
+        if (App::environment('local')) {
+            $user=User::find(3);
+            Auth::login($user);
+            return redirect()->route('home');
+        } else {
+            return Socialite::driver($service)->redirect();
+        }
     }
 
     public function callback($service)
