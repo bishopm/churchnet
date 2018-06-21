@@ -194,11 +194,11 @@ class PlansController extends Controller
         } else {
             $data['sundays']=$sundays;
         }
-        $pm1=$this->plans->sqlQuery("SELECT plans.*, persons.firstname, persons.surname, positions.position from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id,persons,person_position,positions WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id=persons.id and person_position.person_id=persons.id and person_position.position_id=positions.id");
+        $pm1=$this->plans->sqlQuery("SELECT plans.*, persons.firstname, persons.surname, positions.position from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id,persons,person_position,positions WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id=persons.id and person_position.person_id=persons.id and person_position.position_id=positions.id and selectgroup=1");
         foreach ($pm1 as $p1) {
             $soc=$this->societies->find($p1->society_id)->society;
             $ser=$this->services->find($p1->service_id)->servicetime;
-            if ($p1->position=="Minister") {
+            if ($p1->position=="Circuit minister") {
                 $p1typ="M_";
             } elseif ($p1->position=="Guest") {
                 $p1typ="G_";
@@ -224,7 +224,7 @@ class PlansController extends Controller
         foreach ($pm2 as $p2) {
             $soc=$this->societies->find($p2->society_id)->society;
             $ser=$this->services->find($p2->service_id)->servicetime;
-            if ($p2->position=="Minister") {
+            if ($p2->position=="Circuit minister") {
                 $p2typ="M_";
             } elseif ($p2->position=="Guest") {
                 $p2typ="G_";
@@ -250,7 +250,7 @@ class PlansController extends Controller
         foreach ($pm3 as $p3) {
             $soc=$this->societies->find($p3->society_id)->society;
             $ser=$this->services->find($p3->service_id)->servicetime;
-            if ($p3->position=="Minister") {
+            if ($p3->position=="Circuit minister") {
                 $p3typ="M_";
             } elseif ($p3->position=="Guest") {
                 $p3typ="G_";

@@ -140,13 +140,13 @@ class PlansController extends Controller
         } else {
             $data['sundays']=$sundays;
         }
-        $pm1=$this->plans->sqlQuery("SELECT plans.*,preachers.firstname,preachers.surname,preachers.status from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "'");
+        $pm1=$this->plans->sqlQuery("SELECT plans.*,preachers.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm1 as $p1) {
             $soc=$this->societies->find($p1->society_id)->society;
             $ser=$this->services->find($p1->service_id)->servicetime;
-            if ($p1->status=="Minister") {
+            if ($p1->position=="Circuit minister") {
                 $p1typ="M_";
-            } elseif ($p1->status=="Guest") {
+            } elseif ($p1->position=="Guest") {
                 $p1typ="G_";
             } else {
                 $p1typ="P_";
@@ -166,13 +166,13 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['trial']=$p1->trialservice;
             }
         }
-        $pm2=$this->plans->sqlQuery("SELECT plans.*,preachers.firstname,preachers.surname,preachers.status from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "'");
+        $pm2=$this->plans->sqlQuery("SELECT plans.*,preachers.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm2 as $p2) {
             $soc=$this->societies->find($p2->society_id)->society;
             $ser=$this->services->find($p2->service_id)->servicetime;
-            if ($p2->status=="Minister") {
+            if ($p2->position=="Circuit minister") {
                 $p2typ="M_";
-            } elseif ($p2->status=="Guest") {
+            } elseif ($p2->position=="Guest") {
                 $p2typ="G_";
             } else {
                 $p2typ="P_";
@@ -192,13 +192,13 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['trial']=$p2->trialservice;
             }
         }
-        $pm3=$this->plans->sqlQuery("SELECT plans.*,preachers.firstname,preachers.surname,preachers.status from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "'");
+        $pm3=$this->plans->sqlQuery("SELECT plans.*,preachers.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm3 as $p3) {
             $soc=$this->societies->find($p3->society_id)->society;
             $ser=$this->services->find($p3->service_id)->servicetime;
-            if ($p3->status=="Minister") {
+            if ($p3->position=="Circuit minister") {
                 $p3typ="M_";
-            } elseif ($p3->status=="Guest") {
+            } elseif ($p3->position=="Guest") {
                 $p3typ="G_";
             } else {
                 $p3typ="P_";
