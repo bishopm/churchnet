@@ -110,10 +110,14 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
-        $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers where deleted_at IS NULL and status='Local preacher' or status='On trial preacher' or status='Emeritus preacher' ORDER BY surname,firstname");
-        $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers where deleted_at IS NULL and status='Minister' or status='Superintendent' ORDER BY surname,firstname");
-        $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers where deleted_at IS NULL and status='Supernumerary' ORDER BY surname,firstname");
-        $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers where deleted_at IS NULL and status='Guest' ORDER BY surname,firstname");
+        $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Local preacher' or positions.position='On trial preacher' or positions.position='Emeritus preacher') ORDER BY persons.surname,persons.firstname");
+        $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Circuit minister' or positions.position='Superintendent minister') ORDER BY persons.surname,persons.firstname");
+        $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Supernumerary minister' ORDER BY persons.surname,persons.firstname");
+        $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Guest preacher' ORDER BY persons.surname,persons.firstname");
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
             $dum['dt']=$lastSunday;
@@ -364,13 +368,13 @@ class PlansController extends Controller
             $dum=array();
             $thissoc=$this->societies->find($preacher1->society_id)->society;
             $dum['name']=$preacher1->title . " " . $preacher1->firstname . " " . $preacher1->surname;
-            if ($preacher1->status=="Emeritus preacher") {
+            if ($preacher1->position=="Emeritus preacher") {
                 $dum['name'] = $dum['name'] . "*";
             }
             $dum['soc']=$preacher1->society_id;
             $dum['cellphone']=$preacher1->phone;
             $dum['fullplan']=$preacher1->fullplan;
-            $dum['status']=$preacher1->status;
+            $dum['status']=$preacher1->position;
             if ($dum['fullplan']=="Trial") {
                 $vdum['9999' . $preacher1->surname . $preacher1->firstname]=$dum;
             } else {

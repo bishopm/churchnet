@@ -24,6 +24,11 @@ class Person extends Model
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
     }
 
+    public function society()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Society');
+    }
+
     public function positions()
     {
         return $this->belongsToMany('Bishopm\Churchnet\Models\Position');

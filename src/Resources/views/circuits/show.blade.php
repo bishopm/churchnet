@@ -20,15 +20,21 @@
         <div class="col-xs-12 col-sm-6">
             <h4>Societies</h4>
             <ul class="list-unstyled">
-            @foreach ($circuit->societies as $society)
+            @forelse ($circuit->societies as $society)
                 <li><a href="{{url('/')}}/methodist/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a></li>
-            @endforeach
+            @empty
+                This circuit has not mapped any societies
+            @endforelse
             </ul>
         </div>
         <div class="col-xs-12 col-sm-6">
-            <div style="width: 100%; height: 400px;">
-                {!! Mapper::render() !!}
-            </div>
+            @if (count($circuit->societies))
+                <div style="width: 100%; height: 400px;">
+                    {!! Mapper::render() !!}
+                </div>
+            @else
+                When societies are added, they will appear on a map here
+            @endif
         </div>
     </div>
     <div class="row">
@@ -74,13 +80,15 @@
         <div class="col-xs-12 col-sm-6">
             @if (isset($preachers))
                 <h3>Local preachers</h3>
-                @foreach ($preachers as $lp)
+                @forelse ($preachers as $lp)
                     @if (!$loop->last)
                         {{$lp}}, 
                     @else
                         {{$lp}}.
                     @endif
-                @endforeach
+                @empty
+                    This circuit has not added any preachers to the system
+                @endforelse
             @endif
         </div>
     </div>

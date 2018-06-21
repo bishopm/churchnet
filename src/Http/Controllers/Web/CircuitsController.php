@@ -57,7 +57,7 @@ class CircuitsController extends Controller
 
     public function show($circuitnum)
     {
-        $data['circuit']=Circuit::with('societies')->where('slug', $circuitnum)->first();
+        $data['circuit']=Circuit::with('societies', 'persons.preacher', 'persons.positions', 'persons.society')->where('slug', $circuitnum)->first();
         $settings=$this->settings->allforcircuit($data['circuit']->id);
         foreach ($settings as $setting) {
             $data['settings'][$setting->setting_key]=$setting->setting_value;
@@ -72,18 +72,21 @@ class CircuitsController extends Controller
             Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
-        $preachers=$this->preachers->allforcircuit($data['circuit']->id);
-        foreach ($preachers as $preacher) {
-            if (($preacher->status=="Local preacher") or ($preacher->status=="Emeritus preacher") or ($preacher->status=="On trial preacher")) {
-                $thisp=$preacher->title . " " . substr($preacher->firstname, 0, 1) . " " . $preacher->surname;
-                if ($preacher->status=="Emeritus preacher") {
-                    $thisp.=' [Emeritus]';
-                } elseif ($preacher->status=="On trial preacher") {
-                    $thisp.=' [Trial]';
+        $data['preachers'] = array();
+        $persons=$data['circuit']->persons;
+        foreach ($persons as $person) {
+            foreach ($person->positions as $position) {
+                if (($position->position=="Local preacher") or ($position->position=="Emeritus preacher") or ($position->position=="On trial preacher")) {
+                    $thisp=$person->title . " " . substr($person->firstname, 0, 1) . " " . $person->surname;
+                    if ($position->position=="Emeritus preacher") {
+                        $thisp.=' [Emeritus]';
+                    } elseif ($position->position=="On trial preacher") {
+                        $thisp.=' [Trial]';
+                    }
+                    $data['preachers'][]=$thisp . " (" . $person->society->society . ")";
+                } else {
+                    $data[str_replace(' ', '_', $position->position)][]=$person;
                 }
-                $data['preachers'][]=$thisp . " (" . $preacher->society->society . ")";
-            } else {
-                $data[str_replace(' ', '_', $preacher->status)][]=$preacher;
             }
         }
         return view('churchnet::circuits.show', $data);

@@ -40,7 +40,7 @@
         </li>
         @endif
         <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Methodist churches in SA">
-          <a class="nav-link" href="methodist/districts">
+          <a class="nav-link" href="{{url('/')}}/methodist/districts">
             <i class="fa fa-fw fa-church"></i>
             <span class="nav-link-text">Methodist churches</span>
           </a>

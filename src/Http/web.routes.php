@@ -14,6 +14,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/redirect/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@redirect');
     Route::get('/callback/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@callback');
 
+    // Public routes
+    Route::get('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@index','as'=>'districts.index']);
+    Route::get('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
+    Route::get('methodist/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
+    Route::get('methodist/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
+
     Route::middleware(['auth','handlecors'])->group(function () {
         // Resources
         Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
@@ -40,16 +46,13 @@ Route::group(['middleware' => ['web']], function () {
         // Circuits
         Route::get('admin/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@index','as'=>'admin.circuits.index']);
         Route::get('admin/circuits/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@create','as'=>'admin.circuits.create']);
-        Route::get('methodist/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
         Route::get('admin/circuits/{circuit}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@edit','as'=>'admin.circuits.edit']);
         Route::put('admin/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@update','as'=>'admin.circuits.update']);
         Route::post('admin/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@store','as'=>'admin.circuits.store']);
         Route::delete('admin/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@destroy','as'=>'admin.circuits.destroy']);
 
         // Districts
-        Route::get('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@index','as'=>'districts.index']);
         Route::get('methodist/districts/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@create','as'=>'districts.create']);
-        Route::get('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
         Route::get('methodist/districts/{district}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@edit','as'=>'districts.edit']);
         Route::put('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@update','as'=>'districts.update']);
         Route::post('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@store','as'=>'districts.store']);
@@ -82,7 +85,6 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('methodist/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@update','as'=>'societies.update']);
         Route::post('methodist/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@store','as'=>'societies.store']);
         Route::delete('methodist/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@destroy','as'=>'societies.destroy']);
-        Route::get('methodist/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
 
         // Tags
         Route::get('tag/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@tag','as'=>'tag']);
