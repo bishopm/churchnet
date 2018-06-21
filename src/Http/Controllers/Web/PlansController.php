@@ -15,6 +15,7 @@ use Bishopm\Churchnet\Repositories\PlansRepository;
 use Bishopm\Churchnet\Repositories\ServicesRepository;
 use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Repositories\LabelsRepository;
+use Bishopm\Churchnet\Repositories\PositionsRepository;
 
 class PlansController extends Controller
 {
@@ -27,6 +28,7 @@ class PlansController extends Controller
     private $services;
     private $circuit;
     private $labels;
+    private $positions;
 
     public function __construct(
         SettingsRepository $settings,
@@ -37,7 +39,8 @@ class PlansController extends Controller
         PlansRepository $plans,
         ServicesRepository $services,
         CircuitsRepository $circuit,
-        LabelsRepository $labels
+        LabelsRepository $labels,
+        PositionsRepository $positions
     ) {
         $this->settings=$settings;
         $this->weekdays=$weekdays;
@@ -48,6 +51,7 @@ class PlansController extends Controller
         $this->services=$services;
         $this->circuit=$circuit;
         $this->labels=$labels;
+        $this->positions=$positions;
     }
 
     public function plan($slug)
@@ -110,13 +114,13 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
-        $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
         deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Local preacher' or positions.position='On trial preacher' or positions.position='Emeritus preacher') ORDER BY persons.surname,persons.firstname");
-        $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
         deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Circuit minister' or positions.position='Superintendent minister') ORDER BY persons.surname,persons.firstname");
-        $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
         deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Supernumerary minister' ORDER BY persons.surname,persons.firstname");
-        $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where persons.
+        $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
         deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Guest preacher' ORDER BY persons.surname,persons.firstname");
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
@@ -144,7 +148,7 @@ class PlansController extends Controller
         } else {
             $data['sundays']=$sundays;
         }
-        $pm1=$this->plans->sqlQuery("SELECT plans.*,preachers.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
+        $pm1=$this->plans->sqlQuery("SELECT plans.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm1 as $p1) {
             $soc=$this->societies->find($p1->society_id)->society;
             $ser=$this->services->find($p1->service_id)->servicetime;
@@ -170,7 +174,7 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['trial']=$p1->trialservice;
             }
         }
-        $pm2=$this->plans->sqlQuery("SELECT plans.*,preachers.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
+        $pm2=$this->plans->sqlQuery("SELECT plans.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm2 as $p2) {
             $soc=$this->societies->find($p2->society_id)->society;
             $ser=$this->services->find($p2->service_id)->servicetime;
@@ -196,7 +200,7 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['trial']=$p2->trialservice;
             }
         }
-        $pm3=$this->plans->sqlQuery("SELECT plans.*,preachers.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
+        $pm3=$this->plans->sqlQuery("SELECT plans.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm3 as $p3) {
             $soc=$this->societies->find($p3->society_id)->society;
             $ser=$this->services->find($p3->service_id)->servicetime;
@@ -397,15 +401,18 @@ class PlansController extends Controller
         $pdf->text($left_side+$spacer, $y, "General Secretary: " . $settings['general_secretary']);
         $y=$y+4;
         $pdf->text($left_side+$spacer, $y, "District Bishop: " . $settings['district_bishop']);
-        $y=$y+4;
-        $pdf->text($left_side+$spacer, $y, "Superintendent: " . $settings['superintendent']);
         $y=$y+6;
         $pdf->SetFont('Arial', 'B', 11);
         $pdf->text($left_side+$spacer, $y, "Circuit Ministers");
         $y=$y+4;
         $pdf->SetFont('Arial', '', 8);
         foreach ($dat['ministers'] as $min) {
-            $pdf->text($left_side+$spacer, $y, $min->title . " " . substr($min->firstname, 0, 1) . " " . $min->surname . " (" . $min->phone . ")");
+            if ($min->position == "Circuit minister") {
+                $super = "";
+            } else {
+                $super = " [Supt]";
+            }
+            $pdf->text($left_side+$spacer, $y, $min->title . " " . substr($min->firstname, 0, 1) . " " . $min->surname . " (" . $min->phone . ")" . $super);
             $y=$y+4;
         }
         if (isset($dat['supernumeraries'])) {
@@ -421,20 +428,20 @@ class PlansController extends Controller
         }
         $y=$y+2;
         $pdf->SetFont('Arial', '', 8);
-        $officers=$settings['circuit_stewards'];
+        $officers=$this->positions->identify($this->circuit->id, 'Circuit steward');
         $subhead="";
         if ($officers) {
             $pdf->SetFont('Arial', 'B', 11);
             $pdf->text($left_side+$spacer, $y, "Circuit Stewards");
             $pdf->SetFont('Arial', '', 8);
-            foreach (explode(',', $officers) as $officer) {
+            foreach ($officers as $officer) {
                 $y=$y+4;
                 $pdf->text($left_side+$spacer, $y, $officer);
             }
         }
         $pdf->SetFont('Arial', 'B', 11);
         $y=$y+6;
-        $treasurer=$settings['circuit_treasurer'];
+        $treasurer=$this->positions->identify($this->circuit->id, 'Circuit treasurer')[0];
         if ($treasurer) {
             $pdf->text($left_side+$spacer, $y, "Circuit Treasurer");
             $pdf->SetFont('Arial', '', 8);
@@ -443,7 +450,7 @@ class PlansController extends Controller
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
-        $csecretary=$settings['circuit_secretary'];
+        $csecretary=$this->positions->identify($this->circuit->id, 'Circuit secretary')[0];
         if ($csecretary) {
             $pdf->text($left_side+$spacer, $y, "Circuit Secretary");
             $pdf->SetFont('Arial', '', 8);
@@ -475,13 +482,13 @@ class PlansController extends Controller
         $y=30;
         $pdf->SetFont('Arial', 'B', 11);
         $pdf->text($x, $y, "Local Preachers");
-        $supervisor=$settings['supervisor_of_studies'];
+        $supervisor=$this->positions->identify($this->circuit->id, 'Circuit supervisor of studies')[0];
         if ($supervisor) {
             $y=$y+4;
             $pdf->SetFont('Arial', '', 8);
             $pdf->text($x, $y, "Supervisor of studies: " . $supervisor);
         }
-        $lpsec=$settings['local_preachers_secretary'];
+        $lpsec=$this->positions->identify($this->circuit->id, 'Local preachers secretary')[0];
         if ($lpsec) {
             $y=$y+4;
             $pdf->SetFont('Arial', '', 8);

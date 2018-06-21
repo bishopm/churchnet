@@ -40,18 +40,7 @@ class PositionsController extends Controller
 
     public function identify($circuit, $position)
     {
-        $position = Position::with('persons')->where('position', urldecode($position))->first();
-        $persons=array();
-        if (count($position->persons)) {
-            foreach ($position->persons as $person) {
-                if ($person->circuit_id==$circuit) {
-                    $persons[]=$person->title . " " . substr($person->firstname, 0, 1) . " " . $person->surname . " (" . $person->phone . ")";
-                }
-            }
-        } else {
-            $persons[]="";
-        }
-        return $persons;
+        return $this->position->identify($circuit, $position);
     }
 
     public function store(CreatePositionRequest $request)
