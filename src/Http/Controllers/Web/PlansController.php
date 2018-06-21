@@ -26,7 +26,7 @@ class PlansController extends Controller
     private $plans;
     private $services;
     private $circuit;
-    private $tags;
+    private $labels;
 
     public function __construct(
         SettingsRepository $settings,
@@ -37,7 +37,7 @@ class PlansController extends Controller
         PlansRepository $plans,
         ServicesRepository $services,
         CircuitsRepository $circuit,
-        LabelsRepository $tags
+        LabelsRepository $labels
     ) {
         $this->settings=$settings;
         $this->weekdays=$weekdays;
@@ -47,7 +47,7 @@ class PlansController extends Controller
         $this->plans=$plans;
         $this->services=$services;
         $this->circuit=$circuit;
-        $this->tags=$tags;
+        $this->labels=$labels;
     }
 
     public function plan($slug)
@@ -164,7 +164,7 @@ class PlansController extends Controller
             if ($p1->servicetype) {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['tname']=$p1->servicetype;
             } else {
-                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['tag']="";
+                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['label']="";
             }
             if ($p1->trialservice) {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['trial']=$p1->trialservice;
@@ -190,7 +190,7 @@ class PlansController extends Controller
             if ($p2->servicetype) {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['tname']=$p2->servicetype;
             } else {
-                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['tag']="";
+                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['label']="";
             }
             if ($p2->trialservice) {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['trial']=$p2->trialservice;
@@ -216,14 +216,14 @@ class PlansController extends Controller
             if ($p3->servicetype) {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['tname']=$p3->servicetype;
             } else {
-                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['tag']="";
+                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['label']="";
             }
             if ($p3->trialservice) {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['trial']=$p3->trialservice;
             }
         }
-        foreach ($this->tags->allforcircuitonly($this->circuit->id) as $tag) {
-            $data['tags'][]=$tag->tag;
+        foreach ($this->labels->allforcircuitonly($this->circuit->id) as $label) {
+            $data['labels'][]=$label->label;
         }
         if ($qq==1) {
             $data['prev']="plan/" . strval($yy-1) . "/4";
@@ -374,7 +374,7 @@ class PlansController extends Controller
             $dum['soc']=$preacher1->society_id;
             $dum['cellphone']=$preacher1->phone;
             $dum['fullplan']=$preacher1->fullplan;
-            $dum['status']=$preacher1->position;
+            $dum['position']=$preacher1->position;
             if ($dum['fullplan']=="Trial") {
                 $vdum['9999' . $preacher1->surname . $preacher1->firstname]=$dum;
             } else {
@@ -509,7 +509,7 @@ class PlansController extends Controller
                     $y=30;
                 }
                 $pre['name']=utf8_decode($pre['name']);
-                if (($pre['status']=="Local preacher") or ($pre['status']=="On trial preacher") or ($pre['status']=="Emeritus preacher")) {
+                if (($pre['position']=="Local preacher") or ($pre['position']=="On trial preacher") or ($pre['position']=="Emeritus preacher")) {
                     $pdf->text($x+2, $y, $pre['fullplan']);
                     $pdf->text($x+10, $y, $pre['name'] . " (" . $pre['cellphone'] . ")");
                     $y=$y+4;
