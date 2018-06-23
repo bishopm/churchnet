@@ -76,7 +76,6 @@ class ResourcesController extends Controller
 
     public function addcomment(Resource $resource, Request $request)
     {
-        dd($request);
         $user=$this->user->find($request->user);
         $user->comment($request, $request->newcomment);
     }

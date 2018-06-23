@@ -13,7 +13,7 @@ class SocialAuthController extends Controller
     public function redirect($service)
     {
         if (App::environment('local')) {
-            $user=User::find(3);
+            $user=User::where('name', 'admin')->first();
             Auth::login($user);
             return redirect()->route('home');
         } else {

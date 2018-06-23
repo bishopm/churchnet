@@ -7,17 +7,12 @@ use Cartalyst\Tags\TaggableTrait;
 use Cartalyst\Tags\TaggableInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class Preacher extends Model implements TaggableInterface
+class Minister extends Model implements TaggableInterface
 {
-    use SoftDeletes, TaggableTrait;
+    use SoftDeletes,TaggableTrait;
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');
-
-    public function society()
-    {
-        return $this->belongsTo('Bishopm\Churchnet\Models\Society');
-    }
 
     public function person()
     {

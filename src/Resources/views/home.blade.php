@@ -17,15 +17,15 @@
 </style>
 <div class="container mt-5">
     <div class="row">
-        <div class="card">
+        <div class="card" style="border:none;">
             <h3>Welcome to church.net.za</h3>
-            <p>We're collecting useful resources for local church ministry. Have a look around and then feel free to make your own contribution :)</p>
+            <p>We're collecting useful resources for local church ministry.<br>Have a look around and then feel free to make your own contribution :)</p>
         </div>
     </div>
     <div class="row">
         <div class="col-md-8">
             <div id="myCanvasContainer">
-                <canvas width="400" height="400" style="width:100%" id="myCanvas">
+                <canvas width="375" height="375" style="width:100%" id="myCanvas">
                     <p>{!! $cloud !!}</p>
                 </canvas>
             </div>

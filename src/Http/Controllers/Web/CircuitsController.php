@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateCircuitRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
 use Mapper;
+use Auth;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
@@ -43,11 +44,20 @@ class CircuitsController extends Controller
         return view('churchnet::circuits.index', compact('circuits'));
     }
 
+    public function my()
+    {
+        $user = Auth::user();
+        $circuit = Circuit::find($user->circuit_id);
+        $districts=$this->districts->all();
+        $leaders = $circuit->persons;
+        return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders', 'positions'));
+    }
+
     public function edit(Circuit $circuit)
     {
         $districts=$this->districts->all();
         $leaders = $circuit->persons;
-        return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders'));
+        return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders', 'positions'));
     }
 
     public function create()

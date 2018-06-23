@@ -23,7 +23,7 @@
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
-<body class="fixed-nav sticky-footer" id="page-top">
+<body class="fixed-nav sticky-footer sidenav-toggled" id="page-top">
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
     <a class="navbar-brand" href="{{url('/')}}"><b>Church</b>Net</a>
     <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -66,14 +66,19 @@
           </div>
         </form>
         @if(Auth::user())
-          @if(Auth::user()->isadmin)
+          @if(Auth::user()->level<>'user')
             <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Admin</a>
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ucfirst(Auth::user()->name)}}</a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
-                <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
-                <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
-                <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
+                @if (Auth::user()->level=="admin")
+                  <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/roles">Roles</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
+                @else
+                  <a class="dropdown-item" href="{{url('/')}}/admin/circuits/my">My circuit</a>
+                @endif
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
                 <form id="logout-form" action="{{url('/')}}/logout" method="POST" style="display: none;"><input type="hidden" name="_token" value="{{csrf_token()}}"></form>

@@ -2,7 +2,7 @@
 {{ Form::bsText('circuitnumber','Circuit number','Circuit number') }}
 <div class="form-group" id="districts">
     <label for="Districts" class="control-label">Districts</label>
-	<select class="form-control" name="district_id">
+    <select class="form-control" name="district_id">
         <option></option>
         @foreach ($districts as $district)
             <option value="{{$district->id}}">{{$district->id}}00 {{$district->district}}</option>

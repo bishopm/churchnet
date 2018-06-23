@@ -23,7 +23,7 @@
         "cornford/googlmapper": "2.*",
         "laravelcollective/html": "5.6.*",
         "laravel/socialite": "3.*",
-        "cartalyst/tags": "6.*",
+        "spatie/laravel-tags": "2.*",
         "actuallymab/laravel-comment": "0.5.*",
         "lithiumdev/laravel-tagcloud": "~1.0",
         "simplepie/simplepie": "1.5.*"

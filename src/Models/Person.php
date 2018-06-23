@@ -3,12 +3,13 @@
 namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-
+use Cartalyst\Tags\TaggableTrait;
+use Cartalyst\Tags\TaggableInterface;
 use Illuminate\Database\Eloquent\Model;
 
-class Person extends Model
+class Person extends Model implements TaggableInterface
 {
-    use SoftDeletes;
+    use SoftDeletes, TaggableTrait;
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');
@@ -27,10 +28,5 @@ class Person extends Model
     public function society()
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Society');
-    }
-
-    public function positions()
-    {
-        return $this->belongsToMany('Bishopm\Churchnet\Models\Position');
     }
 }

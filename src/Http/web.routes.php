@@ -45,6 +45,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::delete('admin/settings/{setting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@destroy','as'=>'admin.settings.destroy']);
 
         // Circuits
+        Route::get('admin/circuits/my', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@my','as'=>'admin.circuits.my']);
         Route::get('admin/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@index','as'=>'admin.circuits.index']);
         Route::get('admin/circuits/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@create','as'=>'admin.circuits.create']);
         Route::get('admin/circuits/{circuit}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@edit','as'=>'admin.circuits.edit']);
@@ -69,6 +70,13 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@store','as'=>'admin.pages.store']);
         Route::delete('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@destroy','as'=>'admin.pages.destroy']);
 
+        // Persons
+        Route::get('admin/circuits/{circuit}/persons/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@create','as'=>'admin.persons.create']);
+        Route::get('admin/circuits/{circuit}/persons/{person}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@edit','as'=>'admin.persons.edit']);
+        Route::put('admin/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@update','as'=>'admin.persons.update']);
+        Route::post('admin/circuits/{circuit}/persons', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@store','as'=>'admin.persons.store']);
+        Route::delete('admin/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@destroy','as'=>'admin.persons.destroy']);
+
         // Readings
         Route::get('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@index','as'=>'admin.readings.index']);
         Route::get('admin/readings/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@create','as'=>'admin.readings.create']);
@@ -77,6 +85,12 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('admin/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@update','as'=>'admin.readings.update']);
         Route::post('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@store','as'=>'admin.readings.store']);
         Route::delete('admin/readings/{reading}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@destroy','as'=>'admin.readings.destroy']);
+
+        // Roles
+        Route::get('admin/roles', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RolesController@index','as'=>'admin.roles.index']);
+        Route::post('admin/roles', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RolesController@store','as'=>'admin.roles.store']);
+        Route::get('admin/roles/{role}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RolesController@edit','as'=>'admin.roles.edit']);
+        Route::put('admin/roles/{role}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RolesController@update','as'=>'admin.roles.update']);
 
         // Societies
         Route::get('methodist/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@index','as'=>'societies.index']);
