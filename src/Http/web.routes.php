@@ -20,13 +20,13 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('methodist/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
     Route::get('methodist/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
     Route::get('pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);
+    Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
     
     Route::middleware(['auth','handlecors'])->group(function () {
         // Resources
         Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
         Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
         Route::post('admin/resources/{resource}/addcomment', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addcomment','as' => 'admin.resources.addcomment']);
-        Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
         Route::get('admin/resources/{resource}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@edit','as'=>'admin.resources.edit']);
         Route::get('admin/resources/addtag/{resource}/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addtag','as' => 'admin.resources.addtag']);
         Route::get('admin/resources/removetag/{resource}/{tag}', ['uses' => 'ishopm\Churchnet\Http\Controllers\Web\ResourcesController@removetag','as' => 'admin.resources.removetag']);
@@ -70,12 +70,13 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@store','as'=>'admin.pages.store']);
         Route::delete('admin/pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@destroy','as'=>'admin.pages.destroy']);
 
-        // Persons
-        Route::get('admin/circuits/{circuit}/persons/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@create','as'=>'admin.persons.create']);
-        Route::get('admin/circuits/{circuit}/persons/{person}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@edit','as'=>'admin.persons.edit']);
-        Route::put('admin/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@update','as'=>'admin.persons.update']);
-        Route::post('admin/circuits/{circuit}/persons', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@store','as'=>'admin.persons.store']);
-        Route::delete('admin/circuits/{circuit}/persons/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PersonsController@destroy','as'=>'admin.persons.destroy']);
+        // People
+        Route::get('admin/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@index','as'=>'admin.people.index']);
+        Route::get('admin/circuits/{circuit}/people/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@create','as'=>'admin.people.create']);
+        Route::get('admin/circuits/{circuit}/people/{person}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@edit','as'=>'admin.people.edit']);
+        Route::put('admin/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@update','as'=>'admin.people.update']);
+        Route::post('admin/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@store','as'=>'admin.people.store']);
+        Route::delete('admin/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@destroy','as'=>'admin.people.destroy']);
 
         // Readings
         Route::get('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@index','as'=>'admin.readings.index']);

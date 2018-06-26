@@ -74,6 +74,7 @@
                   <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/people">People</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/roles">Roles</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
                 @else

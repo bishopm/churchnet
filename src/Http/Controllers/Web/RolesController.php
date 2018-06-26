@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Cartalyst\Tags\IlluminateTag;
+use Spatie\Tags\Tag;
 use Illuminate\Http\Request;
 
 class RolesController extends Controller
@@ -16,21 +17,21 @@ class RolesController extends Controller
 
     public function index()
     {
-        $data['roles'] = IlluminateTag::where('namespace', 'Bishopm\Churchnet\Models\Minister')->orWhere('namespace', 'Bishopm\Churchnet\Models\Person')->orwhere('namespace', 'Bishopm\Churchnet\Models\Preacher')->orderBy('name')->get();
+        $data['tags'] =Tag::where('type', 'minister')->orWhere('type', 'leader')->orWhere('type', 'preacher')->get();
         return view('churchnet::roles.index', $data);
     }
 
     public function store(Request $request)
     {
-        IlluminateTag::create(['namespace'=>$request->namespace, 'slug'=>str_slug($request->position), 'name'=>$request->position ]);
+        $tag = Tag::findOrCreate($request->tag, $request->type);
         return redirect()->route('admin.roles.index')
             ->withSuccess('New role / status added');
     }
 
     public function edit($id)
     {
-        $role = IlluminateTag::find($id);
-        return view('churchnet::roles.edit', compact('role'));
+        $tag = Tag::find($id);
+        return view('churchnet::roles.edit', compact('tag'));
     }
 
     public function update(Request $request, $id)

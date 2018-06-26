@@ -3,13 +3,12 @@
 namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Cartalyst\Tags\TaggableTrait;
-use Cartalyst\Tags\TaggableInterface;
+use Spatie\Tags\HasTags;
 use Illuminate\Database\Eloquent\Model;
 
-class Preacher extends Model implements TaggableInterface
+class Preacher extends Model
 {
-    use SoftDeletes, TaggableTrait;
+    use SoftDeletes, HasTags;
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');

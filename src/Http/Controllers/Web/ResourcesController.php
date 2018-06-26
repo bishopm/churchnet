@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Models\Resource;
+use Spatie\Tags\Tag;
 use Bishopm\Churchnet\Http\Requests\CreateResourceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateResourceRequest;
 use Illuminate\Http\Request;
@@ -33,7 +34,7 @@ class ResourcesController extends Controller
 
     public function edit(Resource $resource)
     {
-        $tags=Resource::allTags()->get();
+        $tags=Tag::where('type','resource')->get();
         $rtags=array();
         foreach ($resource->tags as $tag) {
             $rtags[]=$tag->name;
@@ -43,20 +44,20 @@ class ResourcesController extends Controller
 
     public function create()
     {
-        $tags=Resource::allTags()->get();
+        $tags=Tag::where('type','resource')->get();
         return view('churchnet::resources.create', compact('tags'));
     }
 
     public function addtag($id, $tag)
     {
         $resource=$this->resource->find($id);
-        $resource->tag($tag);
+        $resource->attachTag($tag);
     }
 
     public function removetag($id, $tag)
     {
         $resource=$this->resource->find($id);
-        $resource->untag($tag);
+        $resource->detachTag($tag);
     }
 
     public function show($id)
@@ -69,7 +70,7 @@ class ResourcesController extends Controller
     public function store(CreateResourceRequest $request)
     {
         $resource = $this->resource->create($request->except('tags'));
-        $resource->tag($request->tags);
+        $resource->syncTagsWithType($request->tags,'resource');
         return redirect()->route('admin.resources.index')
             ->withSuccess('New resource added');
     }
@@ -90,7 +91,7 @@ class ResourcesController extends Controller
     public function update(Resource $resource, UpdateResourceRequest $request)
     {
         $resource = $this->resource->update($resource, $request->except('tags'));
-        $resource->setTags($request->tags);
+        $resource->syncTagsWithType($request->tags,'resource');
         return redirect()->route('admin.resources.index')->withSuccess('Resource has been updated');
     }
 

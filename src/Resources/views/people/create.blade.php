@@ -12,12 +12,12 @@
 @section('content')
 <div class="container mt-5">
     @include('churchnet::shared.errors')    
-    {!! Form::open(['route' => array('admin.pages.store'), 'method' => 'post']) !!}
+    {!! Form::open(['route' => array('admin.people.store',$circuit), 'method' => 'post']) !!}
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary"> 
                 <div class="box-body">
-                    @include('churchnet::pages.partials.create-fields')
+                    @include('churchnet::people.partials.create-fields')
                 </div>
                 <div class="box-footer">
                     {{Form::pgButtons('Create',route('admin.pages.index')) }}
@@ -38,30 +38,11 @@ $.ajaxSetup({
     }
 });    
 $( document ).ready(function() {
-    $('.tag-select').selectize({
+    $('.selectize').selectize({
         plugins: ['remove_button'],
-        openOnFocus: 0,
+        openOnFocus: 1,
         maxOptions: 30,
-        dropdownParent: "body",
-        create: function(value) {
-            return {
-                value: value,
-                text: value
-            }
-        }
-    });
-    $('#body').summernote({ 
-        height: 250,
-        toolbar: [
-        ['style', ['bold', 'italic', 'underline', 'clear']],
-        ['font', ['superscript', 'subscript']],
-        ['fontsize', ['fontsize']],
-        ['color', ['color']],
-        ['table', ['table']],
-        ['link', ['linkDialogShow', 'unlink']],
-        ['view', ['fullscreen', 'codeview']],
-        ['para', ['ul', 'ol', 'paragraph']]
-        ]
+        dropdownParent: "body"
     });
 });
 </script>

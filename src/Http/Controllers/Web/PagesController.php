@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Page;
+use Spatie\Tags\Tag;
 use Bishopm\Churchnet\Models\Resource;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreatePageRequest;
@@ -33,7 +34,7 @@ class PagesController extends Controller
 
     public function edit(Page $page)
     {
-        $tags=Resource::allTags()->get();
+        $tags=Tag::where('type','resource')->get();
         $rtags=array();
         foreach ($page->tags as $tag) {
             $rtags[]=$tag->name;
@@ -43,7 +44,7 @@ class PagesController extends Controller
 
     public function create()
     {
-        $tags=Resource::allTags()->get();
+        $tags=Tag::where('type','resource')->get();
         return view('churchnet::pages.create', compact('tags'));
     }
 
@@ -68,7 +69,7 @@ class PagesController extends Controller
     public function store(CreatePageRequest $request)
     {
         $page = $this->page->create($request->except('tags'));
-        $page->tag($request->tags);
+        $page->syncTagsWithType($request->tags,'resource');
         return redirect()->route('admin.pages.index')
             ->withSuccess('New page added');
     }
@@ -76,7 +77,7 @@ class PagesController extends Controller
     public function update(Page $page, UpdatePageRequest $request)
     {
         $this->page->update($page, $request->except('tags'));
-        $page->setTags($request->tags);
+        $page->syncTagsWithType($request->tags,'resource');
         return redirect()->route('admin.pages.index')->withSuccess('Page has been updated');
     }
 

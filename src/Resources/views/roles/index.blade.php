@@ -19,13 +19,13 @@
                                     @csrf
                                     <div class="row">
                                         <div class="col-5 text-right">
-                                            <input class="form-control" placeholder="Role / Status" name="position">                                  
+                                            <input class="form-control" placeholder="Role / Status" name="tag">                                  
                                         </div>                                        
                                         <div class="col-5 text-right">
-                                            <select class="form-control" name="namespace">
-                                                <option value="Bishopm\Churchnet\Models\Person">Leader</option>
-                                                <option value="Bishopm\Churchnet\Models\Minister">Minister</option>
-                                                <option value="Bishopm\Churchnet\Models\Preacher">Preacher</option>
+                                            <select class="form-control" name="type">
+                                                <option value="leader">Leader</option>
+                                                <option value="minister">Minister</option>
+                                                <option value="preacher">Preacher</option>
                                             </select>
                                         </div>
                                         <div class="col-2 text-right">
@@ -49,18 +49,10 @@
                                 </tr>
                             </tfoot>
                             <tbody>
-                                @forelse ($roles as $role)
+                                @forelse ($tags as $tag)
                                     <tr>
-                                        <td><a href="{{route('admin.roles.edit',$role->id)}}">{{$role->name}}</a></td>
-                                        <td><a href="{{route('admin.roles.edit',$role->id)}}">
-                                            @if ($role->namespace == 'Bishopm\Churchnet\Models\Person')
-                                                Leaders
-                                            @elseif ($role->namespace == 'Bishopm\Churchnet\Models\Preacher')
-                                                Preachers
-                                            @else
-                                                Ministers
-                                            @endif
-                                        </a></td>
+                                        <td><a href="{{route('admin.roles.edit',$tag->id)}}">{{$tag->name}}</a></td>
+                                        <td><a href="{{route('admin.roles.edit',$tag->id)}}">{{$tag->type}}</a></td>
                                     </tr>
                                 @empty
                                     <tr><td>No roles have been added yet</td></tr>

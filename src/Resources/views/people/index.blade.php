@@ -13,29 +13,30 @@
                 <div class="card card-primary">
                     <div class="card-header">
                         <div class="row">
-                            <div class="col-md-6"><h4>Resources</h4></div>
-                            <div class="col-md-6"><a href="{{route('admin.pages.create')}}" class="btn btn-primary float-right"><i class="fa fa-pencil"></i> Add a new page</a></div>
+                            <div class="col-md-6"><h4>People</h4></div>
+                            <div class="col-md-6"><a href="{{route('admin.circuits.index')}}" class="btn btn-primary float-right"><i class="fa fa-pencil"></i> Add a new person</a></div>
                         </div>
                     </div>
                     <div class="card-body">
                         <table id="indexTable" class="table table-striped table-hover table-condensed" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Page title</th>
+                                    <th>Name</th><th>Circuit</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Page title</th>
+                                    <th>Name</th><th>Circuit</th>
                                 </tr>
                             </tfoot>
                             <tbody>
-                                @forelse ($pages as $page)
+                                @forelse ($people as $person)
                                     <tr>
-                                        <td><a href="{{route('admin.pages.edit',$page->id)}}">{{$page->title}}</a></td>
+                                        <td><a href="{{route('admin.people.edit',[$person->circuit_id,$person->id])}}">{{$person->surname}}, {{$person->title}} {{$person->firstname}}</a></td>
+                                        <td><a href="{{route('admin.people.edit',[$person->circuit_id,$person->id])}}">{{$person->circuit->circuit}} {{$person->circuit->circuitnumber}}</a></td>
                                     </tr>
                                 @empty
-                                    <tr><td>No pages have been added yet</td></tr>
+                                    <tr><td>No people have been added yet</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

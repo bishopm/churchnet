@@ -7,7 +7,7 @@ use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Resource;
 use Bishopm\Churchnet\Models\Page;
-use Cartalyst\Tags\IlluminateTag;
+use Spatie\Tags\Tag;
 use LithiumDev\TagCloud\TagCloud;
 use Illuminate\Http\Request;
 
@@ -56,16 +56,16 @@ class HomeController extends Controller
     {
         $data['resources'] = Resource::where('title', 'like', '%' . $request->search . '%')->orWhere('description', 'like', '%' . $request->search . '%')->orderBy('title')->get();
         $data['pages'] = Page::where('title', 'like', '%' . $request->search . '%')->orWhere('body', 'like', '%' . $request->search . '%')->orderBy('title')->get();
-        $data['tags'] = IlluminateTag::where('name', 'like', '%' . $request->search . '%')->get();
+        $data['tags'] = Tag::where('name', 'like', '%' . $request->search . '%')->get();
         $data['search'] = $request->search;
         return view('churchnet::search', $data);
     }
 
     public function tag($tag)
     {
-        $data['resources'] = Resource::whereTag($tag)->get();
-        $data['pages'] = Page::whereTag($tag)->get();
-        $data['tag'] = strtoupper(IlluminateTag::where('slug', $tag)->first()->name);
+        $data['resources'] = Resource::withAllTags([$tag])->get();
+        $data['pages'] = Page::withAllTags([$tag])->get();
+        $data['tag'] = strtoupper($tag);
         return view('churchnet::tag', $data);
     }
 }

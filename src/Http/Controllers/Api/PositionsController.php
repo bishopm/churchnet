@@ -3,7 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\PositionsRepository;
-use Bishopm\Churchnet\Repositories\PersonsRepository;
+use Bishopm\Churchnet\Repositories\PeopleRepository;
 use Bishopm\Churchnet\Models\Position;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -22,7 +22,7 @@ class PositionsController extends Controller
     private $position;
     private $person;
 
-    public function __construct(PositionsRepository $position, PersonsRepository $person)
+    public function __construct(PositionsRepository $position, PeopleRepository $person)
     {
         $this->person = $person;
         $this->position = $position;

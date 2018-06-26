@@ -6,16 +6,16 @@ use Illuminate\Http\Request;
 use Auth;
 use Bishopm\Churchnet\Libraries\Fpdf\Fpdf;
 use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
-use Bishopm\Churchnet\Repositories\PreachersRepository;
+use Bishopm\Churchnet\Repositories\PeopleRepository;
 use Bishopm\Churchnet\Repositories\PlansRepository;
 use Bishopm\Churchnet\Repositories\ServicesRepository;
 use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Repositories\LabelsRepository;
-use Bishopm\Churchnet\Repositories\PositionsRepository;
 
 class PlansController extends Controller
 {
@@ -23,35 +23,32 @@ class PlansController extends Controller
     private $weekdays;
     private $meetings;
     private $societies;
-    private $preachers;
+    private $people;
     private $plans;
     private $services;
     private $circuit;
     private $labels;
-    private $positions;
 
     public function __construct(
         SettingsRepository $settings,
         WeekdaysRepository $weekdays,
         MeetingsRepository $meetings,
         SocietiesRepository $societies,
-        PreachersRepository $preachers,
+        PeopleRepository $people,
         PlansRepository $plans,
         ServicesRepository $services,
         CircuitsRepository $circuit,
-        LabelsRepository $labels,
-        PositionsRepository $positions
+        LabelsRepository $labels
     ) {
         $this->settings=$settings;
         $this->weekdays=$weekdays;
         $this->meetings=$meetings;
         $this->societies=$societies;
-        $this->preachers=$preachers;
+        $this->people=$people;
         $this->plans=$plans;
         $this->services=$services;
         $this->circuit=$circuit;
         $this->labels=$labels;
-        $this->positions=$positions;
     }
 
     public function plan($slug)
@@ -114,14 +111,10 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
-        $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
-        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Local preacher' or positions.position='On trial preacher' or positions.position='Emeritus preacher') ORDER BY persons.surname,persons.firstname");
-        $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
-        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Circuit minister' or positions.position='Superintendent minister') ORDER BY persons.surname,persons.firstname");
-        $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
-        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Supernumerary minister' ORDER BY persons.surname,persons.firstname");
-        $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers,persons,positions,person_position where preachers.
-        deleted_at IS NULL and preachers.person_id = persons.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Guest preacher' ORDER BY persons.surname,persons.firstname");
+        $data['preachers']=Person::where('circuit_id', $this->circuit->id)->where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $this->circuit->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->where('circuit_id', $this->circuit->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['guests']=array();
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
             $dum['dt']=$lastSunday;
@@ -148,7 +141,7 @@ class PlansController extends Controller
         } else {
             $data['sundays']=$sundays;
         }
-        $pm1=$this->plans->sqlQuery("SELECT plans.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
+        $pm1=$this->plans->sqlQuery("SELECT plans.*,people.firstname,people.surname,positions.* from people,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id = people.id and person_position.person_id = people.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm1 as $p1) {
             $soc=$this->societies->find($p1->society_id)->society;
             $ser=$this->services->find($p1->service_id)->servicetime;
@@ -174,7 +167,7 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['trial']=$p1->trialservice;
             }
         }
-        $pm2=$this->plans->sqlQuery("SELECT plans.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
+        $pm2=$this->plans->sqlQuery("SELECT plans.*,people.firstname,people.surname,positions.* from people,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "' and preachers.person_id = people.id and person_position.person_id = people.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm2 as $p2) {
             $soc=$this->societies->find($p2->society_id)->society;
             $ser=$this->services->find($p2->service_id)->servicetime;
@@ -200,7 +193,7 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['trial']=$p2->trialservice;
             }
         }
-        $pm3=$this->plans->sqlQuery("SELECT plans.*,persons.firstname,persons.surname,positions.* from persons,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "' and preachers.person_id = persons.id and person_position.person_id = persons.id and person_position.position_id = positions.id and positions.selectgroup = 1");
+        $pm3=$this->plans->sqlQuery("SELECT plans.*,people.firstname,people.surname,positions.* from people,person_position,positions,plans LEFT JOIN preachers ON plans.preacher_id=preachers.id WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "' and preachers.person_id = people.id and person_position.person_id = people.id and person_position.position_id = positions.id and positions.selectgroup = 1");
         foreach ($pm3 as $p3) {
             $soc=$this->societies->find($p3->society_id)->society;
             $ser=$this->services->find($p3->service_id)->servicetime;

@@ -27,6 +27,14 @@
                         <li><b>{{$service->servicetime}}</b> ({{$service->language}})</li>
                     @endforeach
                 </ul>
+                @if (count($stewards))
+                <h3>Society stewards</h3>
+                <ul class="list-unstyled">
+                    @foreach ($stewards as $stw)
+                        <li>{{$stw->title}} {{$stw->firstname}} {{$stw->surname}}</li>
+                    @endforeach
+                </ul>
+            @endif
             </div>
             <div class="col-xs-12 col-sm-6">
                 <div style="width: 100%; height: 400px;">

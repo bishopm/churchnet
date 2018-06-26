@@ -39,29 +39,26 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            @if ((isset($Circuit_minister)) or (isset($Superintendent_minister)))
-                <h3>Ministers</h3>
+            @if (isset($ministers))
+                <h3>Circuit ministers</h3>
                 <ul class="list-unstyled">
-                    @if (isset($Superintendent_minister))
-                        <li>{{$Superintendent_minister[0]->title}} {{$Superintendent_minister[0]->firstname}} {{$Superintendent_minister[0]->surname}} [Supt]</li>
-                    @endif
-                    @foreach ($Circuit_minister as $min)
+                    @foreach ($ministers as $min)
                         <li>{{$min->title}} {{$min->firstname}} {{$min->surname}}</li>
                     @endforeach
                 </ul>
             @endif
-            @if (isset($Supernumerary_minister))
-                <h3>Supernumerary Ministers</h3>
+            @if (isset($supernumeraries))
+                <h3>Supernumerary ministers</h3>
                 <ul class="list-unstyled">
-                    @foreach ($Supernumerary_minister as $sup)
+                    @foreach ($supernumeraries as $sup)
                         <li>{{$sup->title}} {{$sup->firstname}} {{$sup->surname}}</li>
                     @endforeach
                 </ul>
             @endif
-            @if (isset($Circuit_steward))
+            @if (isset($stewards))
                 <h3>Circuit stewards</h3>
                 <ul class="list-unstyled">
-                    @foreach ($Circuit_steward as $stw)
+                    @foreach ($stewards as $stw)
                         <li>{{$stw->title}} {{$stw->firstname}} {{$stw->surname}}</li>
                     @endforeach
                 </ul>
@@ -72,9 +69,9 @@
                 <h3>Local preachers</h3>
                 @forelse ($preachers as $lp)
                     @if (!$loop->last)
-                        {{$lp}}, 
+                        {{$lp->title}} {{substr($lp->firstname,0,1)}} {{$lp->surname}}, 
                     @else
-                        {{$lp}}.
+                        {{$lp->title}} {{substr($lp->firstname,0,1)}} {{$lp->surname}}.
                     @endif
                 @empty
                     This circuit has not added any preachers to the system

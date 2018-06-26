@@ -4,7 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
-use Bishopm\Churchnet\Repositories\PersonsRepository;
+use Bishopm\Churchnet\Repositories\PeopleRepository;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Preacher;
 use Bishopm\Churchnet\Models\Plan;
@@ -27,7 +27,7 @@ class PreachersController extends Controller
     private $individuals;
     private $societies;
 
-    public function __construct(PreachersRepository $preacher, SocietiesRepository $societies, PersonsRepository $person)
+    public function __construct(PreachersRepository $preacher, SocietiesRepository $societies, PeopleRepository $person)
     {
         $this->person = $person;
         $this->preacher = $preacher;

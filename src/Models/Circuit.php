@@ -18,7 +18,7 @@ class Circuit extends Model
         return $this->belongsTo('Bishopm\Churchnet\Models\District');
     }
 
-    public function persons()
+    public function people()
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Person');
     }

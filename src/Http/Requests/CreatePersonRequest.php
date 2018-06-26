@@ -12,7 +12,6 @@ class CreatePersonRequest extends FormRequest
             'firstname' => 'required',
             'surname' => 'required|min:2',
             'title' => 'required',
-            'society_id' => 'required',
             'phone' => 'nullable|numeric'
         ];
     }

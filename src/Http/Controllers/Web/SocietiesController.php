@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateSocietyRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSocietyRequest;
@@ -43,10 +44,11 @@ class SocietiesController extends Controller
 
     public function show($circuit, $slug)
     {
-        $society=$this->society->findBySlugForCircuitSlug($circuit, $slug);
-        Mapper::map($society->latitude, $society->longitude, ['zoom' => 16, 'type' => 'HYBRID']);
-        Mapper::marker($society->latitude, $society->longitude, ['title' => $society->society . " society"]);
-        return view('churchnet::societies.show', compact('society'));
+        $data['society']=$this->society->findBySlugForCircuitSlug($circuit, $slug);
+        $data['stewards']=Person::withAllTags(['Society steward'], 'leader')->where('society_id', $data['society']->id)->orderBy('surname')->orderBy('firstname')->get();
+        Mapper::map($data['society']->latitude, $data['society']->longitude, ['zoom' => 16, 'type' => 'HYBRID']);
+        Mapper::marker($data['society']->latitude, $data['society']->longitude, ['title' => $data['society']->society . " society"]);
+        return view('churchnet::societies.show', $data);
     }
 
     public function store(CreateSocietyRequest $request)

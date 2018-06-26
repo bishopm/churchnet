@@ -6,18 +6,18 @@
 @stop
 
 @section('content_header')
-{{ Form::pgHeader('Edit person','persons',route('admin.circuits.edit', $person->circuit_id)) }}
+{{ Form::pgHeader('Edit person','people',route('admin.circuits.edit', $person->circuit_id)) }}
 @stop
 
 @section('content')
 <div class="container mt-5">
     @include('churchnet::shared.errors')    
-    {!! Form::open(['route' => array('admin.persons.update', $person->circuit_id, $person->id), 'method' => 'put']) !!}
+    {!! Form::open(['route' => array('admin.people.update', $person->circuit_id, $person->id), 'method' => 'put']) !!}
     <div class="row">
         <div class="col-md-12">
             <div class="box box-primary"> 
                 <div class="box-body">
-                    @include('churchnet::persons.partials.edit-fields')
+                    @include('churchnet::people.partials.edit-fields')
                 </div>
                 <div class="box-footer">
                     {{Form::pgButtons('Update',route('admin.circuits.edit', $person->circuit_id)) }}

@@ -5,6 +5,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Repositories\PlansRepository;
 use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateCircuitRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
@@ -49,14 +50,14 @@ class CircuitsController extends Controller
         $user = Auth::user();
         $circuit = Circuit::find($user->circuit_id);
         $districts=$this->districts->all();
-        $leaders = $circuit->persons;
+        $leaders = $circuit->people;
         return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders', 'positions'));
     }
 
     public function edit(Circuit $circuit)
     {
         $districts=$this->districts->all();
-        $leaders = $circuit->persons;
+        $leaders = $circuit->people;
         return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders', 'positions'));
     }
 
@@ -68,7 +69,7 @@ class CircuitsController extends Controller
 
     public function show($circuitnum)
     {
-        $data['circuit']=Circuit::with('societies', 'persons.preacher', 'persons.positions', 'persons.society')->where('slug', $circuitnum)->first();
+        $data['circuit']=Circuit::with('societies', 'people', 'people.society')->where('slug', $circuitnum)->first();
         $settings=$this->settings->allforcircuit($data['circuit']->id);
         foreach ($settings as $setting) {
             $data['settings'][$setting->setting_key]=$setting->setting_value;
@@ -83,23 +84,10 @@ class CircuitsController extends Controller
             Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
-        $data['preachers'] = array();
-        $persons=$data['circuit']->persons;
-        foreach ($persons as $person) {
-            foreach ($person->positions as $position) {
-                if (($position->position=="Local preacher") or ($position->position=="Emeritus preacher") or ($position->position=="On trial preacher")) {
-                    $thisp=$person->title . " " . substr($person->firstname, 0, 1) . " " . $person->surname;
-                    if ($position->position=="Emeritus preacher") {
-                        $thisp.=' [Emeritus]';
-                    } elseif ($position->position=="On trial preacher") {
-                        $thisp.=' [Trial]';
-                    }
-                    $data['preachers'][]=$thisp . " (" . $person->society->society . ")";
-                } else {
-                    $data[str_replace(' ', '_', $position->position)][]=$person;
-                }
-            }
-        }
+        $data['preachers'] = Person::where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['ministers'] = Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
+        $data['supernumeraries'] = Person::withAllTags(['Supernumerary minister'], 'minister')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
+        $data['stewards'] = Person::withAllTags(['Circuit steward'], 'leader')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
         return view('churchnet::circuits.show', $data);
     }
 

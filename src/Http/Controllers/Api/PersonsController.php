@@ -2,7 +2,7 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use Bishopm\Churchnet\Repositories\PersonsRepository;
+use Bishopm\Churchnet\Repositories\PeopleRepository;
 use Bishopm\Churchnet\Repositories\PositionsRepository;
 use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
@@ -11,7 +11,7 @@ use Bishopm\Churchnet\Http\Requests\CreatePersonRequest;
 use Bishopm\Churchnet\Http\Requests\UpdatePersonRequest;
 use DB;
 
-class PersonsController extends Controller
+class PeopleController extends Controller
 {
 
     /**
@@ -23,7 +23,7 @@ class PersonsController extends Controller
     private $person;
     private $positions;
 
-    public function __construct(PersonsRepository $person, PositionsRepository $positions)
+    public function __construct(PeopleRepository $person, PositionsRepository $positions)
     {
         $this->person = $person;
         $this->positions = $positions;
@@ -31,9 +31,9 @@ class PersonsController extends Controller
 
     public function index($circuit)
     {
-        $persons=DB::select(DB::raw("SELECT persons.id FROM persons LEFT JOIN preachers ON preachers.person_id = persons.id WHERE preachers.id is null"));
+        $people=DB::select(DB::raw("SELECT people.id FROM people LEFT JOIN preachers ON preachers.person_id = people.id WHERE preachers.id is null"));
         $ids=array();
-        foreach ($persons as $person) {
+        foreach ($people as $person) {
             $ids[]=$person->id;
         }
         $data=Person::with('positions')->whereIn('id', $ids)->get();
@@ -62,7 +62,7 @@ class PersonsController extends Controller
     {
         $data['societies'] = $this->societies->all();
         $data['person'] = $person;
-        return view('connexion::persons.edit', $data);
+        return view('connexion::people.edit', $data);
     }
 
     public function create()
@@ -70,7 +70,7 @@ class PersonsController extends Controller
         $data['individuals'] = $this->individuals->all();
         $data['societies'] = $this->societies->all();
         if (count($data['societies'])) {
-            return view('connexion::persons.create', $data);
+            return view('connexion::people.create', $data);
         } else {
             return redirect()->route('admin.societies.create')->with('notice', 'At least one society must be added before adding a person');
         }

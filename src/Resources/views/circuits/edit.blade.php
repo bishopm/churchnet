@@ -16,7 +16,10 @@
         <div class="col-lg-8 col-md-12">
             <div class="card card-primary"> 
                 <div class="card-header">
-                    <h4 class="text-center">{{$circuit->circuit}} {{$circuit->circuitnumber}} <small>Leaders and preachers</small></h4>
+                    <h4 class="text-center">
+                        {{$circuit->circuit}} {{$circuit->circuitnumber}} <small>Leaders and preachers</small> 
+                        <a href="{{route('admin.people.create', $circuit->id)}}" class="btn btn-primary float-right"><i class="fa fa-pencil"></i> Add a new person</a>
+                    </h4>
                 </div>
                 <div class="card-body">
                     <div class="card-body">
@@ -34,8 +37,8 @@
                             <tbody>
                                 @forelse ($leaders as $leader)
                                     <tr>
-                                        <td><a href="{{route('admin.persons.edit',array($circuit->id,$leader->id))}}">{{$leader->surname}}, {{$leader->title}} {{$leader->firstname}}</a></td>
-                                        <td><a href="{{route('admin.persons.edit',array($circuit->id,$leader->id))}}">
+                                        <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">{{$leader->surname}}, {{$leader->title}} {{$leader->firstname}}</a></td>
+                                        <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">
                                             @foreach ($leader->tags as $pos)
                                                 {{$pos->tag}}
                                                 @if (!$loop->last)
