@@ -29,6 +29,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::get('api/lectionary/{lyear?}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@wholeyear','as'=>'api.lectionary.wholeyear']);
     Route::get('/api/methodist/circuits/{circuit}/upcomingmeetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
     Route::post('api/methodist/circuits/{circuit}/preachers/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@phone','as'=>'api.preachers.phone']);
+    Route::get('/api/methodist/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);
     Route::group(['middleware' => ['jwt.auth','handlecors']], function () {
         Route::get('api/methodist/check', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check','as'=>'api.check']);
 
@@ -83,7 +84,6 @@ Route::middleware(['handlecors','bindings'])->group(function () {
         Route::delete('api/methodist/circuits/{circuit}/services/{service}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@destroy','as'=>'api.services.destroy']);
 
         // Societies
-        Route::get('/api/methodist/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);
         Route::get('api/methodist/circuits/{circuit}/societies/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@create','as'=>'api.societies.create']);
         Route::post('api/methodist/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@store','as'=>'api.societies.store']);
         Route::get('api/methodist/circuits/{circuit}/societies/{society}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@edit','as'=>'api.societies.edit']);
