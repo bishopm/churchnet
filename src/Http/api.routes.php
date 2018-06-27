@@ -19,6 +19,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
 
     // Societies
     Route::get('/api/methodist/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
+    Route::get('/api/methodist/circuits/{circuit}/societies/{society}/feeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@feeditems','as'=>'api.societies.feeditems']);
     Route::get('api/methodist/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
 
     // App routes

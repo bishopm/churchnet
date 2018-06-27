@@ -22,4 +22,9 @@ class Society extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
     }
+
+    public function feeditems()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Feeditem', 'distributable');
+    }
 }

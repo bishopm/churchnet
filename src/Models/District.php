@@ -17,4 +17,9 @@ class District extends Model
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Setting', 'relatable');
     }
+
+    public function feeditems()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Feeditem', 'distributable');
+    }
 }
