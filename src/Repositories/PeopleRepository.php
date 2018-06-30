@@ -7,6 +7,17 @@ class PeopleRepository extends EloquentBaseRepository
 {
     public function preachers()
     {
-        return $this->model->where('status', 'preacher')->get();
+        $preachers = $this->model->where('status', 'preacher')->get();
+        foreach ($preachers as $preacher) {
+            $dum = $preacher->tags;
+        }
+        return $preachers;
+    }
+
+    public function find($id)
+    {
+        $preacher=$this->model->where('id', $id)->first();
+        $dum=$preacher->tags;
+        return $preacher;
     }
 }

@@ -69,7 +69,6 @@ class ChurchnetServiceProvider extends ServiceProvider
         $this->registerBindings();
     }
 
-
     private function registerBindings()
     {
         $this->app->bind(
@@ -160,6 +159,13 @@ class ChurchnetServiceProvider extends ServiceProvider
             'Bishopm\Churchnet\Repositories\SocietiesRepository',
             function () {
                 $repository = new \Bishopm\Churchnet\Repositories\SocietiesRepository(new \Bishopm\Churchnet\Models\Society());
+                return $repository;
+            }
+        );
+        $this->app->bind(
+            'Bishopm\Churchnet\Repositories\TagsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\TagsRepository(new \Spatie\Tags\Tag());
                 return $repository;
             }
         );

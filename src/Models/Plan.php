@@ -13,9 +13,9 @@ class Plan extends Model
         return $this->hasOne('Bishopm\Churchnet\Models\Label');
     }
 
-    public function preacher()
+    public function person()
     {
-        return $this->belongsTo('Bishopm\Churchnet\Models\Preacher');
+        return $this->belongsTo('Bishopm\Churchnet\Models\Person');
     }
 
     public function society()

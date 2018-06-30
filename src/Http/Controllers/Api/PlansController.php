@@ -8,6 +8,7 @@ use Auth;
 use Bishopm\Churchnet\Http\Requests\PlansRequest;
 use Redirect;
 use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
@@ -160,14 +161,10 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($circuit);
         $data['circuit']=$this->circuit->find($circuit);
-        $data['preachers']=$this->preachers->sqlQuery("SELECT * from preachers,people,positions,person_position where people.
-        deleted_at IS NULL and preachers.person_id = people.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Local preacher' or positions.position='On trial preacher' or positions.position='Emeritus preacher') ORDER BY people.surname,people.firstname");
-        $data['ministers']=$this->preachers->sqlQuery("SELECT * from preachers,people,positions,person_position where people.
-        deleted_at IS NULL and preachers.person_id = people.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and (positions.position='Circuit minister' or positions.position='Superintendent minister') ORDER BY people.surname,people.firstname");
-        $data['supernumeraries']=$this->preachers->sqlQuery("SELECT * from preachers,people,positions,person_position where people.
-        deleted_at IS NULL and preachers.person_id = people.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Supernumerary minister' ORDER BY people.surname,people.firstname");
-        $data['guests']=$this->preachers->sqlQuery("SELECT * from preachers,people,positions,person_position where people.
-        deleted_at IS NULL and preachers.person_id = people.id and person_position.person_id = preachers.person_id and positions.id = person_position.position_id and positions.position='Guest preacher' ORDER BY people.surname,people.firstname");
+        $data['preachers']=Person::where('circuit_id', $data['circuit']->id)->where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['guests']=array();
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
             $dum['dt']=$lastSunday;
@@ -194,20 +191,13 @@ class PlansController extends Controller
         } else {
             $data['sundays']=$sundays;
         }
-        $pm1=$this->plans->sqlQuery("SELECT plans.*, people.firstname, people.surname, positions.position from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id,people,person_position,positions WHERE planyear = '" . $y1 . "' and planmonth ='" . $m1 . "' and preachers.person_id=people.id and person_position.person_id=people.id and person_position.position_id=positions.id and selectgroup=1");
+        $pm1 = $this->plans->preachingmonth($data['circuit']->id, $y1, $m1);
         foreach ($pm1 as $p1) {
             $soc=$this->societies->find($p1->society_id)->society;
             $ser=$this->services->find($p1->service_id)->servicetime;
-            if ($p1->position=="Circuit minister") {
-                $p1typ="M_";
-            } elseif ($p1->position=="Guest") {
-                $p1typ="G_";
-            } else {
-                $p1typ="P_";
-            }
-            if ($p1->preacher_id) {
-                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['preacher']=$p1typ . $p1->preacher_id;
-                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['pname']=substr($p1->firstname, 0, 1) . " " . $p1->surname;
+            if ($p1->person_id) {
+                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['preacher']=$p1->person_id;
+                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['pname']=substr($p1->person->firstname, 0, 1) . " " . $p1->person->surname;
             } else {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['preacher']="";
             }
@@ -220,20 +210,13 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['trial']=$p1->trialservice;
             }
         }
-        $pm2=$this->plans->sqlQuery("SELECT plans.*, people.firstname, people.surname, positions.position from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id,people,person_position,positions WHERE planyear = '" . $y2 . "' and planmonth ='" . $m2 . "' and preachers.person_id=people.id and person_position.person_id=people.id and person_position.position_id=positions.id");
+        $pm2 = $this->plans->preachingmonth($data['circuit']->id, $y2, $m2);
         foreach ($pm2 as $p2) {
             $soc=$this->societies->find($p2->society_id)->society;
             $ser=$this->services->find($p2->service_id)->servicetime;
-            if ($p2->position=="Circuit minister") {
-                $p2typ="M_";
-            } elseif ($p2->position=="Guest") {
-                $p2typ="G_";
-            } else {
-                $p2typ="P_";
-            }
-            if ($p2->preacher_id) {
-                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['preacher']=$p2typ . $p2->preacher_id;
-                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['pname']=substr($p2->firstname, 0, 1) . " " . $p2->surname;
+            if ($p2->person_id) {
+                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['preacher']=$p2->person_id;
+                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['pname']=substr($p2->person->firstname, 0, 1) . " " . $p2->person->surname;
             } else {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['preacher']="";
             }
@@ -246,20 +229,13 @@ class PlansController extends Controller
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['trial']=$p2->trialservice;
             }
         }
-        $pm3=$this->plans->sqlQuery("SELECT plans.*, people.firstname, people.surname, positions.position from plans LEFT JOIN preachers ON plans.preacher_id=preachers.id,people,person_position,positions WHERE planyear = '" . $y3 . "' and planmonth ='" . $m3 . "' and preachers.person_id=people.id and person_position.person_id=people.id and person_position.position_id=positions.id");
+        $pm3 = $this->plans->preachingmonth($data['circuit']->id, $y3, $m3);
         foreach ($pm3 as $p3) {
             $soc=$this->societies->find($p3->society_id)->society;
             $ser=$this->services->find($p3->service_id)->servicetime;
-            if ($p3->position=="Circuit minister") {
-                $p3typ="M_";
-            } elseif ($p3->position=="Guest") {
-                $p3typ="G_";
-            } else {
-                $p3typ="P_";
-            }
-            if ($p3->preacher_id) {
-                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['preacher']=$p3typ . $p3->preacher_id;
-                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['pname']=substr($p3->firstname, 0, 1) . " " . $p3->surname;
+            if ($p3->person_id) {
+                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['preacher']=$p3->person_id;
+                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['pname']=substr($p3->person->firstname, 0, 1) . " " . $p3->person->surname;
             } else {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['preacher']="";
             }
@@ -335,9 +311,9 @@ class PlansController extends Controller
             }
         } elseif ($fields[0]=="p") {
             if ($val<>"blank") {
-                $plan->preacher_id=explode('_', $val)[1];
+                $plan->person_id=explode('_', $val)[1];
             } else {
-                $plan->preacher_id=null;
+                $plan->person_id=null;
             }
         }
         $plan->save();
