@@ -2,7 +2,7 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use Bishopm\Churchnet\Repositories\PeopleRepository;
+use Bishopm\Churchnet\Repositories\TagsRepository;
 use Spatie\Tags\Tag;
 use App\Http\Controllers\Controller;
 
@@ -24,6 +24,6 @@ class TagsController extends Controller
 
     public function index($circuit)
     {
-        return json_decode($this->tag->all());
+        return $this->tag->all();
     }
 }

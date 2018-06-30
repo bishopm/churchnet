@@ -11,4 +11,16 @@ class TagsRepository extends EloquentBaseRepository
             return $tag->name === $tagname;
         });
     }
+
+    public function all()
+    {
+        $tags = Tag::all();
+        $data=array();
+        foreach ($tags as $tag) {
+            $dum['id']=$tag->id;
+            $dum['name']=$tag->name;
+            $data[$tag->type][]=$dum;
+        }
+        return $data;
+    }
 }
