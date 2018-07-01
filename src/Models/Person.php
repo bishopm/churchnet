@@ -3,12 +3,12 @@
 namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Spatie\Tags\HasTags;
+use Cviebrock\EloquentTaggable\Taggable;
 use Illuminate\Database\Eloquent\Model;
 
 class Person extends Model
 {
-    use SoftDeletes, HasTags;
+    use SoftDeletes, Taggable;
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');

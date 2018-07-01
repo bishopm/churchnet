@@ -4,7 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Page;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use Bishopm\Churchnet\Models\Resource;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreatePageRequest;

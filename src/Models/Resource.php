@@ -3,12 +3,12 @@
 namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Tags\HasTags;
+use Cviebrock\EloquentTaggable\Taggable;
 use Actuallymab\LaravelComment\Commentable;
 
 class Resource extends Model
 {
-    use HasTags, Commentable;
+    use Taggable, Commentable;
     
     protected $guarded = array('id');
 }

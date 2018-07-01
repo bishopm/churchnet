@@ -4,7 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Models\Resource;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use Bishopm\Churchnet\Http\Requests\CreateResourceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateResourceRequest;
 use Illuminate\Http\Request;

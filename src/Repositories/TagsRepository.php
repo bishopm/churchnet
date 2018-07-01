@@ -1,7 +1,7 @@
 <?php namespace Bishopm\Churchnet\Repositories;
 
 use Bishopm\Churchnet\Repositories\EloquentBaseRepository;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 
 class TagsRepository extends EloquentBaseRepository
 {

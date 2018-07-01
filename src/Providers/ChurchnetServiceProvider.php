@@ -49,6 +49,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         config(['services.google.client_id' => env('G+_CLIENT_ID')]);
         config(['services.google.client_secret' => env('G+_CLIENT_SECRET')]);
         config(['services.google.redirect' => env('G+_REDIRECT')]);
+        config(['taggable.model'=>'Bishopm\Churchnet\Models\Tagg']);
     }
 
     /**
@@ -165,7 +166,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         $this->app->bind(
             'Bishopm\Churchnet\Repositories\TagsRepository',
             function () {
-                $repository = new \Bishopm\Churchnet\Repositories\TagsRepository(new \Spatie\Tags\Tag());
+                $repository = new \Bishopm\Churchnet\Repositories\TagsRepository(new \Cviebrock\EloquentTaggable\Models\Tag());
                 return $repository;
             }
         );

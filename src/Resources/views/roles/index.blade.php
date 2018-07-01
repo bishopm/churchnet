@@ -19,7 +19,7 @@
                                     @csrf
                                     <div class="row">
                                         <div class="col-5 text-right">
-                                            <input class="form-control" placeholder="Role / Status" name="tag">                                  
+                                            <input class="form-control" placeholder="Role / Status" name="tag">
                                         </div>                                        
                                         <div class="col-5 text-right">
                                             <select class="form-control" name="type">
@@ -28,6 +28,7 @@
                                                 <option value="preacher">Preacher</option>
                                             </select>
                                         </div>
+                                        <input type="hidden" name="namespace" value="Bishopm\Churchnet\Models\Person">
                                         <div class="col-2 text-right">
                                             <button class="form-control btn-primary" type="submit">Add</button>
                                         </div>

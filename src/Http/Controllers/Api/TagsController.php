@@ -3,7 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\TagsRepository;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
 

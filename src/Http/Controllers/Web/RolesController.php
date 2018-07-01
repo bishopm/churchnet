@@ -4,7 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use App\Http\Controllers\Controller;
 use Cartalyst\Tags\IlluminateTag;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use Illuminate\Http\Request;
 
 class RolesController extends Controller
@@ -23,7 +23,7 @@ class RolesController extends Controller
 
     public function store(Request $request)
     {
-        $tag = Tag::findOrCreate($request->tag, $request->type);
+        $tag = Tag::Create(['name' => $request->tag]);
         return redirect()->route('admin.roles.index')
             ->withSuccess('New role / status added');
     }

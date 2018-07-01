@@ -7,7 +7,7 @@ use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Resource;
 use Bishopm\Churchnet\Models\Page;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use LithiumDev\TagCloud\TagCloud;
 use Illuminate\Http\Request;
 

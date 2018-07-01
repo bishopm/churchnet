@@ -7,7 +7,7 @@ use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Circuit;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Spatie\Tags\Tag;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use Bishopm\Churchnet\Http\Requests\CreatePersonRequest;
 use Bishopm\Churchnet\Http\Requests\UpdatePersonRequest;
 
@@ -74,14 +74,24 @@ class PeopleController extends Controller
     {
         if (isset($request->ptags)) {
             $person=$this->person->create($request->except('ptags', 'ltags'));
-            $person->syncTagsWithType($request->ptags, 'preacher');
-            $person->syncTagsWithType($request->ltags, 'leader');
+            foreach ($request->ptags as $ptag){
+                $person->tag($ptag);
+            }
+            if (isset($request->ltags)) {
+                foreach ($request->ltags as $ltag) {
+                    $person->tag($ltag);
+                }
+            }
         } elseif (isset($request->ltags)) {
             $person=$this->person->create($request->except('ltags'));
-            $person->syncTagsWithType($request->ltags, 'leader');
+            foreach ($request->ltags as $ltag){
+                $person->tag($ltag);
+            }
         } else {
             $person=$this->person->create($request->except('mtags'));
-            $person->syncTagsWithType($request->mtags, 'minister');
+            foreach ($request->mtags as $mtag){
+                $person->tag($mtag);
+            }
         }
         return redirect()->route('admin.people.index')
             ->withSuccess('New person added');
@@ -91,19 +101,27 @@ class PeopleController extends Controller
     {
         if (isset($request->ptags)) {
             $this->person->update($person, $request->except('ptags', 'ltags'));
-            $person->syncTagsWithType($request->ptags, 'preacher');
-            $person->syncTagsWithType($request->ltags, 'leader');
-            $person->syncTagsWithType([], 'minister');
+            $person->detag();
+            foreach ($request->ptags as $ptag){
+                $person->tag($ptag);
+            }
+            if (isset($request->ltags)) {
+                foreach ($request->ltags as $ltag) {
+                    $person->tag($ltag);
+                }
+            }
         } elseif (isset($request->ltags)) {
             $this->person->update($person, $request->except('ltags'));
-            $person->syncTagsWithType([], 'preacher');
-            $person->syncTagsWithType($request->ltags, 'leader');
-            $person->syncTagsWithType([], 'minister');
+            $person->detag();
+            foreach ($request->ltags as $ltag){
+                $person->tag($ltag);
+            }
         } else {
             $this->person->update($person, $request->except('mtags'));
-            $person->syncTagsWithType([], 'preacher');
-            $person->syncTagsWithType([], 'leader');
-            $person->syncTagsWithType($request->mtags, 'minister');
+            $person->detag();
+            foreach ($request->mtags as $mtag){
+                $person->tag($mtag);
+            }
         }
         return redirect()->route('admin.people.index')->withSuccess('Person has been updated');
     }
