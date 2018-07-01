@@ -161,9 +161,9 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($circuit);
         $data['circuit']=$this->circuit->find($circuit);
-        $data['preachers']=Person::where('circuit_id', $data['circuit']->id)->where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
-        $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
-        $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['preachers']=Person::where('circuit_id', $data['circuit']->id)->with('tags')->where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->with('tags')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->with('tags')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
         $data['guests']=array();
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
