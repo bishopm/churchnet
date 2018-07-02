@@ -38,12 +38,12 @@ class SocietiesController extends Controller
         $societies = Society::with('services')->where('circuit_id', $circuit)->get();
         foreach ($societies as $society) {
             foreach ($society->services as $service) {
-                $plan = Plan::with('preacher')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
+                $plan = Plan::with('person')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
                 if ($plan) {
-                    $service->preacher=$plan->preacher;
+                    $service->person=$plan->person;
                     $service->servicetype=$plan->servicetype;
                 } else {
-                    $service->preacher="";
+                    $service->person="";
                     $service->servicetype="";
                 }
             }
