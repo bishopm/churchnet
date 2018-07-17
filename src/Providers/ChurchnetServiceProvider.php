@@ -22,9 +22,6 @@ class ChurchnetServiceProvider extends ServiceProvider
             require __DIR__.'/../Http/web.routes.php';
         }
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'churchnet');
-        $this->publishes([
-        __DIR__.'/../Resources/views/errors' => base_path('resources/views/errors'),
-        ]);
         $this->loadMigrationsFrom(__DIR__.'/../Database/migrations');
         $this->publishes([__DIR__.'/../Assets' => public_path('vendor/bishopm'),], 'public');
         Form::component('bsText', 'churchnet::components.text', ['name', 'label' => '', 'placeholder' => '', 'value' => null, 'attributes' => []]);
