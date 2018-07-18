@@ -48,7 +48,7 @@ class HouseholdsController extends Controller
 
     public function show($id)
     {
-        return Household::with('individuals')->where('id', $id)->first();
+        return Household::with('individuals.groups')->where('id', $id)->first();
     }
 
     public function store(CreateHouseholdRequest $request)
