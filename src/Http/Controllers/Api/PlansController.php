@@ -289,14 +289,7 @@ class PlansController extends Controller
     public function update($circuit, $box, $val)
     {
         $fields=explode('_', $box);
-        $pa=array(
-        'circuit_id'=>$circuit,
-        'society_id'=>$fields[1],
-        'service_id'=>$fields[2],
-        'planyear'=>$fields[3],
-        'planmonth'=>$fields[4],
-        'planday'=>$fields[5]
-      );
+        $pa=array('circuit_id'=>$circuit,'society_id'=>$fields[1],'service_id'=>$fields[2],'planyear'=>$fields[3],'planmonth'=>$fields[4],'planday'=>$fields[5]);
         $plan=Plan::firstOrCreate($pa);
         if ($fields[0]=="t") {
             if (is_numeric($val)) {
