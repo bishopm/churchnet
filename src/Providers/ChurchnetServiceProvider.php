@@ -22,9 +22,6 @@ class ChurchnetServiceProvider extends ServiceProvider
             require __DIR__.'/../Http/web.routes.php';
         }
         $this->loadViewsFrom(__DIR__.'/../Resources/views', 'churchnet');
-        $this->publishes([
-        __DIR__.'/../Resources/views/errors' => base_path('resources/views/errors'),
-        ]);
         $this->loadMigrationsFrom(__DIR__.'/../Database/migrations');
         $this->publishes([__DIR__.'/../Assets' => public_path('vendor/bishopm'),], 'public');
         Form::component('bsText', 'churchnet::components.text', ['name', 'label' => '', 'placeholder' => '', 'value' => null, 'attributes' => []]);
@@ -83,6 +80,27 @@ class ChurchnetServiceProvider extends ServiceProvider
             'Bishopm\Churchnet\Repositories\DistrictsRepository',
             function () {
                 $repository = new \Bishopm\Churchnet\Repositories\DistrictsRepository(new \Bishopm\Churchnet\Models\District());
+                return $repository;
+            }
+        );
+        $this->app->bind(
+            'Bishopm\Churchnet\Repositories\GroupsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\GroupsRepository(new \Bishopm\Churchnet\Models\Group());
+                return $repository;
+            }
+        );
+        $this->app->bind(
+            'Bishopm\Churchnet\Repositories\HouseholdsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\HouseholdsRepository(new \Bishopm\Churchnet\Models\Household());
+                return $repository;
+            }
+        );
+        $this->app->bind(
+            'Bishopm\Churchnet\Repositories\IndividualsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\IndividualsRepository(new \Bishopm\Churchnet\Models\Individual());
                 return $repository;
             }
         );

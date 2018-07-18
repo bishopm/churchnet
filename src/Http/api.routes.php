@@ -17,6 +17,26 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::post('api/methodist/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@store','as'=>'api.circuits.store']);
     Route::delete('api/methodist/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@destroy','as'=>'api.circuits.destroy']);
 
+    // Groups
+    Route::get('api/methodist/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@index','as'=>'api.groups.index']);
+    Route::get('api/methodist/groups/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@create','as'=>'api.groups.create']);
+    Route::get('api/methodist/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@show','as'=>'api.groups.show']);
+    Route::get('api/methodist/groups/{group}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@edit','as'=>'api.groups.edit']);
+    Route::put('api/methodist/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@update','as'=>'api.groups.update']);
+    Route::post('api/methodist/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@store','as'=>'api.groups.store']);
+    Route::post('api/methodist/groups/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@search','as'=>'api.groups.search']);
+    Route::delete('api/methodist/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@destroy','as'=>'api.groups.destroy']);
+
+    // Households
+    Route::get('api/methodist/households', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@index','as'=>'api.households.index']);
+    Route::get('api/methodist/households/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@create','as'=>'api.households.create']);
+    Route::get('api/methodist/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@show','as'=>'api.households.show']);
+    Route::get('api/methodist/households/{household}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@edit','as'=>'api.households.edit']);
+    Route::put('api/methodist/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@update','as'=>'api.households.update']);
+    Route::post('api/methodist/households', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@store','as'=>'api.households.store']);
+    Route::post('api/methodist/households/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@search','as'=>'api.households.search']);
+    Route::delete('api/methodist/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@destroy','as'=>'api.households.destroy']);
+
     // Societies
     Route::get('/api/methodist/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
     Route::get('/api/methodist/circuits/{circuit}/societies/{society}/feeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@feeditems','as'=>'api.societies.feeditems']);
