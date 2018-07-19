@@ -33,7 +33,11 @@ class HouseholdsController extends Controller
     
     public function search(Request $request)
     {
-        return Household::with('individuals')->where('addressee', 'like', '%' . $request->search . '%')->get();
+        $socs=array();
+        foreach ($request->societies as $soc) {
+            $socs[]=intval($soc);
+        }
+        return Household::with('individuals')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->get();
     }
 
     public function query($household, Request $request)

@@ -37,4 +37,9 @@ class Circuit extends Model
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Feeditem', 'distributable');
     }
+
+    public function users()
+    {
+        return $this->morphToMany('Bishopm\Churchnet\Models\User', 'permissible');
+    }
 }
