@@ -6,6 +6,7 @@ use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateSocietyRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSocietyRequest;
 
@@ -28,6 +29,15 @@ class SocietiesController extends Controller
     public function index($circuit)
     {
         return json_decode($this->society->allforcircuit($circuit));
+    }
+
+    public function search(Request $request)
+    {
+        $circs=array();
+        foreach ($request->circuits as $circ) {
+            $circs[]=intval($circ);
+        }
+        return Society::whereIn('circuit_id', $circs)->where('society', 'like', '%' . $request->search . '%')->orderBy('society')->get();
     }
 
     public function thisweek($circuit)
