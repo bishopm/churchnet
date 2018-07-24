@@ -3,7 +3,6 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\PeopleRepository;
-use Bishopm\Churchnet\Repositories\PositionsRepository;
 use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -21,12 +20,10 @@ class PeopleController extends Controller
      */
 
     private $person;
-    private $positions;
 
-    public function __construct(PeopleRepository $person, PositionsRepository $positions)
+    public function __construct(PeopleRepository $person)
     {
         $this->person = $person;
-        $this->positions = $positions;
     }
 
     public function index($circuit)
@@ -38,6 +35,15 @@ class PeopleController extends Controller
         }
         $data=Person::with('positions')->whereIn('id', $ids)->get();
         return $data;
+    }
+
+    public function search(Request $request)
+    {
+        $circs=array();
+        foreach ($request->circuits as $circ) {
+            $circs[]=intval($circ);
+        }
+        return Person::whereIn('circuit_id', $circs)->where('surname', 'like', '%' . $request->search . '%')->orderBy('surname')->get();
     }
 
     public function phone($circuit, Request $request)
@@ -79,21 +85,23 @@ class PeopleController extends Controller
     public function show($circuit, $person)
     {
         $data['person']=$this->person->find($person);
-        $data['positions']=$this->positions->all();
         return $data;
+    }
+
+    public function appshow($person)
+    {
+        return $this->person->find($person);
     }
 
     public function store(CreatePersonRequest $request)
     {
         $person = $this->person->create($request->except('image', 'token', 'positions'));
-        $person->positions()->sync($request->positions);
         return $person;
     }
     
     public function update($circuit, Person $person, UpdatePersonRequest $request)
     {
         $this->person->update($person, $request->except('token', 'positions'));
-        $person->positions()->sync($request->positions);
         return $person;
     }
 
