@@ -61,18 +61,6 @@ class SocietiesController extends Controller
         return $societies;
     }
 
-    public function feeditems($circuit, $society)
-    {
-        $this->monday = date("Y-m-d", strtotime('Monday this week'));
-        $feeditems = Society::where('id', $society)->with(['feeditems' => function ($query) {
-            $query->where('publicationdate', '=', $this->monday);
-        }])->first()->feeditems;
-        foreach ($feeditems as $item) {
-            $data[$item->category][]=$item;
-        }
-        return $data;
-    }
-
     public function edit($circuit, Society $society)
     {
         return json_encode($this->society->find($society));
