@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateFeeditemsTable extends Migration
+class CreateFeedpostsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class CreateFeeditemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('feeditems', function (Blueprint $table) {
+        Schema::create('feedposts', function (Blueprint $table) {
             $table->increments('id');
             $table->string('category');
-            $table->integer('distributable_id')->nullable();
-            $table->string('distributable_type')->nullable();
-            $table->integer('feedpost_id')->nullable();
+            $table->string('title');
+            $table->text('body');
+            $table->date('publicationdate')->nullable();
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreateFeeditemsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('feeditems');
+        Schema::drop('feedposts');
     }
 }

@@ -12,4 +12,9 @@ class Feeditem extends Model
     {
         return $this->morphMany();
     }
+
+    public function feedpost()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Feedpost');
+    }
 }

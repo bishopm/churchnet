@@ -39,7 +39,7 @@ class FeedsController extends Controller
         $this->cir = $this->soc->circuit;
         $this->dis = $this->cir->district;
         $this->monday = date("Y-m-d", strtotime('Monday this week'));
-        $feeditems = Feeditem::where('publicationdate', '=', $this->monday)
+        $feeditems = Feeditem::with('feedpost')->where('publicationdate', '=', $this->monday)
         ->where(function ($query) {
             $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
                   ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
