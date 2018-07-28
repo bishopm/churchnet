@@ -35,11 +35,12 @@ class FeedsController extends Controller
 
     public function feeditems($society)
     {
+        $data=array();
         $this->soc = Society::with('circuit.district')->find($society);
         $this->cir = $this->soc->circuit;
         $this->dis = $this->cir->district;
         $this->monday = date("Y-m-d", strtotime('Monday this week'));
-        $feeditems = Feeditem::with('feedpost')->where('publicationdate', '=', $this->monday)
+        $feeditems = Feeditem::monday($this->monday)->with('feedpost')
         ->where(function ($query) {
             $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
                   ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
@@ -53,7 +54,7 @@ class FeedsController extends Controller
             } else {
                 $item->source=$this->soc->society;
             }
-            $data[$item->category][]=$item;
+            $data[$item->feedpost->category][]=$item;
         }
         return $data;
     }
