@@ -5,6 +5,8 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Feeditem;
+use Bishopm\Churchnet\Models\Feedpost;
+use Illuminate\Http\Request;
 use SimplePie;
 
 class FeedsController extends Controller
@@ -24,12 +26,10 @@ class FeedsController extends Controller
         $feed->handle_content_type();
         $feed->set_feed_url(array('http://faithfordailyliving.org'));
         $feed->init();
-        $prayer=$feed->get_items()[0];
-        $data['prayer']['title']=$prayer->get_title();
-        $data['prayer']['content']=$prayer->get_content();
         $devotion=$feed->get_items()[1];
         $data['devotion']['title']=$devotion->get_title();
         $data['devotion']['content']=$devotion->get_content();
+        $data['devotion']['pubdate']=date("d M Y",24*3600 + strtotime($devotion->get_date()));
         return $data;
     }
 
@@ -56,6 +56,37 @@ class FeedsController extends Controller
             }
             $data[$item->feedpost->category][]=$item;
         }
+        if ($this->soc->journey) {
+            $feed = new SimplePie();
+            $feed->set_cache_location(storage_path() . '/simplepie_cache');
+            $feed->handle_content_type();
+            $feed->set_feed_url(array($this->soc->journey));
+            $feed->init();
+            foreach ($feed->get_items() as $item){
+                $itype=$item->get_description();
+                $dum['title']=$item->get_title();
+                $dum['content']=$item->get_content();
+                $dum['author']=$item->get_author();
+                $dum['pubdate']=date("d M Y",strtotime($item->get_date()));
+                $dum['image']=$item->get_link();
+                $data[$itype][]=$dum;
+            }
+        }
         return $data;
+    }
+
+    public function store (Request $request)
+    {
+        $feedpost=Feedpost::create($request->post);
+        foreach ($request->circuits as $circuit){
+            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit]);
+        }
+        foreach ($request->societies as $society){
+            $testsoc=Society::where('id',$society)->whereIn('circuit_id',$request->circuits)->count();
+            if (!$testsoc){
+                Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society]);
+            }
+        }
+        return "ok";
     }
 }

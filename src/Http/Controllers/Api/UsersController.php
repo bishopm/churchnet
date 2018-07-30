@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\User;
+use Illuminate\Http\Request;
 use Auth;
 
 class UsersController extends Controller

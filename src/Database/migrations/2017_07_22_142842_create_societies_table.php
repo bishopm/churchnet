@@ -20,6 +20,7 @@ class CreateSocietiesTable extends Migration
             $table->string('address')->nullable();
             $table->string('contact')->nullable();
             $table->string('website')->nullable();
+            $table->string('journey')->nullable();
             $table->double('latitude', 20, 15);
             $table->double('longitude', 20, 15);
             $table->softDeletes();

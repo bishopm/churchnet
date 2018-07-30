@@ -17,4 +17,9 @@ class Individual extends Model
     {
         return $this->belongsToMany('Bishopm\Churchnet\Models\Group');
     }
+
+    public function user()
+    {
+        return $this->hasone('Bishopm\Churchnet\Models\User');
+    }
 }

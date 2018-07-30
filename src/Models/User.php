@@ -28,6 +28,11 @@ class User extends Authenticatable implements JWTSubject
         'password'
     ];
 
+    public function individual()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Individual');
+    }
+
     public function circuits()
     {
         return $this->morphedByMany('Bishopm\Churchnet\Models\Circuit', 'permissible');

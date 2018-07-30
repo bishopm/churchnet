@@ -55,6 +55,8 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::get('api/reading/{reading}/{bible}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading','as'=>'api.lectionary.reading']);
     Route::get('api/feeds/ffdl', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@ffdl','as'=>'api.feeds.ffdl']);
     Route::get('/api/methodist/feeditems/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditems','as'=>'api.feeds.feeditems']);
+    Route::post('/api/methodist/feeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@store','as'=>'api.feeditems.store']);
+    Route::post('/api/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@phone','as'=>'api.individuals.phone']);
     Route::get('api/lectionary/{lyear?}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@wholeyear','as'=>'api.lectionary.wholeyear']);
     Route::get('/api/methodist/circuits/{circuit}/upcomingmeetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
     Route::post('api/methodist/circuits/{circuit}/preachers/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@phone','as'=>'api.preachers.phone']);

@@ -31,6 +31,11 @@ class IndividualsController extends Controller
         return Individual::all();
     }
     
+    public function phone(Request $request)
+    {
+        return Individual::with('household.individuals','groups')->where('cellphone', $request->phone)->first();
+    }
+    
     public function search(Request $request)
     {
         return Individual::with('individuals')->where('addressee', 'like', '%' . $request->search . '%')->get();
