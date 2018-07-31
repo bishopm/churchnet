@@ -12,4 +12,9 @@ class Group extends Model
     {
         return $this->belongsToMany('Bishopm\Churchnet\Models\Individual');
     }
+
+    public function chats()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Chat', 'chatable');
+    }
 }
