@@ -34,20 +34,36 @@ class IndividualsController extends Controller
     
     public function phone(Request $request)
     {
-        $individual = Individual::with('household.individuals','groups','household.society.circuit')->where('cellphone', $request->phone)->first();
+        $individual = Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('cellphone', $request->phone)->first();
         $gids=array();
         foreach ($individual->groups as $group) {
             $gids[]=$group->id;
         }
         $monday = date("Y-m-d", strtotime('Monday this week'));
         $nextmonday = date("Y-m-d", strtotime('Monday next week'));
-        $chats = Chat::where('chatable_type','Bishopm\Churchnet\Models\Society')->where('chatable_id',$individual->household->society_id)
-        ->orWhere('chatable_type','Bishopm\Churchnet\Models\Circuit')->where('chatable_id',$individual->household->society->circuit_id)
-        ->orWhere('chatable_type','Bishopm\Churchnet\Models\District')->where('chatable_id',$individual->household->society->circuit->district_id)
-        ->orWhere('chatable_type','Bishopm\Churchnet\Models\Group')->whereIn('chatable_id',$gids)
-        ->where('publicationdate','>=',$monday)->where('publicationdate','<',$nextmonday)->get()->toArray();
+        $chats = Chat::where('chatable_type', 'Bishopm\Churchnet\Models\Society')->where('chatable_id', $individual->household->society_id)->where('root', 0)
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Circuit')->where('chatable_id', $individual->household->society->circuit_id)
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\District')->where('chatable_id', $individual->household->society->circuit->district_id)
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Group')->whereIn('chatable_id', $gids)
+        ->where('publicationdate', '>=', $monday)->where('publicationdate', '<', $nextmonday)->get();
         $individual->chats=$chats;
+        foreach ($individual->chats as $chat) {
+            if ($chat->chatable_type == 'Bishopm\Churchnet\Models\District') {
+                $chat->source = $chat->chatable->district . ' District';
+            } elseif ($chat->chatable_type == 'Bishopm\Churchnet\Models\Circuit') {
+                $chat->source = $chat->chatable->circuit;
+            } elseif ($chat->chatable_type == 'Bishopm\Churchnet\Models\Society') {
+                $chat->source = $chat->chatable->society . ' Society';
+            } elseif ($chat->chatable_type == 'Bishopm\Churchnet\Models\Group') {
+                $chat->source = $chat->chatable->groupname;
+            }
+        }
         return $individual;
+    }
+
+    public function message($id)
+    {
+        return Chat::with('individual', 'chatable')->where('id', $id)->orWhere('root', $id)->orderBy('order', 'ASC')->get();
     }
     
     public function search(Request $request)
