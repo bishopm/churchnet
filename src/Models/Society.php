@@ -28,6 +28,11 @@ class Society extends Model
         return $this->morphMany('Bishopm\Churchnet\Models\Feeditem', 'distributable');
     }
 
+    public function chats()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Chat', 'chatable');
+    }
+
     public function users()
     {
         return $this->morphToMany('Bishopm\Churchnet\Models\User', 'permissible');

@@ -12,4 +12,9 @@ class Household extends Model
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Individual')->orderBy('firstname');
     }
+
+    public function society()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Society');
+    }
 }

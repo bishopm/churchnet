@@ -27,4 +27,9 @@ class District extends Model
     {
         return $this->morphToMany('Bishopm\Churchnet\Models\User', 'permissible');
     }
+
+    public function chats()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Chat', 'chatable');
+    }
 }

@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\IndividualsRepository;
 use Bishopm\Churchnet\Models\Individual;
+use Bishopm\Churchnet\Models\Chat;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -33,7 +34,20 @@ class IndividualsController extends Controller
     
     public function phone(Request $request)
     {
-        return Individual::with('household.individuals','groups')->where('cellphone', $request->phone)->first();
+        $individual = Individual::with('household.individuals','groups','household.society.circuit')->where('cellphone', $request->phone)->first();
+        $gids=array();
+        foreach ($individual->groups as $group) {
+            $gids[]=$group->id;
+        }
+        $monday = date("Y-m-d", strtotime('Monday this week'));
+        $nextmonday = date("Y-m-d", strtotime('Monday next week'));
+        $chats = Chat::where('chatable_type','Bishopm\Churchnet\Models\Society')->where('chatable_id',$individual->household->society_id)
+        ->orWhere('chatable_type','Bishopm\Churchnet\Models\Circuit')->where('chatable_id',$individual->household->society->circuit_id)
+        ->orWhere('chatable_type','Bishopm\Churchnet\Models\District')->where('chatable_id',$individual->household->society->circuit->district_id)
+        ->orWhere('chatable_type','Bishopm\Churchnet\Models\Group')->whereIn('chatable_id',$gids)
+        ->where('publicationdate','>=',$monday)->where('publicationdate','<',$nextmonday)->get()->toArray();
+        $individual->chats=$chats;
+        return $individual;
     }
     
     public function search(Request $request)
