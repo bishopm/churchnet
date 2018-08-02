@@ -5,7 +5,7 @@ use Bishopm\Churchnet\Models\Circuit;
 
 class SocietiesRepository extends EloquentBaseRepository
 {
-    public function findsociety($circuit, $id)
+    public function findsociety($id)
     {
         return $this->model->with('services')->find($id);
     }

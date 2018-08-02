@@ -5,11 +5,13 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\IndividualsRepository;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Chat;
+use Bishopm\Churchnet\Models\Message;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateIndividualRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateIndividualRequest;
+use Carbon\Carbon;
 
 class IndividualsController extends Controller
 {
@@ -39,31 +41,34 @@ class IndividualsController extends Controller
         foreach ($individual->groups as $group) {
             $gids[]=$group->id;
         }
-        $monday = date("Y-m-d", strtotime('Monday this week'));
-        $nextmonday = date("Y-m-d", strtotime('Monday next week'));
-        $chats = Chat::where('chatable_type', 'Bishopm\Churchnet\Models\Society')->where('chatable_id', $individual->household->society_id)->where('root', 0)
+        $chats = Chat::with('messages', 'chatable')
+        ->where('chatable_type', 'Bishopm\Churchnet\Models\Society')->where('chatable_id', $individual->household->society_id)
         ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Circuit')->where('chatable_id', $individual->household->society->circuit_id)
         ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\District')->where('chatable_id', $individual->household->society->circuit->district_id)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Group')->whereIn('chatable_id', $gids)
-        ->where('publicationdate', '>=', $monday)->where('publicationdate', '<', $nextmonday)->get();
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Group')->whereIn('chatable_id', $gids)->get();
         $individual->chats=$chats;
-        foreach ($individual->chats as $chat) {
-            if ($chat->chatable_type == 'Bishopm\Churchnet\Models\District') {
-                $chat->source = $chat->chatable->district . ' District';
-            } elseif ($chat->chatable_type == 'Bishopm\Churchnet\Models\Circuit') {
-                $chat->source = $chat->chatable->circuit;
-            } elseif ($chat->chatable_type == 'Bishopm\Churchnet\Models\Society') {
-                $chat->source = $chat->chatable->society . ' Society';
-            } elseif ($chat->chatable_type == 'Bishopm\Churchnet\Models\Group') {
-                $chat->source = $chat->chatable->groupname;
-            }
-        }
         return $individual;
     }
 
     public function message($id)
     {
-        return Chat::with('individual', 'chatable')->where('id', $id)->orWhere('root', $id)->orderBy('order', 'ASC')->get();
+        $chat=Chat::with('messages.individual', 'chatable')->where('id', $id)->first();
+        foreach ($chat->messages as $message) {
+            $message->ago = Carbon::parse($message->created_at)->diffForHumans();
+        }
+        return $chat;
+    }
+
+    public function addmessage(Request $request)
+    {
+        $msg = Message::create([
+            'individual_id' => $request->message['individual_id'],
+            'chat_id' => $request->message['chat_id'],
+            'chat' => $request->message['chat']
+        ]);
+        $newmsg = Message::with('individual')->find($msg->id);
+        $newmsg->ago = Carbon::parse($newmsg->created_at)->diffForHumans();
+        return $newmsg;
     }
     
     public function search(Request $request)

@@ -14,15 +14,8 @@ class Chat extends Model
         return $this->morphTo();
     }
 
-    public function individual()
+    public function messages()
     {
-        return $this->belongsTo('Bishopm\Churchnet\Models\Individual');
-    }
-
-    public function scopeThisweek(Builder $query)
-    {
-        $monday = date("Y-m-d", strtotime('Monday this week'));
-        $nextmonday = date("Y-m-d", strtotime('Monday next week'));
-        return $query->where('publicationdate', '>=', $monday)->where('publicationdate', '<', $nextmonday);
+        return $this->hasMany('Bishopm\Churchnet\Models\Message');
     }
 }
