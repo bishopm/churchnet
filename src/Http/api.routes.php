@@ -8,8 +8,8 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::get('api/methodist/users/{user}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails','as'=>'api.users.details']);
 
     // Districts
-    Route::get('api/methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
-    Route::get('api/methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@show','as'=>'api.districts.show']);
+    Route::get('api/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
+    Route::get('api/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@show','as'=>'api.districts.show']);
 
     // Circuits
     Route::get('api/methodist/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@index','as'=>'api.circuits.index']);
