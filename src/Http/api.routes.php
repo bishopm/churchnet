@@ -48,10 +48,10 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::post('/api/methodist/societies/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@search','as'=>'api.societies.search']);
     Route::get('/api/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
     Route::get('api/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
+    Route::post('api/methodist/addsociety', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@appstore','as'=>'api.societies.appstore']);
 
     // Journey routes
     Route::post('/api/login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@journeylogin','as'=>'api.journey.login']);
-    Route::post('api/methodist/addsociety', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@appstore','as'=>'api.societies.appstore']);
     Route::get('api/sunday/{date?}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@sunday','as'=>'api.lectionary.sunday']);
     Route::get('api/reading/{reading}/{bible}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading','as'=>'api.lectionary.reading']);
     Route::get('api/feeds/ffdl', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@ffdl','as'=>'api.feeds.ffdl']);
@@ -60,12 +60,15 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::get('api/lectionary/{lyear?}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@wholeyear','as'=>'api.lectionary.wholeyear']);
     Route::get('/api/circuits/{circuit}/upcomingmeetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
     Route::get('/api/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);
+    Route::get('/api/circuits/{circuit}/withsocieties', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@withsocieties','as'=>'api.circuits.withsocieties']);
     Route::group(['middleware' => ['jwt.auth','handlecors']], function () {
         Route::post('/api/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@phone','as'=>'api.individuals.phone']);
         Route::get('/api/message/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@message','as'=>'api.individuals.message']);
         Route::post('/api/message', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@addmessage','as'=>'api.individuals.addmessage']);
         Route::post('api/circuits/{circuit}/preachers/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@phone','as'=>'api.preachers.phone']);
-       
+        Route::post('/api/combined', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@addcombined','as'=>'api.individuals.addcombined']);
+        Route::post('/api/individual', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@journeyadd','as'=>'api.individuals.journeyadd']);
+        Route::post('/api/household', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@journeyedit','as'=>'api.individuals.journeyedit']);
         Route::get('api/methodist/check', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check','as'=>'api.check']);
 
         // Meetings

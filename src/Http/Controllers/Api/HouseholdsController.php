@@ -50,6 +50,13 @@ class HouseholdsController extends Controller
         return view('connexion::households.create');
     }
 
+    public function journeyedit(Request $request)
+    {
+        $household=Household::find($request->id);
+        $this->household->update($household, $request->all());
+        return "Household updated";
+    }
+
     public function show($id)
     {
         return Household::with('individuals.groups')->where('id', $id)->first();

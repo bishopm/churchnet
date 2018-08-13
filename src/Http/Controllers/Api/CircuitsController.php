@@ -51,6 +51,11 @@ class CircuitsController extends Controller
         return $this->circuit->find($no);
     }
 
+    public function withsocieties($id)
+    {
+        return $this->circuit->withsocieties($id);
+    }
+
     public function store(CreateCircuitRequest $request)
     {
         $soc=$this->circuit->create($request->all());

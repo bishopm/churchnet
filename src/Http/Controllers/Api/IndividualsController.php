@@ -4,6 +4,8 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\IndividualsRepository;
 use Bishopm\Churchnet\Models\Individual;
+use Bishopm\Churchnet\Models\Household;
+use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Chat;
 use Bishopm\Churchnet\Models\Message;
 use App\Http\Controllers\Controller;
@@ -33,10 +35,36 @@ class IndividualsController extends Controller
     {
         return Individual::all();
     }
+
+    public function addcombined(Request $request)
+    {
+        $addressee = $request->firstname . ' ' . $request->surname;
+        $household = Household::create(['addressee'=>$addressee, 'society_id'=>$request->society_id, 'sortsurname'=>$request->surname]);
+        $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'household_id'=>$household->id]);
+        $household->householdcell = $individual->id;
+        $household->save();
+        $user = User::where('phone',$request->phone)->first();
+        $user->individual_id=$individual->id;
+        return "Household and individual added";
+    }
+
+    public function journeyadd(Request $request)
+    {
+        if ($request->action=="add"){
+            $individual = Individual::Create($request->except('action','id'));
+        } else {
+            $individual=Individual::find($request->id);
+            $this->individual->update($individual, $request->except('action'));
+        }
+        return "Individual added / updated";
+    }
     
     public function phone(Request $request)
     {
         $individual = Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('cellphone', $request->phone)->first();
+        if ($individual->household->society_id <> $request->society_id){
+            return "Wrong society";
+        }
         $gids=array();
         foreach ($individual->groups as $group) {
             $gids[]=$group->id;
