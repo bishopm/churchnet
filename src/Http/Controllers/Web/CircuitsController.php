@@ -69,7 +69,7 @@ class CircuitsController extends Controller
 
     public function show($circuitnum)
     {
-        $data['circuit']=Circuit::with('societies', 'people', 'people.society')->where('slug', $circuitnum)->first();
+        $data['circuit']=Circuit::with('societies')->where('slug', $circuitnum)->first();
         $settings=$this->settings->allforcircuit($data['circuit']->id);
         foreach ($settings as $setting) {
             $data['settings'][$setting->setting_key]=$setting->setting_value;
@@ -84,7 +84,7 @@ class CircuitsController extends Controller
             Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
-        $data['preachers'] = Person::where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['preachers'] = Person::where('status', 'preacher')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
         $data['ministers'] = Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
         $data['supernumeraries'] = Person::withAllTags(['Supernumerary minister'], 'minister')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
         $data['stewards'] = Person::withAllTags(['Circuit steward'], 'leader')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();

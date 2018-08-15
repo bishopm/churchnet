@@ -43,15 +43,15 @@ class IndividualsController extends Controller
         $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'household_id'=>$household->id]);
         $household->householdcell = $individual->id;
         $household->save();
-        $user = User::where('phone',$request->phone)->first();
+        $user = User::where('phone', $request->phone)->first();
         $user->individual_id=$individual->id;
         return "Household and individual added";
     }
 
     public function journeyadd(Request $request)
     {
-        if ($request->action=="add"){
-            $individual = Individual::Create($request->except('action','id'));
+        if ($request->action=="add") {
+            $individual = Individual::Create($request->except('action', 'id'));
         } else {
             $individual=Individual::find($request->id);
             $this->individual->update($individual, $request->except('action'));
@@ -61,10 +61,11 @@ class IndividualsController extends Controller
     
     public function phone(Request $request)
     {
+        $monday = date("Y-m-d", strtotime('Monday this week'));
         $individual = Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('cellphone', $request->phone)->first();
         if (!$individual) {
             return "No individual";
-        } elseif ($individual->household->society_id <> $request->society_id){
+        } elseif ($individual->household->society_id <> $request->society_id) {
             return "Wrong society";
         }
         $gids=array();
@@ -72,10 +73,10 @@ class IndividualsController extends Controller
             $gids[]=$group->id;
         }
         $chats = Chat::with('messages', 'chatable')
-        ->where('chatable_type', 'Bishopm\Churchnet\Models\Society')->where('chatable_id', $individual->household->society_id)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Circuit')->where('chatable_id', $individual->household->society->circuit_id)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\District')->where('chatable_id', $individual->household->society->circuit->district_id)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Group')->whereIn('chatable_id', $gids)->get();
+        ->where('chatable_type', 'Bishopm\Churchnet\Models\Society')->where('chatable_id', $individual->household->society_id)->where('created_at', '>=', $monday)
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Circuit')->where('chatable_id', $individual->household->society->circuit_id)->where('created_at', '>=', $monday)
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\District')->where('chatable_id', $individual->household->society->circuit->district_id)->where('created_at', '>=', $monday)
+        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Group')->whereIn('chatable_id', $gids)->where('created_at', '>=', $monday)->get();
         $individual->chats=$chats;
         return $individual;
     }
