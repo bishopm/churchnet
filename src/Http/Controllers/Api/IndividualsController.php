@@ -62,7 +62,9 @@ class IndividualsController extends Controller
     public function phone(Request $request)
     {
         $individual = Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('cellphone', $request->phone)->first();
-        if ($individual->household->society_id <> $request->society_id){
+        if (!$individual) {
+            return "No individual";
+        } elseif ($individual->household->society_id <> $request->society_id){
             return "Wrong society";
         }
         $gids=array();
