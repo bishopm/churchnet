@@ -6,6 +6,7 @@ use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Repositories\PlansRepository;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Person;
+use Bishopm\Churchnet\Models\Individual;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateCircuitRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
@@ -84,10 +85,10 @@ class CircuitsController extends Controller
             Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
-        $data['preachers'] = Person::where('status', 'preacher')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
-        $data['ministers'] = Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
-        $data['supernumeraries'] = Person::withAllTags(['Supernumerary minister'], 'minister')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
-        $data['stewards'] = Person::withAllTags(['Circuit steward'], 'leader')->where('circuit_id', $data['circuit']->id)->orderBy('surname')->orderBy('firstname')->get();
+        $data['preachers'] = $data['circuit']->preachers;
+        $data['ministers'] = $data['circuit']->ministers;
+        $data['supernumeraries'] = [];
+        $data['stewards'] = $data['circuit']->leaders;
         return view('churchnet::circuits.show', $data);
     }
 

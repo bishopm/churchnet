@@ -43,7 +43,7 @@
                 <h3>Circuit ministers</h3>
                 <ul class="list-unstyled">
                     @foreach ($ministers as $min)
-                        <li>{{$min->title}} {{$min->firstname}} {{$min->surname}}</li>
+                        <li>{{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}</li>
                     @endforeach
                 </ul>
             @endif
@@ -51,7 +51,7 @@
                 <h3>Supernumerary ministers</h3>
                 <ul class="list-unstyled">
                     @foreach ($supernumeraries as $sup)
-                        <li>{{$sup->title}} {{$sup->firstname}} {{$sup->surname}}</li>
+                        <li>{{$sup->individual->title}} {{$sup->individual->firstname}} {{$sup->individual->surname}}</li>
                     @endforeach
                 </ul>
             @endif
@@ -59,7 +59,7 @@
                 <h3>Circuit stewards</h3>
                 <ul class="list-unstyled">
                     @foreach ($stewards as $stw)
-                        <li>{{$stw->title}} {{$stw->firstname}} {{$stw->surname}}</li>
+                        <li>{{$stw->individual->title}} {{$stw->individual->firstname}} {{$stw->individual->surname}}</li>
                     @endforeach
                 </ul>
             @endif
@@ -69,9 +69,9 @@
                 <h3>Local preachers</h3>
                 @forelse ($preachers as $lp)
                     @if (!$loop->last)
-                        {{$lp->title}} {{substr($lp->firstname,0,1)}} {{$lp->surname}}, 
+                        {{$lp->individual->title}} {{substr($lp->individual->firstname,0,1)}} {{$lp->individual->surname}}, 
                     @else
-                        {{$lp->title}} {{substr($lp->firstname,0,1)}} {{$lp->surname}}.
+                        {{$lp->title}} {{substr($lp->individual->firstname,0,1)}} {{$lp->individual->surname}}.
                     @endif
                 @empty
                     This circuit has not added any preachers to the system
