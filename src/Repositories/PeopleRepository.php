@@ -20,4 +20,9 @@ class PeopleRepository extends EloquentBaseRepository
         $dum=$preacher->tags;
         return $preacher;
     }
+
+    public function all()
+    {
+        return $this->model->with('individual')->get();
+    }
 }

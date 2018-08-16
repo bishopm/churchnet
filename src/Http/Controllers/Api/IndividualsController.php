@@ -32,34 +32,6 @@ class IndividualsController extends Controller
         $this->individual = $individual;
     }
 
-    public function test()
-    {
-        $preachers = Preacher::where('society_id', '<>', 667)->get();
-        foreach ($preachers as $preacher) {
-            $household = new Household;
-            $household->addressee = $preacher->title . " " . $preacher->firstname . " " . $preacher->surname;
-            $household->society_id = $preacher->society_id;
-            $household->save();
-            $individual = new Individual;
-            $individual->firstname = $preacher->firstname;
-            $individual->surname = $preacher->surname;
-            $individual->title = $preacher->title;
-            if ($preacher == "Mr") {
-                $individual->sex="male";
-            } else {
-                $individual->sex="female";
-            }
-            $individual->slug = $preacher->slug;
-            $individual->cellphone = $preacher->phone;
-            $individual->household_id = $household->id;
-            $individual->memberstatus="member";
-            $individual->save();
-            $household->householdcell = $individual->save();
-            $household->save();
-        }
-        return "done";
-    }
-
     public function index()
     {
         return Individual::all();

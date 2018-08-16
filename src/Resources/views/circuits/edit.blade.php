@@ -37,7 +37,7 @@
                             <tbody>
                                 @forelse ($leaders as $leader)
                                     <tr>
-                                        <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">{{$leader->surname}}, {{$leader->title}} {{$leader->firstname}}</a></td>
+                                        <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">{{$leader->individual->surname}}, {{$leader->individual->title}} {{$leader->individual->firstname}}</a></td>
                                         <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">
                                             @foreach ($leader->tags as $pos)
                                                 {{$pos->tag}}

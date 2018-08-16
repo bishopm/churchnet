@@ -16,10 +16,8 @@ class ApiAuthController extends Controller
     public function login(Request $request)
     {
         // grab credentials from the request
-        $credentials = $request->only('name', 'password');
-        $user=User::where('name', $request->input('name'))->first();
-        $fullname=$user->individual->firstname . " " . $user->individual->surname;
-        $indiv_id=$user->individual_id;
+        $credentials = $request->only('email', 'password');
+        $user=User::where('email', $request->input('email'))->first();
         //Log::info('API login attempt: ' . json_encode($credentials));
 
         try {
@@ -33,7 +31,7 @@ class ApiAuthController extends Controller
         }
 
         // all good so return the token
-        return response()->json(compact('token', 'fullname', 'indiv_id'));
+        return response()->json(compact('token', 'user'));
     }
 
     public function journeylogin(Request $request)

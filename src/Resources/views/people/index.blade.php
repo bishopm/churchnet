@@ -32,7 +32,7 @@
                             <tbody>
                                 @forelse ($people as $person)
                                     <tr>
-                                        <td><a href="{{route('admin.people.edit',[$person->circuit_id,$person->id])}}">{{$person->surname}}, {{$person->title}} {{$person->firstname}}</a></td>
+                                        <td><a href="{{route('admin.people.edit',[$person->circuit_id,$person->id])}}">{{$person->individual->surname}}, {{$person->individual->title}} {{$person->individual->firstname}}</a></td>
                                         <td><a href="{{route('admin.people.edit',[$person->circuit_id,$person->id])}}">{{$person->circuit->circuit}} {{$person->circuit->circuitnumber}}</a></td>
                                     </tr>
                                 @empty
