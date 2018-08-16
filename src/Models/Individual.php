@@ -22,4 +22,9 @@ class Individual extends Model
     {
         return $this->hasone('Bishopm\Churchnet\Models\User');
     }
+
+    public function person()
+    {
+        return $this->hasone('Bishopm\Churchnet\Models\Person');
+    }
 }

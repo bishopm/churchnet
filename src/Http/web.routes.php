@@ -2,6 +2,7 @@
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@home','as'=>'home']);
+    Route::get('/test', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@test','as'=>'test']);
     Route::get('login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@showLoginForm','as'=>'showlogin']);
     Route::post('login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@login','as'=>'login']);
     Route::post('password/email', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail','as'=>'sendResetLinkEmail']);

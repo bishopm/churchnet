@@ -7,6 +7,7 @@ use Auth;
 use Bishopm\Churchnet\Libraries\Fpdf\Fpdf;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
+use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
@@ -115,7 +116,7 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
-        $data['preachers']=Person::where('circuit_id', $this->circuit->id)->where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['preachers']=$this->circuit->preachers;
         $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $this->circuit->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
         $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->where('circuit_id', $this->circuit->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
         $data['guests']=array();
@@ -321,7 +322,7 @@ class PlansController extends Controller
                     }
                     if (isset($dat['fin'][$soc['society']][$sun['yy']][$sun['mm']][$sun['dd']][$ser['servicetime']]['trial'])) {
                         $pdf->setxy($x, $y+$tagadd+2.5);
-                        $trial=$this->preachers->find($dat['fin'][$soc['society']][$sun['yy']][$sun['mm']][$sun['dd']][$ser['servicetime']]['trial']);
+                        $trial=$this->people->find($dat['fin'][$soc['society']][$sun['yy']][$sun['mm']][$sun['dd']][$ser['servicetime']]['trial']);
                         $tname="[" . utf8_decode(substr($trial->firstname, 0, 1) . " " . $trial->surname) . "]";
                         $pdf->SetFont('Arial', '', 6.5);
                         $pdf->cell($x_add, $y_add-3, $tname, 0, 0, 'C');
@@ -347,12 +348,12 @@ class PlansController extends Controller
         foreach ($dat['preachers'] as $preacher1) {
             $dum=array();
             $thissoc=$this->societies->find($preacher1->society_id)->society;
-            $dum['name']=$preacher1->title . " " . $preacher1->firstname . " " . $preacher1->surname;
+            $dum['name']=$preacher1->individual->title . " " . $preacher1->individual->firstname . " " . $preacher1->individual->surname;
             if ($preacher1->position=="Emeritus preacher") {
                 $dum['name'] = $dum['name'] . "*";
             }
-            $dum['soc']=$preacher1->society_id;
-            $dum['cellphone']=$preacher1->phone;
+            $dum['soc']=$preacher1->individual->household->society_id;
+            $dum['cellphone']=$preacher1->individual->cellphone;
             $dum['fullplan']=$preacher1->fullplan;
             $dum['position']=$preacher1->position;
             if ($dum['fullplan']=="Trial") {
@@ -404,7 +405,7 @@ class PlansController extends Controller
         }
         $y=$y+2;
         $pdf->SetFont('Arial', '', 8);
-        $officers=Person::withAnyTags(['Circuit steward'],'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->get();
+        $officers=Person::withAnyTags(['Circuit steward'], 'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->get();
         $subhead="";
         if (count($officers)) {
             $pdf->SetFont('Arial', 'B', 11);
@@ -412,27 +413,27 @@ class PlansController extends Controller
             $pdf->SetFont('Arial', '', 8);
             foreach ($officers as $officer) {
                 $y=$y+4;
-                $pdf->text($left_side+$spacer, $y, $officer->title . " " . substr($officer->firstname,0,1) . " " . $officer->surname . " (" . $officer->phone . ")");
+                $pdf->text($left_side+$spacer, $y, $officer->title . " " . substr($officer->firstname, 0, 1) . " " . $officer->surname . " (" . $officer->phone . ")");
             }
         }
         $pdf->SetFont('Arial', 'B', 11);
         $y=$y+6;
         
-        $treasurer=Person::withAnyTags(['Circuit treasurer'],'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->first();
-        if (count($treasurer)) {
+        $treasurer=Person::withAnyTags(['Circuit treasurer'], 'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->first();
+        if ($treasurer) {
             $pdf->text($left_side+$spacer, $y, "Circuit Treasurer");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $treasurer->title . " " . substr($treasurer->firstname,0,1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $treasurer->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
-        }        
-        $csecretary=Person::withAnyTags(['Circuit secretary'],'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->first();
-        if (count($csecretary)) {
+        }
+        $csecretary=Person::withAnyTags(['Circuit secretary'], 'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->first();
+        if ($csecretary) {
             $pdf->text($left_side+$spacer, $y, "Circuit Secretary");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname,0,1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }

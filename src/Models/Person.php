@@ -22,4 +22,9 @@ class Person extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Society');
     }
+
+    public function individual()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Individual');
+    }
 }

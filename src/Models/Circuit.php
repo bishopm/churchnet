@@ -23,6 +23,11 @@ class Circuit extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Person');
     }
 
+    public function preachers()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Person')->where('status', 'preacher')->with('individual')->whereHas('individual');
+    }
+
     public function meetings()
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Meeting');

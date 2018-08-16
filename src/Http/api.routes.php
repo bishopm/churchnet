@@ -79,6 +79,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
         Route::delete('api/methodist/circuits/{circuit}/meetings/{meeting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@destroy','as'=>'api.meetings.destroy']);
 
         // Plans
+        Route::get('/api/methodist/circuits/{circuit}/plans/currentplan', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@currentplan','as'=>'api.plans.currentplan']);
         Route::get('/api/methodist/circuits/{circuit}/plans/{year}/{quarter}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@show','as'=>'api.plans.show']);
         Route::get('/api/methodist/circuits/{circuit}/planupdate/{box}/{val}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@update','as'=>'api.plans.update']);
 
