@@ -9,6 +9,7 @@ use Bishopm\Churchnet\Http\Requests\PlansRequest;
 use Redirect;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
+use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
@@ -100,6 +101,14 @@ class PlansController extends Controller
         } elseif ($m==1) {
             $this->show($y-1, 4, $status);
         }
+    }
+
+    public function monthlyplan($circuit, $yy, $mm)
+    {
+        $societies = Society::where('circuit_id', $circuit)->with('services.plans', function ($q) {
+            $q->where('plans.servicedate', '2018-08-19');
+        })->get();
+        return $societies;
     }
 
     /**

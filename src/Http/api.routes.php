@@ -4,9 +4,6 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::post('/api/methodist/login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@login','as'=>'api.login']);
     Route::post('/api/methodist/register', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@register','as'=>'api.register']);
 
-    // Users
-    Route::get('api/methodist/users/{user}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails','as'=>'api.users.details']);
-
     // Districts
     Route::get('api/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
     Route::get('api/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@show','as'=>'api.districts.show']);
@@ -61,8 +58,11 @@ Route::middleware(['handlecors','bindings'])->group(function () {
     Route::get('/api/circuits/{circuit}/upcomingmeetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
     Route::get('/api/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);
     Route::get('/api/circuits/{circuit}/withsocieties', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@withsocieties','as'=>'api.circuits.withsocieties']);
-    Route::get('/api/methodist/circuits/{circuit}/plans/currentplan', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@currentplan','as'=>'api.plans.currentplan']);
     Route::group(['middleware' => ['jwt.auth','handlecors']], function () {
+
+        // Users
+        Route::get('api/methodist/users/{user}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails','as'=>'api.users.details']);
+
         Route::post('/api/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@phone','as'=>'api.individuals.phone']);
         Route::get('/api/message/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@message','as'=>'api.individuals.message']);
         Route::post('/api/message', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@addmessage','as'=>'api.individuals.addmessage']);
@@ -80,6 +80,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
         Route::delete('api/methodist/circuits/{circuit}/meetings/{meeting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@destroy','as'=>'api.meetings.destroy']);
 
         // Plans
+        Route::get('/api/methodist/circuits/{circuit}/mplans/monthlyplan/{year}/{month}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@monthlyplan','as'=>'api.plans.monthlyplan']);
         Route::get('/api/methodist/circuits/{circuit}/plans/{year}/{quarter}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@show','as'=>'api.plans.show']);
         Route::get('/api/methodist/circuits/{circuit}/planupdate/{box}/{val}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@update','as'=>'api.plans.update']);
 
