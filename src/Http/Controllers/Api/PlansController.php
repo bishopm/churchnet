@@ -105,8 +105,8 @@ class PlansController extends Controller
 
     public function monthlyplan($circuit, $yy, $mm)
     {
-        $societies = Society::where('circuit_id', $circuit)->with('services.plans', function ($q) {
-            $q->where('plans.servicedate', '2018-08-19');
+        $societies = Society::where('circuit_id', $circuit)->with('plans', function ($q) {
+            $q->where('planyear', '2018');
         })->get();
         return $societies;
     }
