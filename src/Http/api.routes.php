@@ -83,6 +83,7 @@ Route::middleware(['handlecors','bindings'])->group(function () {
         Route::get('/api/methodist/circuits/{circuit}/mplans/monthlyplan/{year}/{month}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@monthlyplan','as'=>'api.plans.monthlyplan']);
         Route::get('/api/methodist/circuits/{circuit}/plans/{year}/{quarter}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@show','as'=>'api.plans.show']);
         Route::get('/api/methodist/circuits/{circuit}/planupdate/{box}/{val}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@update','as'=>'api.plans.update']);
+        Route::post('/api/methodist/circuits/{circuit}/updateplan', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@updateplan','as'=>'api.plans.updateplan']);
 
         // People
         Route::get('/api/methodist/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@index','as'=>'api.people.index']);

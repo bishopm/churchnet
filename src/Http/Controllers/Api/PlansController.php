@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Label;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
@@ -116,6 +117,42 @@ class PlansController extends Controller
         return $services;
     }
 
+    public function updateplan($circuit, Request $request){
+        $plan = Plan::where('service_id',$request->service_id)->where('planyear',$request->planyear)->where('planmonth',$request->planmonth)->where('planday',$request->planday)->first();
+        if ($plan) {
+            $plan->person_id = $request->person_id;
+            $plan->servicetype = $request->servicetype;
+            $plan->save();
+        } 
+        return $plan;
+    }
+
+    public function populate_array($dd, $cc)
+    {
+        $societies = Society::with('services')->where('circuit_id',$cc)->get();
+        $data=array();
+        foreach ($societies as $s) {
+            foreach ($s->services as $serv) {
+                foreach ($dd as $d) {
+                    $data[$this->make_key($serv)][$d]['person']['name']='';
+                    $data[$this->make_key($serv)][$d]['person']['id']='';
+                    $data[$this->make_key($serv)][$d]['tag']='';
+                }
+            }
+        }
+        return $data;
+    }
+
+    public function make_key($ss) 
+    {
+        $dd=array();
+        $dd['society'] = $ss->society->society;
+        $dd['society_id'] = $ss->society_id;
+        $dd['servicetime'] = $ss->servicetime;
+        $dd['service_id'] = $ss->id;
+        return json_encode($dd);
+    }
+
     public function monthlyplan($circuit, $yy, $mm)
     {
         $this->circuit_id = $circuit;
@@ -126,15 +163,11 @@ class PlansController extends Controller
             $q->where('status', 'preacher')->orWhere('status', 'minister'); 
         })->get();
         $plans = Plan::with('service.society','person.individual')->where('planyear',$yy)->where('planmonth',$mm)->whereIn('society_id',$societies)->get();
-        $allplans=array();
+        $labels = Label::where('circuit_id',$circuit)->orderBy('label')->get();
+        $allplans=$this->populate_array($dates,$circuit);
         foreach ($plans as $plan){
             $kk = array_search(date("j M", mktime(0, 0, 0, $mm, $plan->planday, $yy)),$dates);
-            $dd = array();
-            $dd['society'] = $plan->service->society->society;
-            $dd['society_id'] = $plan->service->society_id;
-            $dd['servicetime'] = $plan->service->servicetime;
-            $dd['service_id'] = $plan->service_id;
-            $js=json_encode($dd);
+            $js=$this->make_key($plan->service);
             $allplans[$js][$kk]['tag']=$plan->servicetype;
             if ($plan->person){
                 $allplans[$js][$kk]['person']['name']=substr($plan->person->individual->firstname,0,1) . ' ' . $plan->person->individual->surname;
@@ -145,6 +178,7 @@ class PlansController extends Controller
         $data['plans'] = $allplans;
         $data['headers']=$dates;
         $data['preachers']=$preachers;
+        $data['labels']=$labels;
         return $data;
     }
 
