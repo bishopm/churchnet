@@ -18,11 +18,6 @@ class Society extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Service');
     }
 
-    public function plans()
-    {
-        return $this->hasManyThrough('Bishopm\Churchnet\Models\Plan', 'Bishopm\Churchnet\Models\Service');
-    }
-
     public function circuit()
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');

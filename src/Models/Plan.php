@@ -27,4 +27,8 @@ class Plan extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Service');
     }
+
+    public function scopeMonthplan (Builder $query, $yy, $mm) {
+        return $query->where('planyear', $yy)->where('planmonth', $mm);
+    }
 }

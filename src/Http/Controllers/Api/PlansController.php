@@ -9,6 +9,7 @@ use Bishopm\Churchnet\Http\Requests\PlansRequest;
 use Redirect;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
+use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
@@ -103,12 +104,48 @@ class PlansController extends Controller
         }
     }
 
+    public function getservices($circuit, $yy, $mm)
+    {
+        $services=array();
+        $sun=strtotime("first sunday " . $yy . "-" . $mm);
+        $last = strtotime("last day of " . $yy . "-" . $mm);
+        while ($sun < $last){
+            $services[] = date("j M", $sun);
+            $sun = $sun + 604800;
+        }
+        return $services;
+    }
+
     public function monthlyplan($circuit, $yy, $mm)
     {
-        $societies = Society::where('circuit_id', $circuit)->with('plans', function ($q) {
-            $q->where('planyear', '2018');
+        $this->circuit_id = $circuit;
+        $data=array();
+        $dates=$this->getservices($circuit,$yy,$mm);
+        $societies = Society::where('circuit_id',$circuit)->pluck('id')->toArray();
+        $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) { 
+            $q->where('status', 'preacher')->orWhere('status', 'minister'); 
         })->get();
-        return $societies;
+        $plans = Plan::with('service.society','person.individual')->where('planyear',$yy)->where('planmonth',$mm)->whereIn('society_id',$societies)->get();
+        $allplans=array();
+        foreach ($plans as $plan){
+            $kk = array_search(date("j M", mktime(0, 0, 0, $mm, $plan->planday, $yy)),$dates);
+            $dd = array();
+            $dd['society'] = $plan->service->society->society;
+            $dd['society_id'] = $plan->service->society_id;
+            $dd['servicetime'] = $plan->service->servicetime;
+            $dd['service_id'] = $plan->service_id;
+            $js=json_encode($dd);
+            $allplans[$js][$kk]['tag']=$plan->servicetype;
+            if ($plan->person){
+                $allplans[$js][$kk]['person']['name']=substr($plan->person->individual->firstname,0,1) . ' ' . $plan->person->individual->surname;
+            }
+            $allplans[$js][$kk]['person']['id']=$plan->person_id;
+        }
+        ksort($allplans);
+        $data['plans'] = $allplans;
+        $data['headers']=$dates;
+        $data['preachers']=$preachers;
+        return $data;
     }
 
     /**
