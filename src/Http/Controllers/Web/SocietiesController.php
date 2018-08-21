@@ -45,7 +45,7 @@ class SocietiesController extends Controller
     public function show($circuit, $slug)
     {
         $data['society']=$this->society->findBySlugForCircuitSlug($circuit, $slug);
-        $data['stewards']=Person::withAllTags(['Society steward'], 'leader')->where('society_id', $data['society']->id)->orderBy('surname')->orderBy('firstname')->get();
+        $data['stewards']=$data['society']->circuit->tagged('Society steward')->get();
         Mapper::map($data['society']->latitude, $data['society']->longitude, ['zoom' => 16, 'type' => 'HYBRID']);
         Mapper::marker($data['society']->latitude, $data['society']->longitude, ['title' => $data['society']->society . " society"]);
         return view('churchnet::societies.show', $data);

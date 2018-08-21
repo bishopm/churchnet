@@ -117,8 +117,8 @@ class PlansController extends Controller
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
         $data['preachers']=$this->circuit->preachers;
-        $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->where('circuit_id', $this->circuit->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
-        $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->where('circuit_id', $this->circuit->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
+        $data['ministers']=$this->circuit->tagged('Circuit minister')->get();
+        $data['supernumeraries']=$this->circuit->tagged('Supernumerary minister')->get();
         $data['guests']=array();
         while (date($lastSunday+604800<=$lastDay)) {
             $lastSunday=$lastSunday+604800;
@@ -152,7 +152,7 @@ class PlansController extends Controller
             $ser=$this->services->find($p1->service_id)->servicetime;
             if ($p1->person_id) {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['preacher']=$p1->person_id;
-                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['pname']=substr($p1->person->firstname, 0, 1) . " " . $p1->person->surname;
+                $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['pname']=substr($p1->person->individual->firstname, 0, 1) . " " . $p1->person->individual->surname;
             } else {
                 $data['fin'][$soc][$p1->planyear][$p1->planmonth][$p1->planday][$ser]['preacher']="";
             }
@@ -171,7 +171,7 @@ class PlansController extends Controller
             $ser=$this->services->find($p2->service_id)->servicetime;
             if ($p2->person) {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['preacher']=$p2->person_id;
-                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['pname']=substr($p2->person->firstname, 0, 1) . " " . $p2->person->surname;
+                $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['pname']=substr($p2->person->individual->firstname, 0, 1) . " " . $p2->person->individual->surname;
             } else {
                 $data['fin'][$soc][$p2->planyear][$p2->planmonth][$p2->planday][$ser]['preacher']="";
             }
@@ -190,7 +190,7 @@ class PlansController extends Controller
             $ser=$this->services->find($p3->service_id)->servicetime;
             if ($p3->person) {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['preacher']=$p3->person_id;
-                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['pname']=substr($p3->person->firstname, 0, 1) . " " . $p3->person->surname;
+                $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['pname']=substr($p3->person->individual->firstname, 0, 1) . " " . $p3->person->individual->surname;
             } else {
                 $data['fin'][$soc][$p3->planyear][$p3->planmonth][$p3->planday][$ser]['preacher']="";
             }
@@ -347,7 +347,7 @@ class PlansController extends Controller
         $pfin=array();
         foreach ($dat['preachers'] as $preacher1) {
             $dum=array();
-            $thissoc=$this->societies->find($preacher1->society_id)->society;
+            $thissoc=$this->societies->find($preacher1->individual->household->society_id)->society;
             $dum['name']=$preacher1->individual->title . " " . $preacher1->individual->firstname . " " . $preacher1->individual->surname;
             if ($preacher1->position=="Emeritus preacher") {
                 $dum['name'] = $dum['name'] . "*";
@@ -356,10 +356,10 @@ class PlansController extends Controller
             $dum['cellphone']=$preacher1->individual->cellphone;
             $dum['fullplan']=$preacher1->fullplan;
             $dum['position']=$preacher1->position;
-            if ($dum['fullplan']=="Trial") {
-                $vdum['9999' . $preacher1->surname . $preacher1->firstname]=$dum;
+            if (!$dum['fullplan']) {
+                $vdum['9999' . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
             } else {
-                $vdum[$preacher1->fullplan . $preacher1->surname . $preacher1->firstname]=$dum;
+                $vdum[$preacher1->fullplan . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
             }
         }
         ksort($vdum);
@@ -389,7 +389,7 @@ class PlansController extends Controller
             } else {
                 $super="";
             }
-            $pdf->text($left_side+$spacer, $y, $min->title . " " . substr($min->firstname, 0, 1) . " " . $min->surname . " (" . $min->phone . ")" . $super);
+            $pdf->text($left_side+$spacer, $y, $min->individual->title . " " . substr($min->individual->firstname, 0, 1) . " " . $min->individual->surname . " (" . $min->individual->cellphone . ")" . $super);
             $y=$y+4;
         }
         if (isset($dat['supernumeraries'])) {
@@ -399,13 +399,13 @@ class PlansController extends Controller
             $y=$y+4;
             $pdf->SetFont('Arial', '', 8);
             foreach ($dat['supernumeraries'] as $supm) {
-                $pdf->text($left_side+$spacer, $y, $supm->title . " " . substr($supm->firstname, 0, 1) . " " . $supm->surname . " (" . $supm->phone . ")");
+                $pdf->text($left_side+$spacer, $y, $supm->individual->title . " " . substr($supm->individual->firstname, 0, 1) . " " . $supm->individual->surname . " (" . $supm->individual->cellphone . ")");
                 $y=$y+4;
             }
         }
         $y=$y+2;
         $pdf->SetFont('Arial', '', 8);
-        $officers=Person::withAnyTags(['Circuit steward'], 'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->get();
+        $officers=$this->circuit->tagged('Circuit steward')->get();
         $subhead="";
         if (count($officers)) {
             $pdf->SetFont('Arial', 'B', 11);
@@ -413,27 +413,27 @@ class PlansController extends Controller
             $pdf->SetFont('Arial', '', 8);
             foreach ($officers as $officer) {
                 $y=$y+4;
-                $pdf->text($left_side+$spacer, $y, $officer->title . " " . substr($officer->firstname, 0, 1) . " " . $officer->surname . " (" . $officer->phone . ")");
+                $pdf->text($left_side+$spacer, $y, $officer->individual->title . " " . substr($officer->individual->firstname, 0, 1) . " " . $officer->individual->surname . " (" . $officer->individual->cellphone . ")");
             }
         }
         $pdf->SetFont('Arial', 'B', 11);
         $y=$y+6;
         
-        $treasurer=Person::withAnyTags(['Circuit treasurer'], 'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->first();
-        if ($treasurer) {
+        $treasurer=$this->circuit->tagged('Circuit treasurer')->get();
+        if (count($treasurer)) {
             $pdf->text($left_side+$spacer, $y, "Circuit Treasurer");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $treasurer->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $treasurer->individual->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
-        $csecretary=Person::withAnyTags(['Circuit secretary'], 'leader')->where('circuit_id', $this->circuit->id)->orderBy('surname')->orderBy('firstname')->first();
-        if ($csecretary) {
+        $csecretary=$this->circuit->tagged('Circuit secretary')->get();
+        if (count($csecretary)) {
             $pdf->text($left_side+$spacer, $y, "Circuit Secretary");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $csecretary->individual->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
@@ -459,20 +459,18 @@ class PlansController extends Controller
         $y=30;
         $pdf->SetFont('Arial', 'B', 11);
         $pdf->text($x, $y, "Local Preachers");
-        /*
-        $supervisor=$this->positions->identify($this->circuit->id, 'Circuit supervisor of studies')[0];
+        $supervisor=$this->circuit->tagged('Circuit supervisor of studies')->first();
         if ($supervisor) {
             $y=$y+4;
             $pdf->SetFont('Arial', '', 8);
-            $pdf->text($x, $y, "Supervisor of studies: " . $supervisor);
+            $pdf->text($x, $y, "Supervisor of studies: " . $supervisor->individual->title . ' ' . substr($supervisor->individual->firstname, 0, 1) . ' ' . $supervisor->individual->surname);
         }
-        $lpsec=$this->positions->identify($this->circuit->id, 'Local preachers secretary')[0];
+        $lpsec=$this->circuit->tagged('Local preachers secretary')->first();
         if ($lpsec) {
             $y=$y+4;
             $pdf->SetFont('Arial', '', 8);
-            $pdf->text($x, $y, "Local Preachers Secretary: " . $lpsec);
+            $pdf->text($x, $y, "Local Preachers Secretary: " . $lpsec->individual->title . ' ' . substr($lpsec->individual->firstname, 0, 1) . ' ' . $lpsec->individual->surname);
         }
-        */
         $y=$y+4;
         $ythresh=200;
         ksort($pfin);

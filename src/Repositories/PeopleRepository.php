@@ -14,13 +14,6 @@ class PeopleRepository extends EloquentBaseRepository
         return $preachers;
     }
 
-    public function find($id)
-    {
-        $preacher=$this->model->where('id', $id)->first();
-        $dum=$preacher->tags;
-        return $preacher;
-    }
-
     public function all()
     {
         return $this->model->with('individual')->get();

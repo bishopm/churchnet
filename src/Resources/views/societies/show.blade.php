@@ -31,7 +31,7 @@
                 <h3>Society stewards</h3>
                 <ul class="list-unstyled">
                     @foreach ($stewards as $stw)
-                        <li>{{$stw->title}} {{$stw->firstname}} {{$stw->surname}}</li>
+                        <li>{{$stw->individual->title}} {{$stw->individual->firstname}} {{$stw->individual->surname}}</li>
                     @endforeach
                 </ul>
             @endif

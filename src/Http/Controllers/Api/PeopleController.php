@@ -4,6 +4,8 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\PeopleRepository;
 use Bishopm\Churchnet\Models\Person;
+use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Individual;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreatePersonRequest;
@@ -43,7 +45,9 @@ class PeopleController extends Controller
         foreach ($request->circuits as $circ) {
             $circs[]=intval($circ);
         }
-        return Person::whereIn('circuit_id', $circs)->where('surname', 'like', '%' . $request->search . '%')->orderBy('surname')->get();
+        $societies = Society::whereIn('circuit_id', $circs)->pluck('id')->toArray();
+        $people = Individual::societymember($societies)->whereHas('person')->where('surname', 'like', '%' . $request->search . '%')->get();
+        return compact('people');
     }
 
     public function phone($circuit, Request $request)
@@ -82,7 +86,7 @@ class PeopleController extends Controller
         }
     }
 
-    public function show($circuit, $person)
+    public function show($person)
     {
         $data['person']=$this->person->find($person);
         return $data;
