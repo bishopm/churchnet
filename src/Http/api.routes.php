@@ -19,7 +19,7 @@ Route::middleware(['handlecors'])->group(function () {
     // Districts
     Route::get('api/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
     Route::get('api/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@show','as'=>'api.districts.show']);
-
+    Route::get('/api/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
     Route::group(['middleware' => ['jwt.auth','handlecors']], function () {
 
         // Journey routes
@@ -114,7 +114,6 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Societies
         Route::post('/api/societies/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@search','as'=>'api.societies.search']);
-        Route::get('/api/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
         Route::get('api/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
         Route::post('api/addsociety', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@appstore','as'=>'api.societies.appstore']);
 
