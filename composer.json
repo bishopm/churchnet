@@ -28,7 +28,6 @@
         "lithiumdev/laravel-tagcloud": "~1.0",
         "simplepie/simplepie": "1.5.*",
         "coreui/coreui": "2.*",
-        "spatie/laravel-permission": "2.*",
         "kreait/firebase-tokens": "1.*"
     },
     "require-dev": {

@@ -1,7 +1,7 @@
 <?php
 
 Route::middleware(['handlecors'])->group(function () {
-    Route::post('/api/login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@login','as'=>'api.login']);
+    Route::post('/api/churchnet/login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@login','as'=>'api.login']);
     Route::post('/api/register', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@register','as'=>'api.register']);
 
     // Journey routes
@@ -133,8 +133,8 @@ Route::middleware(['handlecors'])->group(function () {
         Route::delete('api/circuits/{circuit}/tags/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@destroy','as'=>'api.tags.destroy']);
 
         // Users
+        Route::get('api/users', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@index','as'=>'api.users.index']);
         Route::get('api/users/{user}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails','as'=>'api.users.details']);
-        
         Route::get('api/check', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check','as'=>'api.check']);
 
         // Weekdays

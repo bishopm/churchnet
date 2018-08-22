@@ -35,17 +35,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function circuits()
     {
-        return $this->morphedByMany('Bishopm\Churchnet\Models\Circuit', 'permissible');
+        return $this->morphedByMany('Bishopm\Churchnet\Models\Circuit', 'permissible')->withPivot('permission');
     }
 
     public function societies()
     {
-        return $this->morphedByMany('Bishopm\Churchnet\Models\Society', 'permissible');
+        return $this->morphedByMany('Bishopm\Churchnet\Models\Society', 'permissible')->withPivot('permission');
     }
 
     public function districts()
     {
-        return $this->morphedByMany('Bishopm\Churchnet\Models\District', 'permissible');
+        return $this->morphedByMany('Bishopm\Churchnet\Models\District', 'permissible')->withPivot('permission');
     }
 
     public function circuit()

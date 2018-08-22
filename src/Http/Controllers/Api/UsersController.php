@@ -13,4 +13,9 @@ class UsersController extends Controller
     {
         return User::with('districts', 'circuits', 'societies')->where('id', $id)->first();
     }
+
+    public function index()
+    {
+        return User::orderBy('name')->get();
+    }
 }
