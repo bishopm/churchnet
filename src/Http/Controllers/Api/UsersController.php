@@ -14,13 +14,19 @@ class UsersController extends Controller
         $data = User::with('districts', 'circuits', 'societies')->where('id', $id)->first();
         $user = array();
         foreach ($data->circuits as $circuit) {
-            $user['circuits'][$circuit->pivot->permission][]=$circuit->id;
+            $user['circuits'][$circuit->id]=$circuit->pivot->permission;
+            $user['circuits']['keys'][]=$circuit->id;
+            $user['circuits']['full'][]=$circuit;
         }
         foreach ($data->societies as $society) {
-            $user['societies'][$society->pivot->permission][]=$society->id;
+            $user['societies'][$society->id]=$society->pivot->permission;
+            $user['societies']['keys'][]=$society->id;
+            $user['societies']['full'][]=$society;
         }
         foreach ($data->districts as $district) {
-            $user['districts'][$district->pivot->permission][]=$district->id;
+            $user['districts'][$district->id]=$district->pivot->permission;
+            $user['districts']['keys'][]=$district->id;
+            $user['districts']['full'][]=$district;
         }
         $user['id'] = $data->id;
         $user['name'] = $data->name;
