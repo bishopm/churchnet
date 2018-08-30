@@ -30,13 +30,8 @@ class PeopleController extends Controller
 
     public function index($circuit)
     {
-        $people=DB::select(DB::raw("SELECT people.id FROM people LEFT JOIN preachers ON preachers.person_id = people.id WHERE preachers.id is null"));
-        $ids=array();
-        foreach ($people as $person) {
-            $ids[]=$person->id;
-        }
-        $data=Person::with('positions')->whereIn('id', $ids)->get();
-        return $data;
+        $people=$this->people->all();
+        return compact('people');
     }
 
     public function search(Request $request)
@@ -46,7 +41,7 @@ class PeopleController extends Controller
             $circs[]=intval($circ);
         }
         $societies = Society::whereIn('circuit_id', $circs)->pluck('id')->toArray();
-        $people = Individual::societymember($societies)->whereHas('person')->where('surname', 'like', '%' . $request->search . '%')->get();
+        $people = Individual::societymember($societies)->whereHas('person')->with('person')->where('surname', 'like', '%' . $request->search . '%')->get();
         return compact('people');
     }
 

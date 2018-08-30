@@ -18,4 +18,9 @@ class PeopleRepository extends EloquentBaseRepository
     {
         return $this->model->with('individual')->get();
     }
+
+    public function find($id)
+    {
+        return $this->model->with('individual')->where('id',$id)->first();
+    }
 }
