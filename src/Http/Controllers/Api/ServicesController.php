@@ -7,28 +7,30 @@ use Bishopm\Churchnet\Models\Service;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateServiceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateServiceRequest;
+use Illuminate\Http\Request;
 
-class ServicesController extends Controller {
+class ServicesController extends Controller
+{
 
-	/**
-	 * Display a listing of the resource.
-	 *
-	 * @return Response
-	 */
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
 
-	private $service;
+    private $service;
 
-	public function __construct(ServicesRepository $service)
+    public function __construct(ServicesRepository $service)
     {
         $this->service = $service;
     }
 
-	public function index()
-	{
+    public function index()
+    {
         return $this->service->all();
-	}
+    }
 
-	public function edit($circuit,$service)
+    public function edit($circuit, $service)
     {
         return $this->service->find($service);
     }
@@ -38,22 +40,22 @@ class ServicesController extends Controller {
         //return view('connexion::services.create',compact('society'));
     }
 
-	public function show($circuit,$service)
-	{
+    public function show($circuit, $service)
+    {
         return $this->service->find($service);
-	}
+    }
 
-    public function store($society,CreateServiceRequest $request)
+    public function store($society, CreateServiceRequest $request)
     {
         $this->service->create($request->except('token'));
 
         return "New service added";
     }
-	
-    public function update($circuit, Service $service, UpdateServiceRequest $request)
+    
+    public function update($circuit, $service, Request $request)
     {
-        $this->service->update($service, $request->except('token'));
-        return "Service has been updated";
+        $serv = $this->service->find($service);
+        $this->service->update($serv, $request->all());
+        return $service;
     }
-
 }

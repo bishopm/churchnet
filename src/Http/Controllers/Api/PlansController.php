@@ -105,45 +105,49 @@ class PlansController extends Controller
         }
     }
 
-    public function getservices($circuit, $yy, $mm)
+    public function getservicedates($circuit, $yy, $mm)
     {
         $services=array();
         $sun=strtotime("first sunday " . $yy . "-" . $mm);
         $last = strtotime("last day of " . $yy . "-" . $mm);
-        while ($sun < $last){
+        while ($sun <= $last) {
             $services[] = date("j M", $sun);
             $sun = $sun + 604800;
         }
         return $services;
     }
 
-    public function updateplan($circuit, Request $request){
-        $plan = Plan::where('service_id',$request->service_id)->where('planyear',$request->planyear)->where('planmonth',$request->planmonth)->where('planday',$request->planday)->first();
-        if ($plan) {
+    public function updateplan($circuit, Request $request)
+    {
+        if ($request->id <> 0) {
+            $plan = Plan::where('service_id', $request->service_id)->where('planyear', $request->planyear)->where('planmonth', $request->planmonth)->where('planday', $request->planday)->first();
             $plan->person_id = $request->person_id;
             $plan->servicetype = $request->servicetype;
             $plan->save();
-        } 
+        } else {
+            $plan = Plan::create(['circuit_id' => $circuit, 'society_id' => $request->society_id, 'service_id' => $request->service_id, 'planyear' => $request->planyear, 'planmonth' => $request->planmonth, 'planday' => $request->planday, 'person_id' => $request->person_id, 'servicetype' => $request->servicetype, 'trialservice' => $request->trialservice]);
+        }
         return $plan;
     }
 
     public function populate_array($dd, $cc)
     {
-        $societies = Society::with('services')->where('circuit_id',$cc)->get();
+        $societies = Society::with('services')->where('circuit_id', $cc)->get();
         $data=array();
         foreach ($societies as $s) {
             foreach ($s->services as $serv) {
-                foreach ($dd as $d) {
-                    $data[$this->make_key($serv)][$d]['person']['name']='';
-                    $data[$this->make_key($serv)][$d]['person']['id']='';
-                    $data[$this->make_key($serv)][$d]['tag']='';
+                foreach ($dd as $k=>$d) {
+                    $data[$this->make_key($serv)][$k]['person']['name']='';
+                    $data[$this->make_key($serv)][$k]['person']['id']='';
+                    $data[$this->make_key($serv)][$k]['tag']='';
+                    $data[$this->make_key($serv)][$k]['id']=0;
                 }
             }
         }
         return $data;
     }
 
-    public function make_key($ss) 
+    public function make_key($ss)
     {
         $dd=array();
         $dd['society'] = $ss->society->society;
@@ -157,22 +161,23 @@ class PlansController extends Controller
     {
         $this->circuit_id = $circuit;
         $data=array();
-        $dates=$this->getservices($circuit,$yy,$mm);
-        $societies = Society::where('circuit_id',$circuit)->pluck('id')->toArray();
-        $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) { 
-            $q->where('status', 'preacher')->orWhere('status', 'minister'); 
+        $dates=$this->getservicedates($circuit, $yy, $mm);
+        $societies = Society::where('circuit_id', $circuit)->pluck('id')->toArray();
+        $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) {
+            $q->where('status', 'preacher')->orWhere('status', 'minister');
         })->get();
-        $plans = Plan::with('service.society','person.individual')->where('planyear',$yy)->where('planmonth',$mm)->whereIn('society_id',$societies)->get();
-        $labels = Label::where('circuit_id',$circuit)->orderBy('label')->get();
-        $allplans=$this->populate_array($dates,$circuit);
-        foreach ($plans as $plan){
-            $kk = array_search(date("j M", mktime(0, 0, 0, $mm, $plan->planday, $yy)),$dates);
+        $plans = Plan::with('service.society', 'person.individual')->where('planyear', $yy)->where('planmonth', $mm)->whereIn('society_id', $societies)->get();
+        $labels = Label::where('circuit_id', $circuit)->orderBy('label')->get();
+        $allplans=$this->populate_array($dates, $circuit);
+        foreach ($plans as $plan) {
+            $kk = array_search(date("j M", mktime(0, 0, 0, $mm, $plan->planday, $yy)), $dates);
             $js=$this->make_key($plan->service);
             $allplans[$js][$kk]['tag']=$plan->servicetype;
-            if ($plan->person){
-                $allplans[$js][$kk]['person']['name']=substr($plan->person->individual->firstname,0,1) . ' ' . $plan->person->individual->surname;
+            if ($plan->person) {
+                $allplans[$js][$kk]['person']['name']=substr($plan->person->individual->firstname, 0, 1) . ' ' . $plan->person->individual->surname;
             }
             $allplans[$js][$kk]['person']['id']=$plan->person_id;
+            $allplans[$js][$kk]['id']=$plan->id;
         }
         ksort($allplans);
         $data['plans'] = $allplans;
