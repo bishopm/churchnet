@@ -3,9 +3,12 @@
 namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Cviebrock\EloquentTaggable\Taggable;
 
 class Individual extends Model
 {
+    use Taggable;
+
     protected $guarded = array('id');
 
     public function household()

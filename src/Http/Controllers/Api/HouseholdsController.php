@@ -59,21 +59,20 @@ class HouseholdsController extends Controller
 
     public function show($id)
     {
-        return Household::with('individuals.groups')->where('id', $id)->first();
+        $household = Household::with('individuals.groups','individuals.tags')->where('id', $id)->first();
+        return $household;
     }
 
-    public function store(CreateHouseholdRequest $request)
+    public function store(Request $request)
     {
-        $soc=$this->household->create($request->all());
-
-        return redirect()->route('admin.households.show', $soc->id)
-            ->withSuccess('New household added');
+        return $this->household->create($request->all());
     }
     
-    public function update(Household $household, UpdateHouseholdRequest $request)
+    public function update($id, Request $request)
     {
-        $this->household->update($household, $request->all());
-        return redirect()->route('admin.households.index')->withSuccess('Household has been updated');
+        $household = $this->household->find($id);
+        $data = $this->household->update($household, $request->all());
+        return $data;
     }
 
     public function destroy(Household $household)

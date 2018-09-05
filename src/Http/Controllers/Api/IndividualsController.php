@@ -5,6 +5,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\IndividualsRepository;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Household;
+use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Preacher;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Chat;
@@ -105,7 +106,9 @@ class IndividualsController extends Controller
     
     public function search(Request $request)
     {
-        return Individual::with('individuals')->where('addressee', 'like', '%' . $request->search . '%')->get();
+        $this->search = $request->search;
+        $socs = Society::where('circuit_id',$request->circuit)->pluck('id')->toArray();
+        return Individual::societymember($socs)->with('household.society')->doesntHave('person')->where(function ($query) { $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%'); })->get();
     }
 
     public function query($individual, Request $request)
@@ -128,18 +131,22 @@ class IndividualsController extends Controller
         return $this->individual->find($no);
     }
 
-    public function store(CreateIndividualRequest $request)
+    public function store(Request $request)
     {
-        $soc=$this->individual->create($request->all());
-
-        return redirect()->route('admin.individuals.show', $soc->id)
-            ->withSuccess('New individual added');
+        $indiv = $this->individual->create($request->all());
+        $household = $indiv->household;
+        if ($household->sortsurname == '') {
+            $household->sortsurname = $indiv->surname;
+            $household->save();
+        }
+        return $indiv;
     }
     
-    public function update(Individual $individual, UpdateIndividualRequest $request)
+    public function update($id, Request $request)
     {
-        $this->individual->update($individual, $request->all());
-        return redirect()->route('admin.individuals.index')->withSuccess('Individual has been updated');
+        $indiv = $this->individual->find($id);
+        $data = $this->individual->update($indiv, $request->all());
+        return $data;
     }
 
     public function destroy(Individual $individual)

@@ -3,6 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\PeopleRepository;
+use Bishopm\Churchnet\Repositories\TagsRepository;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Individual;
@@ -21,11 +22,12 @@ class PeopleController extends Controller
      * @return Response
      */
 
-    private $person;
+    private $person, $tags;
 
-    public function __construct(PeopleRepository $person)
+    public function __construct(PeopleRepository $person, TagsRepository $tags)
     {
         $this->person = $person;
+        $this->tags = $tags;
     }
 
     public function index($circuit)
@@ -89,7 +91,9 @@ class PeopleController extends Controller
 
     public function appshow($person)
     {
-        return $this->person->find($person);
+        $person = Person::with('tags','individual','individual.household.society')->where('id',$person)->first();
+        $person->alltags = $this->tags->all();
+        return $person;
     }
 
     public function store(CreatePersonRequest $request)

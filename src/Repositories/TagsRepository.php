@@ -17,7 +17,7 @@ class TagsRepository extends EloquentBaseRepository
         $tags = Tag::all();
         $data=array();
         foreach ($tags as $tag) {
-            $dum['id']=$tag->id;
+            $dum['id']=$tag->tag_id;
             $dum['name']=$tag->name;
             $data[$tag->type][]=$dum;
         }

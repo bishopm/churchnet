@@ -28,6 +28,11 @@ class TagsController extends Controller
         return $this->tag->all();
     }
 
+    public function appindex()
+    {
+        return $this->tag->all();
+    }
+
     public function identify($circuit, $position, $type)
     {
         return Person::withAnyTags(array(urldecode($position)), $type)->get();

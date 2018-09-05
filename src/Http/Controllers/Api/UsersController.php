@@ -16,17 +16,17 @@ class UsersController extends Controller
         foreach ($data->circuits as $circuit) {
             $user['circuits'][$circuit->id]=$circuit->pivot->permission;
             $user['circuits']['keys'][]=$circuit->id;
-            $user['circuits']['full'][]=$circuit;
+            $user['circuits']['full'][$circuit->id]=$circuit;
         }
         foreach ($data->societies as $society) {
             $user['societies'][$society->id]=$society->pivot->permission;
             $user['societies']['keys'][]=$society->id;
-            $user['societies']['full'][]=$society;
+            $user['societies']['full'][$society->id]=$society;
         }
         foreach ($data->districts as $district) {
             $user['districts'][$district->id]=$district->pivot->permission;
             $user['districts']['keys'][]=$district->id;
-            $user['districts']['full'][]=$district;
+            $user['districts']['full'][$district->id]=$district;
         }
         $user['id'] = $data->id;
         $user['name'] = $data->name;
