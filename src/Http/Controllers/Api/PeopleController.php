@@ -96,9 +96,9 @@ class PeopleController extends Controller
         return $person;
     }
 
-    public function store(CreatePersonRequest $request)
+    public function store(Request $request)
     {
-        $person = $this->person->create($request->except('image', 'token', 'positions'));
+        $person = $this->person->create($request->except('roles'));
         return $person;
     }
     
