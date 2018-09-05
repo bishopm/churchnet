@@ -30,6 +30,7 @@ class UsersController extends Controller
         }
         $user['id'] = $data->id;
         $user['name'] = $data->name;
+        $user['level'] = $data->level;
         return $user;
     }
 

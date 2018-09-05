@@ -126,7 +126,12 @@ class LectionaryController extends Controller
                 $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
                 $dum['reading']=$reading;
                 $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
-                $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
+                if ($this->translation == "eng-MSG") {
+                    $dum['copyright']="Scripture taken from The Message. Copyright © 1993, 1994, 1995, 1996, 2000, 2001, 2002. Used by permission of NavPress Publishing Group. ";
+                } else {
+                    $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. ";
+                }
+                $dum['copyright'].= "Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
                 $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
                 $dum['source']="API";
             } catch (GuzzleException $e) {
