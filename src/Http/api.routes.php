@@ -82,6 +82,7 @@ Route::middleware(['handlecors'])->group(function () {
         // People
         Route::post('api/people/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@search','as'=>'api.people.search']);
         Route::get('/api/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@appshow','as'=>'api.people.appshow']);
+        Route::post('/api/circuits/{circuit}/people/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@update','as'=>'api.people.update']);
 
         // Plans
         Route::get('/api/circuits/{circuit}/mplans/monthlyplan/{year}/{month}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PlansController@monthlyplan','as'=>'api.plans.monthlyplan']);

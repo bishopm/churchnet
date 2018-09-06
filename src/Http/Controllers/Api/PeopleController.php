@@ -22,7 +22,8 @@ class PeopleController extends Controller
      * @return Response
      */
 
-    private $person, $tags;
+    private $person;
+    private $tags;
 
     public function __construct(PeopleRepository $person, TagsRepository $tags)
     {
@@ -91,7 +92,7 @@ class PeopleController extends Controller
 
     public function appshow($person)
     {
-        $person = Person::with('tags','individual','individual.household.society')->where('id',$person)->first();
+        $person = Person::with('tags', 'individual', 'individual.household.society')->where('id', $person)->first();
         $person->alltags = $this->tags->all();
         return $person;
     }
@@ -99,12 +100,23 @@ class PeopleController extends Controller
     public function store(Request $request)
     {
         $person = $this->person->create($request->except('roles'));
+        $person->detag();
+        foreach ($request->roles as $role) {
+            $tag = $this->tags->find($role);
+            $person->tag($tag->name);
+        }
         return $person;
     }
     
-    public function update($circuit, Person $person, UpdatePersonRequest $request)
+    public function update($circuit, $id, Request $request)
     {
-        $this->person->update($person, $request->except('token', 'positions'));
+        $person = $this->person->find($id);
+        $person->update($request->except('roles'));
+        $person->detag();
+        foreach ($request->roles as $role) {
+            $tag = $this->tags->find($role);
+            $person->tag($tag->name);
+        }
         return $person;
     }
 
