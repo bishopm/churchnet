@@ -48,6 +48,8 @@ Route::middleware(['handlecors'])->group(function () {
         Route::put('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@update','as'=>'api.groups.update']);
         Route::post('api/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@store','as'=>'api.groups.store']);
         Route::post('api/groups/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@search','as'=>'api.groups.search']);
+        Route::post('api/groups/{group}/remove', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@remove','as'=>'api.groups.remove']);
+        Route::post('api/groups/{group}/add', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@add','as'=>'api.groups.add']);
         Route::delete('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@destroy','as'=>'api.groups.destroy']);
 
         // Households

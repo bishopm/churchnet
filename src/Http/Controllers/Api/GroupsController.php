@@ -63,6 +63,23 @@ class GroupsController extends Controller
             ->withSuccess('New group added');
     }
     
+    public function remove($gid, Request $request)
+    {
+        DB::table('group_individual')->where('group_id', $gid)->where('individual_id', $request->id)->update(array('deleted_at' => DB::raw('NOW()')));
+        return Group::with('individuals')->where('id', $gid)->first();
+    }
+
+    public function add($gid, Request $request)
+    {
+        $indiv = DB::table('group_individual')->where('group_id', $gid)->where('individual_id', $request->id)->get();
+        if (count($indiv)) {
+            DB::table('group_individual')->where('group_id', $gid)->where('individual_id', $request->id)->update(array('deleted_at' => null));
+        } else {
+            $newmem = DB::table('group_individual')->insert(['group_id' => $gid, 'individual_id' => $request->id]);
+        }
+        return Group::with('individuals')->where('id', $gid)->first();
+    }
+
     public function update(Group $group, UpdateGroupRequest $request)
     {
         $this->group->update($group, $request->all());

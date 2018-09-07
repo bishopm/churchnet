@@ -108,9 +108,16 @@ class IndividualsController extends Controller
     {
         $this->search = $request->search;
         $socs = Society::where('circuit_id', $request->circuit)->pluck('id')->toArray();
-        return Individual::societymember($socs)->with('household.society')->doesntHave('person')->where(function ($query) {
-            $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
-        })->get();
+        if (isset($request->circuit)) {
+            return Individual::societymember($socs)->with('household.society')->doesntHave('person')->where(function ($query) {
+                $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
+            })->get();
+        } else {
+            $socs=array($request->society);
+            return Individual::societymember($socs)->with('household.society')->where(function ($query) {
+                $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
+            })->get();
+        }
     }
 
     public function query($individual, Request $request)
