@@ -29,7 +29,7 @@ class FeedsController extends Controller
         $devotion=$feed->get_items()[1];
         $data['devotion']['title']=$devotion->get_title();
         $data['devotion']['content']=$devotion->get_content();
-        $data['devotion']['pubdate']=date("d M Y",24*3600 + strtotime($devotion->get_date()));
+        $data['devotion']['pubdate']=date("d M Y", 24*3600 + strtotime($devotion->get_date()));
         return $data;
     }
 
@@ -62,12 +62,12 @@ class FeedsController extends Controller
             $feed->handle_content_type();
             $feed->set_feed_url(array($this->soc->journey));
             $feed->init();
-            foreach ($feed->get_items() as $item){
+            foreach ($feed->get_items() as $item) {
                 $itype=$item->get_description();
                 $dum['title']=$item->get_title();
                 $dum['content']=$item->get_content();
                 $dum['author']=$item->get_author();
-                $dum['pubdate']=date("d M Y",strtotime($item->get_date()));
+                $dum['pubdate']=date("d M Y", strtotime($item->get_date()));
                 $dum['image']=$item->get_link();
                 $data[$itype][]=$dum;
             }
@@ -75,15 +75,15 @@ class FeedsController extends Controller
         return $data;
     }
 
-    public function store (Request $request)
+    public function store(Request $request)
     {
         $feedpost=Feedpost::create($request->post);
-        foreach ($request->circuits as $circuit){
+        foreach ($request->circuits as $circuit) {
             Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit]);
         }
-        foreach ($request->societies as $society){
-            $testsoc=Society::where('id',$society)->whereIn('circuit_id',$request->circuits)->count();
-            if (!$testsoc){
+        foreach ($request->societies as $society) {
+            $testsoc=Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
+            if (!$testsoc) {
                 Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society]);
             }
         }

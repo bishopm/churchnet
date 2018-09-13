@@ -70,12 +70,13 @@ class CircuitsController extends Controller
 
     public function show($circuitnum)
     {
-        $data['circuit']=Circuit::with('societies')->where('slug', $circuitnum)->first();
+        $data['circuit']=Circuit::with('societies', 'people.tags')->where('slug', $circuitnum)->first();
         $settings=$this->settings->allforcircuit($data['circuit']->id);
         foreach ($settings as $setting) {
             $data['settings'][$setting->setting_key]=$setting->setting_value;
         }
         $first=true;
+        $socs=array();
         foreach ($data['circuit']->societies as $society) {
             if ($first) {
                 Mapper::map($society->latitude, $society->longitude, ['cluster' => false, 'marker' => false, 'type' => 'HYBRID', 'center'=>false]);
@@ -83,12 +84,13 @@ class CircuitsController extends Controller
             }
             $info="go to <a href=\"" . url('/') . "/" . $data['circuit']->slug . "/" . $society->slug . "\">" . $society->society . "</a>";
             Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
+            $socs[]=$society->id;
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
         $data['preachers'] = $data['circuit']->preachers;
-        $data['ministers'] = $data['circuit']->ministers;
-        $data['supernumeraries'] = [];
-        $data['stewards'] = $data['circuit']->leaders;
+        $data['ministers'] = $data['circuit']->tagged('circuit minister')->get();
+        $data['supernumeraries'] = $data['circuit']->tagged('supernumerary minister')->get();
+        $data['stewards'] = Individual::societymember($socs)->withAnyTags('circuit steward')->get();
         return view('churchnet::circuits.show', $data);
     }
 
