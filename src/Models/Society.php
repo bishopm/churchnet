@@ -37,4 +37,9 @@ class Society extends Model
     {
         return $this->morphToMany('Bishopm\Churchnet\Models\User', 'permissible');
     }
+
+    public function households()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Household');
+    }
 }

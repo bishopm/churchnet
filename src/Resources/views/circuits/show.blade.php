@@ -33,9 +33,9 @@
                 <h4>Ministers</h4>
                 @foreach ($ministers as $min)
                     @if ($loop->last)
-                        {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}.
+                        {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}.
                     @else
-                        {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}, 
+                        {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}, 
                     @endif
                 @endforeach
             @endif
@@ -45,7 +45,7 @@
                     @if ($loop->last)
                         {{$sup->individual->title}} {{$sup->individual->firstname}} {{$sup->individual->surname}}.
                     @else
-                        {{$sup->individual->title}} {{$sup->individual->firstname}} {{$sup->individual->surname}}.
+                        {{$sup->individual->title}} {{$sup->individual->firstname}} {{$sup->individual->surname}}, 
                     @endif
                 @endforeach
                 <hr>

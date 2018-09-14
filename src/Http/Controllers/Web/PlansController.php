@@ -249,7 +249,9 @@ class PlansController extends Controller
         $pdf->SetFont('Arial', 'B', 14);
         $pdf->text($left_side+$soc_width, 10, "THE METHODIST CHURCH OF SOUTHERN AFRICA: " . strtoupper($dat['circuit']['circuit']) . " " . $dat['circuit']['circuitnumber']);
         $pdf->text($left_side+$soc_width, 17, "PREACHING PLAN: " . strtoupper(date("F Y", $dat['sundays'][0]['dt'])) . " - " . strtoupper(date("F Y", $dat['sundays'][count($dat['sundays'])-1]['dt'])));
+        $socids=array();
         foreach ($dat['societies'] as $soc) {
+            $socids[]=$soc->id;
             $firstserv=true;
             foreach ($soc['services'] as $ser) {
                 if ($firstserv) {
@@ -405,7 +407,7 @@ class PlansController extends Controller
         }
         $y=$y+2;
         $pdf->SetFont('Arial', '', 8);
-        $officers=$this->circuit->tagged('Circuit steward')->get();
+        $officers = Individual::societymember($socids)->withAnyTags('circuit steward')->get();
         $subhead="";
         if (count($officers)) {
             $pdf->SetFont('Arial', 'B', 11);
@@ -413,27 +415,26 @@ class PlansController extends Controller
             $pdf->SetFont('Arial', '', 8);
             foreach ($officers as $officer) {
                 $y=$y+4;
-                $pdf->text($left_side+$spacer, $y, $officer->individual->title . " " . substr($officer->individual->firstname, 0, 1) . " " . $officer->individual->surname . " (" . $officer->individual->cellphone . ")");
+                $pdf->text($left_side+$spacer, $y, $officer->title . " " . substr($officer->firstname, 0, 1) . " " . $officer->surname . " (" . $officer->cellphone . ")");
             }
         }
         $pdf->SetFont('Arial', 'B', 11);
         $y=$y+6;
-        
-        $treasurer=$this->circuit->tagged('Circuit treasurer')->get();
+        $treasurer = Individual::societymember($socids)->withAnyTags('Circuit treasurer')->get();
         if (count($treasurer)) {
             $pdf->text($left_side+$spacer, $y, "Circuit Treasurer");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $treasurer->individual->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $treasurer->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
-        $csecretary=$this->circuit->tagged('Circuit secretary')->get();
+        $csecretary = Individual::societymember($socids)->withAnyTags('Circuit secretary')->get();
         if (count($csecretary)) {
             $pdf->text($left_side+$spacer, $y, "Circuit Secretary");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $csecretary->individual->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }

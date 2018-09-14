@@ -3,6 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\IndividualsRepository;
+use Bishopm\Churchnet\Repositories\TagsRepository;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
@@ -26,11 +27,12 @@ class IndividualsController extends Controller
      * @return Response
      */
 
-    private $individual;
+    private $individual, $tags;
 
-    public function __construct(IndividualsRepository $individual)
+    public function __construct(IndividualsRepository $individual, TagsRepository $tags)
     {
         $this->individual = $individual;
+        $this->tags = $tags;
     }
 
     public function index()
@@ -142,7 +144,11 @@ class IndividualsController extends Controller
 
     public function store(Request $request)
     {
-        $indiv = $this->individual->create($request->all());
+        $indiv = $this->individual->create($request->except('roles'));
+        foreach ($request->roles as $role) {
+            $tag = $this->tags->find($role);
+            $indiv->tag($tag->name);
+        }
         $household = $indiv->household;
         if ($household->sortsurname == '') {
             $household->sortsurname = $indiv->surname;
@@ -154,8 +160,13 @@ class IndividualsController extends Controller
     public function update($id, Request $request)
     {
         $indiv = $this->individual->find($id);
-        $data = $this->individual->update($indiv, $request->all());
-        return $data;
+        $indiv->update($request->except('roles'));
+        $indiv->detag();
+        foreach ($request->roles as $role) {
+            $tag = $this->tags->find($role);
+            $indiv->tag($tag->name);
+        }
+        return $indiv;
     }
 
     public function destroy(Individual $individual)

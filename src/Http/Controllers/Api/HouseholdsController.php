@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\HouseholdsRepository;
 use Bishopm\Churchnet\Models\Household;
+use Cviebrock\EloquentTaggable\Models\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -60,6 +61,7 @@ class HouseholdsController extends Controller
     public function show($id)
     {
         $household = Household::with('individuals.groups','individuals.tags')->where('id', $id)->first();
+        $household->alltags = Tag::where('type','leader')->get();
         return $household;
     }
 

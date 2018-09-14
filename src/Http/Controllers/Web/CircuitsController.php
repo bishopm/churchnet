@@ -87,8 +87,18 @@ class CircuitsController extends Controller
             $socs[]=$society->id;
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
-        $data['preachers'] = $data['circuit']->preachers;
-        $data['ministers'] = $data['circuit']->tagged('circuit minister')->get();
+        $data['preachers'] = $this->circuit->preachers($data['circuit']->id);
+        $super = $data['circuit']->tagged('superintendent')->first();
+        $ministers = $data['circuit']->tagged('circuit minister')->get();
+        foreach ($ministers as $min) {
+            if ($min->id == $super->id) {
+                $min->supt = " (supt)";
+            } else {
+                $min->supt = "";
+            }
+            $data['ministers'][$min->individual->surname . $min->individual->firstname]=$min;
+        }
+        ksort($data['ministers']);
         $data['supernumeraries'] = $data['circuit']->tagged('supernumerary minister')->get();
         $data['stewards'] = Individual::societymember($socs)->withAnyTags('circuit steward')->get();
         return view('churchnet::circuits.show', $data);
