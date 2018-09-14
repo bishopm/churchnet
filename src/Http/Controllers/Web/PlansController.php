@@ -420,21 +420,21 @@ class PlansController extends Controller
         }
         $pdf->SetFont('Arial', 'B', 11);
         $y=$y+6;
-        $treasurer = Individual::societymember($socids)->withAnyTags('Circuit treasurer')->get();
-        if (count($treasurer)) {
+        $treasurer = Individual::societymember($socids)->withAnyTags('Circuit treasurer')->first();
+        if ($treasurer) {
             $pdf->text($left_side+$spacer, $y, "Circuit Treasurer");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $treasurer->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $treasurer->title . " " . substr($treasurer->firstname, 0, 1) . " " . $treasurer->surname . " (" . $treasurer->cellphone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
-        $csecretary = Individual::societymember($socids)->withAnyTags('Circuit secretary')->get();
-        if (count($csecretary)) {
+        $csecretary = Individual::societymember($socids)->withAnyTags('Circuit secretary')->first();
+        if ($csecretary) {
             $pdf->text($left_side+$spacer, $y, "Circuit Secretary");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname . " (" . $csecretary->phone . ")");
+            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname);
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
