@@ -182,6 +182,13 @@ class ChurchnetServiceProvider extends ServiceProvider
             }
         );
         $this->app->bind(
+            'Bishopm\Churchnet\Repositories\StatisticsRepository',
+            function () {
+                $repository = new \Bishopm\Churchnet\Repositories\StatisticsRepository(new \Bishopm\Churchnet\Models\Statistic());
+                return $repository;
+            }
+        );
+        $this->app->bind(
             'Bishopm\Churchnet\Repositories\TagsRepository',
             function () {
                 $repository = new \Bishopm\Churchnet\Repositories\TagsRepository(new \Cviebrock\EloquentTaggable\Models\Tag());

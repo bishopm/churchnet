@@ -107,6 +107,10 @@ Route::middleware(['handlecors'])->group(function () {
         // Queries
         Route::post('/api/circuits/{circuit}/query', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@query','as'=>'api.circuits.query']);
 
+        // Rosters
+        Route::post('/api/rosters', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@index','as'=>'api.rosters.index']);
+        Route::get('/api/rosters/{id}/{year}/{month}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@show','as'=>'api.rosters.show']);
+
         // Services
         Route::get('api/circuits/{circuit}/services/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@create','as'=>'api.services.create']);
         Route::get('api/circuits/{circuit}/services/{service}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@show','as'=>'api.services.show']);
@@ -129,10 +133,14 @@ Route::middleware(['handlecors'])->group(function () {
         // Societies
         Route::get('api/circuits/{circuit}/societies/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@create','as'=>'api.societies.create']);
         Route::post('api/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@store','as'=>'api.societies.store']);
-        
         Route::get('api/circuits/{circuit}/societies/{society}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@edit','as'=>'api.societies.edit']);
         Route::put('api/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@update','as'=>'api.societies.update']);
         Route::delete('api/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@destroy','as'=>'api.societies.destroy']);
+
+        // Statistics
+        Route::get('api/statistics/{society}/{yr}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@index','as'=>'api.statistics.index']);
+        Route::get('api/statistics/{society}/getfordate/{yr}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@getfordate','as'=>'api.statistics.getfordate']);
+        Route::post('api/statistics', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@store','as'=>'api.statistics.store']);
 
         // Tags
         Route::get('/api/circuits/{circuit}/tags', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@index','as'=>'api.tags.index']);

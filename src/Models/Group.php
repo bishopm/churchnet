@@ -23,4 +23,9 @@ class Group extends Model
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Chat', 'chatable');
     }
+
+    public function rostergroups()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Rostergroup');
+    }
 }

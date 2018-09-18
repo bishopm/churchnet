@@ -18,6 +18,11 @@ class Society extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Service');
     }
 
+    public function rosters()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Roster');
+    }
+
     public function circuit()
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
