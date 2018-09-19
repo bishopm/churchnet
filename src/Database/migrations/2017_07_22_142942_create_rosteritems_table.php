@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRostersTable extends Migration
+class CreateRosteritemsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,11 @@ class CreateRostersTable extends Migration
      */
     public function up()
     {
-        Schema::create('rosters', function (Blueprint $table) {
+        Schema::create('rosteritems', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name');
-            $table->integer('society_id');
-            $table->integer('dayofweek');
-            $table->softDeletes();
+            $table->string('individual_id');
+            $table->integer('rostergroup_id');
+            $table->date('rosterdate');
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateRostersTable extends Migration
      */
     public function down()
     {
-        Schema::drop('rosters');
+        Schema::drop('rosteritems');
     }
 }

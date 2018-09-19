@@ -18,14 +18,15 @@ class RostersController extends Controller
 
     public function index(Request $request)
     {
-        $rosters=Roster::where('society_id',$request->society)->get();
+        $rosters=Roster::where('society_id', $request->society)->get();
         return $rosters;
     }
 
     public function show($id, $yr, $mth)
     {
-        $roster = Roster::with('rostergroups.group','rostergroups.rosteritems.individual','society')->find($id);
-        $weeks[0] = date("Y-m-d", strtotime("First " . $roster->dayofweek . " of " . $mth . " " . $yr));
+        $roster = Roster::with('rostergroups.group', 'rostergroups.rosteritems.individual', 'society')->find($id);
+        $firstweek = "First " . $roster->dayofweek . " of " . $mth . " " . $yr;
+        $weeks[0] = date("Y-m-d", strtotime($firstweek));
         $weeks[] = date("Y-m-d", strtotime($weeks[0] . " + 1 week"));
         $weeks[] = date("Y-m-d", strtotime($weeks[0] . " + 2 weeks"));
         $weeks[] = date("Y-m-d", strtotime($weeks[0] . " + 3 weeks"));
@@ -35,13 +36,18 @@ class RostersController extends Controller
         $data['roster'] = $roster;
         foreach ($roster->rostergroups as $rg) {
             $row = new \stdClass;
-            $row->groups = $rg->group->groupname;
+            $row->groups = new \stdClass;
+            $row->groups->label = $rg->group->groupname;
+            $row->groups->id = $rg->group->id;
             foreach ($weeks as $kk=>$wk) {
-                $row->$kk='';
+                $row->$kk = new \stdClass;
+                $row->$kk->label='';
+                $row->$kk->id='';
             }
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
-                $row->$wk = $ri->individual->firstname . ' ' . $ri->individual->surname;
+                $row->$wk->label=$ri->individual->firstname . " " . $ri->individual->surname;
+                $row->$wk->id=$ri->individual_id;
             }
             $data['rows'][]=$row;
         }
@@ -51,7 +57,7 @@ class RostersController extends Controller
         $firstcol->label = "Groups";
         $firstcol->align = "left";
         $data['columns'][]=$firstcol;
-        foreach ($weeks as $kk=>$ww){
+        foreach ($weeks as $kk=>$ww) {
             $col = new \stdClass;
             $col->name = $kk;
             $col->field = $kk;
@@ -61,5 +67,4 @@ class RostersController extends Controller
         }
         return json_encode($data);
     }
-
 }
