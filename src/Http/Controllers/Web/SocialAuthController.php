@@ -12,13 +12,7 @@ class SocialAuthController extends Controller
 {
     public function redirect($service)
     {
-        if (App::environment('local')) {
-            $user=User::where('name', 'admin')->first();
-            Auth::login($user);
-            return redirect()->route('home');
-        } else {
-            return Socialite::driver($service)->redirect();
-        }
+        return Socialite::driver($service)->redirect();
     }
 
     public function callback($service)

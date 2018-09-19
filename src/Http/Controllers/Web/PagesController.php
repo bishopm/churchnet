@@ -69,7 +69,8 @@ class PagesController extends Controller
     public function store(CreatePageRequest $request)
     {
         $page = $this->page->create($request->except('tags'));
-        $page->syncTagsWithType($request->tags,'resource');
+        $page->detag();
+        $page->tag($request->tags);
         return redirect()->route('admin.pages.index')
             ->withSuccess('New page added');
     }
@@ -77,7 +78,8 @@ class PagesController extends Controller
     public function update(Page $page, UpdatePageRequest $request)
     {
         $this->page->update($page, $request->except('tags'));
-        $page->syncTagsWithType($request->tags,'resource');
+        $page->detag();
+        $page->tag($request->tags);
         return redirect()->route('admin.pages.index')->withSuccess('Page has been updated');
     }
 

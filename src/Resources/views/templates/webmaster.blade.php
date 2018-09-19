@@ -70,15 +70,9 @@
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ucfirst(Auth::user()->name)}}</a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                @if (Auth::user()->level=="admin")
+                @if (Auth::user()->level=="editor")
                   <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
-                  <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
-                  <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
-                  <a class="dropdown-item" href="{{url('/')}}/admin/people">People</a>
-                  <a class="dropdown-item" href="{{url('/')}}/admin/roles">Roles</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
-                @else
-                  <a class="dropdown-item" href="{{url('/')}}/admin/circuits/my">My circuit</a>
                 @endif
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>

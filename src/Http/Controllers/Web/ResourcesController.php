@@ -4,10 +4,12 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 
 use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Models\Resource;
-use Cviebrock\EloquentTaggable\Models\Tag;
+use Bishopm\Churchnet\Models\User;
+use Bishopm\Churchnet\Models\Tagg;
 use Bishopm\Churchnet\Http\Requests\CreateResourceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateResourceRequest;
 use Illuminate\Http\Request;
+use DB;
 use App\Http\Controllers\Controller;
 
 class ResourcesController extends Controller
@@ -34,7 +36,7 @@ class ResourcesController extends Controller
 
     public function edit(Resource $resource)
     {
-        $tags=Tag::where('type','resource')->get();
+        $tags=Tagg::type('resource')->get();
         $rtags=array();
         foreach ($resource->tags as $tag) {
             $rtags[]=$tag->name;
@@ -44,7 +46,7 @@ class ResourcesController extends Controller
 
     public function create()
     {
-        $tags=Tag::where('type','resource')->get();
+        $tags=Tagg::type('resource')->get();
         return view('churchnet::resources.create', compact('tags'));
     }
 
@@ -70,14 +72,18 @@ class ResourcesController extends Controller
     public function store(CreateResourceRequest $request)
     {
         $resource = $this->resource->create($request->except('tags'));
-        $resource->syncTagsWithType($request->tags,'resource');
+        $resource->detag();
+        $resource->tag($request->tags);
+        foreach ($request->tags as $tag){
+            DB::table('taggable_tags')->where('name', $tag)->update(['type' => 'resource']);
+        }
         return redirect()->route('admin.resources.index')
             ->withSuccess('New resource added');
     }
 
     public function addcomment(Resource $resource, Request $request)
     {
-        $user=$this->user->find($request->user);
+        $user=User::find($request->user);
         $user->comment($request, $request->newcomment);
     }
 
@@ -91,7 +97,11 @@ class ResourcesController extends Controller
     public function update(Resource $resource, UpdateResourceRequest $request)
     {
         $resource = $this->resource->update($resource, $request->except('tags'));
-        $resource->syncTagsWithType($request->tags,'resource');
+        $resource->detag();
+        $resource->tag($request->tags);
+        foreach ($request->tags as $tag){
+            DB::table('taggable_tags')->where('name', $tag)->update(['type' => 'resource']);
+        }
         return redirect()->route('admin.resources.index')->withSuccess('Resource has been updated');
     }
 

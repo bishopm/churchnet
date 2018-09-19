@@ -13,9 +13,12 @@
             <h2>
                 {{$resource->title}}
                 @foreach ($resource->tags as $tag)
-                    <small><span class="badge bg-dark"><a href="{{route('tag',$tag->slug)}}">{{$tag->name}}</a></span></small>
+                    <small><span class="badge bg-dark"><a href="{{route('tag',$tag->normalized)}}">{{$tag->name}}</a></span></small>
                 @endforeach
             </h2>
+            @if (Auth::user()->level <> 'user')
+                <a href="{{route('admin.resources.edit', $resource->id)}}"><i class="fa fa-lg fa-edit">Edit</i></a>
+            @endif
             <p><a target="_blank" href="{!!$resource->url!!}"><i class="fa fa-lg fa-globe"></i></a> {{$resource->description}}</p>
         </div>
     </div>

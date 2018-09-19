@@ -22,7 +22,7 @@
                 @endforelse
                 <tr><th colspan="2">Subjects</th></tr>
                 @forelse ($tags as $tag)
-                    <tr><td colspan="2"><a href="{{route('tag',$tag->slug)}}">{{strtoupper($tag->name)}}</a></td></tr>
+                    <tr><td colspan="2"><a href="{{route('tag',$tag->normalized)}}">{{strtoupper($tag->name)}}</a></td></tr>
                 @empty
                     <tr><td colspan="2">No subjects meet these search criteria</td></tr>
                 @endforelse

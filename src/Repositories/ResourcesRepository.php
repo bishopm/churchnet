@@ -9,4 +9,9 @@ class ResourcesRepository extends EloquentBaseRepository
     {
         return $this->model->orderBy('created_at', 'DESC')->get()->take($num);
     }
+
+    public function find($id)
+    {
+        return $this->model->with('tags')->find($id);
+    }
 }
