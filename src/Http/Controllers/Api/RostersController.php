@@ -35,28 +35,31 @@ class RostersController extends Controller
         $data['roster'] = $roster;
         foreach ($roster->rostergroups as $rg) {
             $row = new \stdClass;
-            $row->name = $rg->group->groupname;
+            $row->groups = $rg->group->groupname;
             foreach ($weeks as $kk=>$wk) {
-                $row->$wk='';
+                $row->$kk='';
             }
             foreach ($rg->rosteritems as $ri) {
-                $wk = $ri->rosterdate;
+                $wk = array_search($ri->rosterdate, $weeks);
                 $row->$wk = $ri->individual->firstname . ' ' . $ri->individual->surname;
             }
             $data['rows'][]=$row;
         }
         $firstcol = new \stdClass;
-        $firstcol->field = "name";
+        $firstcol->name = "groups";
+        $firstcol->field = "groups";
         $firstcol->label = "Groups";
         $firstcol->align = "left";
         $data['columns'][]=$firstcol;
-        foreach ($weeks as $ww){
+        foreach ($weeks as $kk=>$ww){
             $col = new \stdClass;
+            $col->name = $kk;
+            $col->field = $kk;
             $col->label = $ww;
-            $col->align = 'left';
+            $col->align = 'center';
             $data['columns'][]=$col;
         }
-        return $data;
+        return json_encode($data);
     }
 
 }
