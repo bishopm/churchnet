@@ -10,6 +10,7 @@ class Resource extends Model
 {
     use Taggable, Commentable;
 
-    protected $canBeRated = false;    
+    protected $canBeRated = false;
+    protected $mustBeApproved = false;
     protected $guarded = array('id');
 }

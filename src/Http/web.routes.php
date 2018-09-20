@@ -24,7 +24,7 @@ Route::group(['middleware' => ['web']], function () {
     
     Route::middleware(['auth','handlecors'])->group(function () {
         // Resources
-        Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
+        Route::get('resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
         Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
         Route::post('admin/resources/{resource}/addcomment', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addcomment','as' => 'admin.resources.addcomment']);
         Route::get('admin/resources/{resource}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@edit','as'=>'admin.resources.edit']);
@@ -61,7 +61,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::delete('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@destroy','as'=>'districts.destroy']);
 
         // Pages
-        Route::get('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@index','as'=>'admin.pages.index']);
+        Route::get('pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@index','as'=>'admin.pages.index']);
         Route::get('admin/pages/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@create','as'=>'admin.pages.create']);
         Route::get('admin/pages/{page}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@edit','as'=>'admin.pages.edit']);
         Route::get('admin/pages/addtag/{page}/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PagesController@addtag','as' => 'admin.pages.addtag']);
