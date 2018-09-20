@@ -89,8 +89,7 @@ class ResourcesController extends Controller
 
     public function deletecomment(Request $request)
     {
-        $comment=Comment::find($request->id);
-        $comment->delete();
+        DB::table('comments')->where('id', $request->id)->delete();
         return $request->id;
     }
     

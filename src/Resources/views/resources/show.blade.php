@@ -12,13 +12,16 @@
         <div class="col-sm">
             <h2>
                 {{$resource->title}}
+            </h2>
+            <div>
                 @foreach ($resource->tags as $tag)
-                    <small><span class="badge badge-secondary"><a href="{{route('tag',$tag->normalized)}}">{{$tag->name}}</a></span></small>
+                    <span class="badge badge-pill bg-primary"><a style="color:white; text-decoration:none;" href="{{route('tag',$tag->normalized)}}">{{$tag->name}}</a></span>
                 @endforeach
                 @if (Auth::user()->level <> 'user')
                     <a href="{{route('admin.resources.edit', $resource->id)}}"><i class="fa fa-sm fa-edit"></i></a>
                 @endif
-            </h2>
+                <hr>
+            </div>
             <p><a target="_blank" href="{!!$resource->url!!}"><i class="fa fa-lg fa-globe"></i></a> {{$resource->description}}</p>
         </div>
     </div>
