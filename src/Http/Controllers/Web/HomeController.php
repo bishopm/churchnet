@@ -54,7 +54,7 @@ class HomeController extends Controller
 
     public function search(Request $request)
     {
-        $data['resources'] = Resource::where('title', 'like', '%' . $request->search . '%')->orWhere('description', 'like', '%' . $request->search . '%')->orderBy('title')->get();
+        $data['resources'] = Resource::with('tags')->where('title', 'like', '%' . $request->search . '%')->orWhere('description', 'like', '%' . $request->search . '%')->orderBy('title')->get();
         $data['pages'] = Page::where('title', 'like', '%' . $request->search . '%')->orWhere('body', 'like', '%' . $request->search . '%')->orderBy('title')->get();
         $data['tags'] = Tag::where('name', 'like', '%' . $request->search . '%')->get();
         $data['search'] = $request->search;
