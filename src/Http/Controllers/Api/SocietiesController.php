@@ -71,9 +71,9 @@ class SocietiesController extends Controller
         return view('connexion::societies.create');
     }
 
-    public function show($society)
+    public function show($circuit,$society)
     {
-        return json_encode($this->society->findsociety($society));
+        return $this->society->findsociety($society);
     }
 
     public function store($circuit, CreateSocietyRequest $request)
