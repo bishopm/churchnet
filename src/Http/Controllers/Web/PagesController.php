@@ -70,7 +70,9 @@ class PagesController extends Controller
     {
         $page = $this->page->create($request->except('tags'));
         $page->detag();
-        $page->tag($request->tags);
+        if ($request->tags){
+            $page->tag($request->tags);
+        }
         return redirect()->route('admin.pages.index')
             ->withSuccess('New page added');
     }
@@ -79,7 +81,9 @@ class PagesController extends Controller
     {
         $this->page->update($page, $request->except('tags'));
         $page->detag();
-        $page->tag($request->tags);
+        if ($request->tags){
+            $page->tag($request->tags);
+        }
         return redirect()->route('admin.pages.index')->withSuccess('Page has been updated');
     }
 
