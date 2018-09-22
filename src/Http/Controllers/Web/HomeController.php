@@ -36,7 +36,7 @@ class HomeController extends Controller
         foreach ($resources as $thisresource) {
             foreach ($thisresource->tags as $tag) {
                 $cloud->addTag($tag->name);
-                $cloud->addTag(array('tag' => $tag->name, 'url' => $tag->slug));
+                $cloud->addTag(array('tag' => $tag->name, 'url' => $tag->normalized));
             }
         }
         $baseUrl=url('/');
