@@ -6,12 +6,12 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-12">
-            <h4>{{$circuit->circuitnumber}} {{$circuit->circuit}} <small><a href="{{url('/')}}/methodist/districts/{{$circuit->district_id}}">{{$circuit->district->district}} District</a></small></h4>
+            <h4>{{$circuit->circuitnumber}} {{$circuit->circuit}} <small><a href="{{url('/')}}/districts/{{$circuit->district_id}}">{{$circuit->district->district}} District</a></small></h4>
             @if ($circuit->office_contact)
                 {{$circuit->office_contact}} 
             @endif
             @if ($plan)
-                <a href="{{url('/')}}/methodist/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
+                <a href="{{url('/')}}/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
             @endif
             <hr>
         </div>
@@ -21,24 +21,25 @@
             <h4>Societies</h4>
             @forelse ($circuit->societies as $society)
                 @if ($loop->last)
-                    <a href="{{url('/')}}/methodist/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a>.
+                    <a href="{{url('/')}}/circuits/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a>.
                 @else
-                <a href="{{url('/')}}/methodist/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a>, 
+                <a href="{{url('/')}}/circuits/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a>, 
                 @endif
             @empty
                 This circuit has not mapped any societies
             @endforelse
             <hr>
-            @if (isset($ministers))
-                <h4>Ministers</h4>
-                @foreach ($ministers as $min)
-                    @if ($loop->last)
-                        {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}.
-                    @else
-                        {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}, 
-                    @endif
-                @endforeach
-            @endif
+            <h4>Ministers</h4>
+            @forelse ($ministers as $min)
+                @if ($loop->last)
+                    {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}.
+                @else
+                    {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}, 
+                @endif
+            @empty
+                No ministers have been added to this circuit yet
+            @endforelse
+            <hr>
             @if (count($supernumeraries))
                 <b>Supernumerary ministers: </b>
                 @foreach ($supernumeraries as $sup)

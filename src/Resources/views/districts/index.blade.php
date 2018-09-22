@@ -7,9 +7,9 @@
     <div class="row">
         <div class="col-xs-12 col-sm-6">
             <h1 class="title">MCSA Districts</h1>
-            <ul>
+            <ul class="list-unstyled">
             @foreach ($districts as $district)
-                <li><a href="{{url('/')}}/methodist/districts/{{$district->id}}">{{$district->id}} {{$district->district}}</a></li>
+                <li><a href="{{url('/')}}/districts/{{$district->id}}">{{$district->id}} {{$district->district}}</a></li>
             @endforeach
             </ul>
         </div>

@@ -33,13 +33,13 @@
         <div class="col-md-4">
             <h3>Added recently</h3>
             <div>
-                <h5>Resources <small><a href="{{route('admin.resources.index')}}">View all</a></small></h5>
+                <h5>Resources</h5>
                 @foreach ($recentresources as $recent)
                     <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
                 @endforeach
             </div>
             <div class="mt-2">
-                <h5>Pages <small><a href="{{route('admin.pages.index')}}">View all</a></small></h5>
+                <h5>Pages</h5>
                 @foreach ($recentpages as $recentp)
                     <li><a href="{{route('pages.show',$recentp->id)}}">{{$recentp->title}}</a></li>
                 @endforeach

@@ -11,6 +11,4 @@ class Page extends Model
     use Taggable, Commentable;
 
     protected $guarded = array('id');
-    protected $canBeRated = false;
-    protected $mustBeApproved = false;
 }

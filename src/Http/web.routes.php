@@ -9,22 +9,23 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('password/reset', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ResetPasswordController@reset','as'=>'password.reset']);
     Route::get('password/reset/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ResetPasswordController@showResetForm','as'=>'showResetForm']);
     Route::post('logout', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@logout','as'=>'logout']);
-    Route::get('methodist/plan/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@plan','as'=>'plan']);
+    Route::get('plan/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@plan','as'=>'plan']);
     Route::post('search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@search','as'=>'search']);
     Route::get('/redirect/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@redirect');
     Route::get('/callback/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@callback');
 
     // Public routes
-    Route::get('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@index','as'=>'districts.index']);
-    Route::get('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
-    Route::get('methodist/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
-    Route::get('methodist/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
+    Route::get('churches', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@denominations','as'=>'denominations.index']);
+    Route::get('churches/{slug}/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@index','as'=>'districts.index']);
+    Route::get('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
+    Route::get('circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
+    Route::get('circuits/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
     Route::get('pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);
     Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
     
     Route::middleware(['auth','handlecors'])->group(function () {
         // Resources
-        Route::get('resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
+        Route::get('admin/resources', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index','as'=>'admin.resources.index']);
         Route::get('admin/resources/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create','as'=>'admin.resources.create']);
         Route::post('admin/resources/{resource}/addcomment', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@addcomment','as' => 'admin.resources.addcomment']);
         Route::get('admin/resources/{resource}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@edit','as'=>'admin.resources.edit']);
@@ -61,7 +62,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::delete('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@destroy','as'=>'districts.destroy']);
 
         // Pages
-        Route::get('pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@index','as'=>'admin.pages.index']);
+        Route::get('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@index','as'=>'admin.pages.index']);
         Route::get('admin/pages/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@create','as'=>'admin.pages.create']);
         Route::get('admin/pages/{page}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@edit','as'=>'admin.pages.edit']);
         Route::get('admin/pages/addtag/{page}/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PagesController@addtag','as' => 'admin.pages.addtag']);

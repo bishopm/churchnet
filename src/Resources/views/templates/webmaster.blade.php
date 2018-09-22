@@ -39,10 +39,10 @@
           </a>
         </li>
         @endif
-        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Methodist churches in SA">
-          <a class="nav-link" href="{{url('/')}}/methodist/districts">
+        <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Directory of local churches">
+          <a class="nav-link" href="{{url('/')}}/churches">
             <i class="fa fa-fw fa-church"></i>
-            <span class="nav-link-text">Methodist churches</span>
+            <span class="nav-link-text">Find local churches</span>
           </a>
         </li>
       </ul>

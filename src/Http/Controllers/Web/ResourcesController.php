@@ -65,7 +65,7 @@ class ResourcesController extends Controller
     public function show($id)
     {
         $data['resource'] = $this->resource->find($id);
-        $data['comments'] = $data['resource']->comments;
+        $data['comments'] = $data['resource']->comments();
         return view('churchnet::resources.show', $data);
     }
 
@@ -74,7 +74,7 @@ class ResourcesController extends Controller
         $resource = $this->resource->create($request->except('tags'));
         $resource->detag();
         $resource->tag($request->tags);
-        foreach ($request->tags as $tag) {
+        foreach ($request->tags as $tag){
             DB::table('taggable_tags')->where('name', $tag)->update(['type' => 'resource']);
         }
         return redirect()->route('admin.resources.index')
@@ -84,12 +84,13 @@ class ResourcesController extends Controller
     public function addcomment(Resource $resource, Request $request)
     {
         $user=User::find($request->user);
-        $user->comment($resource, $request->newcomment);
+        $user->comment($request, $request->newcomment);
     }
 
     public function deletecomment(Request $request)
     {
-        DB::table('comments')->where('id', $request->id)->delete();
+        $comment=Comment::find($request->id);
+        $comment->delete();
         return $request->id;
     }
     
@@ -98,7 +99,7 @@ class ResourcesController extends Controller
         $resource = $this->resource->update($resource, $request->except('tags'));
         $resource->detag();
         $resource->tag($request->tags);
-        foreach ($request->tags as $tag) {
+        foreach ($request->tags as $tag){
             DB::table('taggable_tags')->where('name', $tag)->update(['type' => 'resource']);
         }
         return redirect()->route('admin.resources.index')->withSuccess('Resource has been updated');

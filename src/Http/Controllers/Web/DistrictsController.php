@@ -5,6 +5,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\District;
+use Bishopm\Churchnet\Models\Denomination;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateDistrictRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateDistrictRequest;
@@ -25,6 +26,12 @@ class DistrictsController extends Controller {
         $this->district = $district;
         $this->society = $society;
     }
+
+	public function denominations()
+	{
+        $denominations = Denomination::orderBy('slug')->get();
+        return view('churchnet::districts.denominations', compact('denominations'));
+	}
 
 	public function index()
 	{

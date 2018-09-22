@@ -7,7 +7,7 @@
     <div class="box">
         <div class="row">
             <div class="col-xs-12 col-sm-6">
-                <h1 class="title">{{$society->society}} <span class="subtitle small"><a href="{{url('/')}}/methodist/circuits/{{$society->circuit->slug}}">{{$society->circuit->circuit}}</a></span></h1>
+                <h1 class="title">{{$society->society}} <span class="subtitle small"><a href="{{url('/')}}/circuits/{{$society->circuit->slug}}">{{$society->circuit->circuit}}</a></span></h1>
                 <ul class="list-unstyled">
                     @if ($society->address)
                         <li>{{$society->address}}</li>
@@ -22,10 +22,12 @@
                 </ul>
                 <hr>
                 <h1 class="subtitle">Service times</h1>
-                <ul>
-                    @foreach ($society->services as $service)
+                <ul class="list-unstyled">
+                    @forelse ($society->services as $service)
                         <li><b>{{$service->servicetime}}</b> ({{$service->language}})</li>
-                    @endforeach
+                    @empty
+                        No services have been set up for this society yet
+                    @endforelse
                 </ul>
                 @if (count($stewards))
                 <h3>Society stewards</h3>

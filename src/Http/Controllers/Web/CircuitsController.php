@@ -82,7 +82,7 @@ class CircuitsController extends Controller
                 Mapper::map($society->latitude, $society->longitude, ['cluster' => false, 'marker' => false, 'type' => 'HYBRID', 'center'=>false]);
                 $first=false;
             }
-            $info="go to <a href=\"" . url('/') . "/" . $data['circuit']->slug . "/" . $society->slug . "\">" . $society->society . "</a>";
+            $info="go to <a href=\"" . url('/') . "/circuits/" . $data['circuit']->slug . "/" . $society->slug . "\">" . $society->society . "</a>";
             Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
             $socs[]=$society->id;
         }
@@ -90,6 +90,7 @@ class CircuitsController extends Controller
         $data['preachers'] = $this->circuit->preachers($data['circuit']->id);
         $super = $data['circuit']->tagged('superintendent')->first();
         $ministers = $data['circuit']->tagged('circuit minister')->get();
+        $data['ministers'] = array();
         foreach ($ministers as $min) {
             if ($min->id == $super->id) {
                 $min->supt = " (supt)";
@@ -98,7 +99,9 @@ class CircuitsController extends Controller
             }
             $data['ministers'][$min->individual->surname . $min->individual->firstname]=$min;
         }
-        ksort($data['ministers']);
+        if (isset($data['ministers'])){
+            ksort($data['ministers']);
+        }
         $data['supernumeraries'] = $data['circuit']->tagged('supernumerary minister')->get();
         $data['stewards'] = Individual::societymember($socs)->withAnyTags('circuit steward')->get();
         return view('churchnet::circuits.show', $data);
