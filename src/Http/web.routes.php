@@ -23,8 +23,8 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);
     Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
 
-            // Tags
-            Route::get('tag/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@tag','as'=>'tag']);
+    // Tags
+    Route::get('tag/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@tag','as'=>'tag']);
     
     Route::middleware(['auth','handlecors'])->group(function () {
         // Resources

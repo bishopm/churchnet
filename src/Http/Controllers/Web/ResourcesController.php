@@ -8,6 +8,7 @@ use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Tagg;
 use Bishopm\Churchnet\Http\Requests\CreateResourceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateResourceRequest;
+use Actuallymab\LaravelComment\Models\Comment;
 use Illuminate\Http\Request;
 use DB;
 use App\Http\Controllers\Controller;
@@ -65,7 +66,7 @@ class ResourcesController extends Controller
     public function show($id)
     {
         $data['resource'] = $this->resource->find($id);
-        $data['comments'] = $data['resource']->comments();
+        $data['comments'] = $data['resource']->comments;
         return view('churchnet::resources.show', $data);
     }
 
@@ -84,7 +85,7 @@ class ResourcesController extends Controller
     public function addcomment(Resource $resource, Request $request)
     {
         $user=User::find($request->user);
-        $user->comment($request, $request->newcomment);
+        $user->comment($resource, $request->newcomment);
     }
 
     public function deletecomment(Request $request)

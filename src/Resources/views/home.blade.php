@@ -31,17 +31,18 @@
             </div>
         </div>
         <div class="col-md-4">
+            @if ((Auth::user()) and (Auth::user()->level<>'user'))
+                <h3>Recent users</h3>
+                <div>
+                    @foreach ($users as $user)
+                        <li>{{$user->name}} ({{$user->created_at}})</a></li>
+                    @endforeach
+                </div>
+            @endif
             <h3>Added recently</h3>
             <div>
-                <h5>Resources</h5>
                 @foreach ($recentresources as $recent)
                     <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
-                @endforeach
-            </div>
-            <div class="mt-2">
-                <h5>Pages</h5>
-                @foreach ($recentpages as $recentp)
-                    <li><a href="{{route('pages.show',$recentp->id)}}">{{$recentp->title}}</a></li>
                 @endforeach
             </div>
         </div>

@@ -4,10 +4,8 @@
 		@foreach ($comments as $comment)
 			<div id="row{{$comment->id}}" class="row top5">
 				<div class="col-xs-3 col-sm-2">
-					@if ($comment->commented->avatar->image)
+					@if ($comment->commented->avatar)
 		                <img width="50px" class="img-responsive img-circle img-thumbnail" src="{!!Auth::user()->avatar!!}">
-		            @else
-		                <img width="50px" class="img-responsive img-circle img-thumbnail" src="{{asset('/vendor/bishopm/images/profile.png')}}">
 		            @endif
 		            </a>
 		            <div><i>{{date("j M",strtotime($comment->created_at))}}</i></div>
@@ -31,8 +29,6 @@
 			<a href="{{url('/')}}/users/{{Auth::user()->id}}">
 			@if (Auth::user()->avatar)
                 <img width="50px" class="img-responsive img-circle img-thumbnail" src="{!!Auth::user()->avatar!!}">
-            @else
-                <img width="50px" class="img-responsive img-circle img-thumbnail" src="{{asset('/vendor/bishopm/images/profile.png')}}">
             @endif
             </a><br>
             @if (isset($rating))

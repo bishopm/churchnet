@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Resource;
+use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Page;
 use Cviebrock\EloquentTaggable\Models\Tag;
 use LithiumDev\TagCloud\TagCloud;
@@ -47,8 +48,8 @@ class HomeController extends Controller
             return "{$link} ";
         });
         $data['cloud'] = $cloud->render();
-        $data['recentresources'] = $this->resource->recents(5);
-        $data['recentpages'] = $this->page->recents(5);
+        $data['recentresources'] = $this->resource->recents(15);
+        $data['users'] = User::orderBy('created_at')->get()->take(5);
         return view('churchnet::home', $data);
     }
 
