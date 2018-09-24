@@ -84,7 +84,7 @@ class LectionaryController extends Controller
                         if (strpos($section, ':') < strpos($section, '-')) {
                             $chapter = substr($section, 0, strpos($section, ':'));
                             $section = substr($section, 1+strpos($section, ':'));
-                            $readings[]=$this->fetchReading($optional . $base . $section);
+                            $readings[]=$this->fetchReading($optional . $book . ' ' . $chapter . ':' . $section);
                         } else {
                             $readings[]=$this->fetchReading($optional . $base . $section);
                             $chapter = substr($section, 1+strpos($section, '-'), strpos($section, ':')-1-strpos($section, '-'));
