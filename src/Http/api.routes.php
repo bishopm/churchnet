@@ -34,6 +34,7 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Circuits
         Route::get('api/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@index','as'=>'api.circuits.index']);
+        Route::post('/api/circuits/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@search','as'=>'api.circuits.search']);
         Route::get('api/circuits/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@create','as'=>'api.circuits.create']);
         Route::get('api/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@show','as'=>'api.circuits.show']);
         Route::get('api/circuits/{circuit}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@edit','as'=>'api.circuits.edit']);

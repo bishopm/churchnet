@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\HouseholdsRepository;
 use Bishopm\Churchnet\Models\Household;
+use Bishopm\Churchnet\Models\Circuit;
 use Cviebrock\EloquentTaggable\Models\Tag;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -35,8 +36,15 @@ class HouseholdsController extends Controller
     public function search(Request $request)
     {
         $socs=array();
-        foreach ($request->societies as $soc) {
-            $socs[]=intval($soc);
+        if (isset($request->circuit)) {
+            $circuit = Circuit::with('societies')->where('id',$request->circuit)->first();
+            foreach ($circuit->societies as $soc){
+                $socs[]=$soc->id;
+            }
+        } else {
+            foreach ($request->societies as $soc) {
+                $socs[]=intval($soc);
+            }
         }
         return Household::with('individuals')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->get();
     }

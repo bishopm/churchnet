@@ -46,9 +46,9 @@ class CircuitsController extends Controller
         return view('connexion::circuits.create');
     }
 
-    public function show($no)
+    public function show($id)
     {
-        return $this->circuit->find($no);
+        return Circuit::with('users','societies')->where('id',$id)->first();
     }
 
     public function withsocieties($id)
@@ -74,5 +74,10 @@ class CircuitsController extends Controller
     {
         $this->circuit->destroy($circuit);
         return view('connexion::circuits.index')->withSuccess('The ' . $circuit->circuit . ' circuit has been deleted');
+    }
+
+    public function search(Request $request)
+    {
+        return Circuit::whereIn('district_id', $request->districts)->orderBy('circuitnumber')->get();
     }
 }
