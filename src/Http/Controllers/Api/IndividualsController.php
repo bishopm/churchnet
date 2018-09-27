@@ -27,7 +27,8 @@ class IndividualsController extends Controller
      * @return Response
      */
 
-    private $individual, $tags;
+    private $individual;
+    private $tags;
 
     public function __construct(IndividualsRepository $individual, TagsRepository $tags)
     {
@@ -111,6 +112,22 @@ class IndividualsController extends Controller
         $this->search = $request->search;
         $socs = Society::where('circuit_id', $request->circuit)->pluck('id')->toArray();
         if (isset($request->circuit)) {
+            return Individual::societymember($socs)->with('household.society')->where(function ($query) {
+                $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
+            })->get();
+        } else {
+            $socs=array($request->society);
+            return Individual::societymember($socs)->with('household.society')->where(function ($query) {
+                $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
+            })->get();
+        }
+    }
+
+    public function searchnonpreachers(Request $request)
+    {
+        $this->search = $request->search;
+        $socs = Society::where('circuit_id', $request->circuit)->pluck('id')->toArray();
+        if (isset($request->circuit)) {
             return Individual::societymember($socs)->with('household.society')->doesntHave('person')->where(function ($query) {
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
             })->get();
@@ -121,6 +138,7 @@ class IndividualsController extends Controller
             })->get();
         }
     }
+
 
     public function query($individual, Request $request)
     {
