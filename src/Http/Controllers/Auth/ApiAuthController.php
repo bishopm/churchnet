@@ -40,7 +40,7 @@ class ApiAuthController extends Controller
         if (!$user) {
             $indiv=Individual::where('cellphone', $request->phone)->first();
             if ($indiv) {
-                $user = User::create(['name'=>$request->phone, 'phone'=>$request->phone, 'phonetoken'=>$request->phonetoken, 'individual_id'=>$indiv->id, 'level'=>'user']);
+                $user = User::create(['name'=>$indiv->firstname . ' ' . $indiv->surname, 'email'=>$indiv->email, 'phone'=>$request->phone, 'phonetoken'=>$request->phonetoken, 'individual_id'=>$indiv->id, 'level'=>'user']);
             } else {
                 $user = User::create(['name'=>$request->phone, 'phone'=>$request->phone, 'phonetoken'=>$request->phonetoken, 'level'=>'user']);
             }

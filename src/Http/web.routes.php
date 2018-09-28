@@ -2,6 +2,7 @@
 
 Route::group(['middleware' => ['web']], function () {
     Route::get('/', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@home','as'=>'home']);
+    Route::get('home', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@home','as'=>'home']);
     Route::get('login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@showLoginForm','as'=>'showlogin']);
     Route::post('login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@login','as'=>'login']);
     Route::post('password/email', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail','as'=>'sendResetLinkEmail']);
@@ -104,6 +105,5 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('methodist/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@update','as'=>'societies.update']);
         Route::post('methodist/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@store','as'=>'societies.store']);
         Route::delete('methodist/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@destroy','as'=>'societies.destroy']);
-
     });
 });
