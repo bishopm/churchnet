@@ -49,7 +49,7 @@ class SocietiesController extends Controller
         foreach ($societies as $society) {
             foreach ($society->services as $service) {
                 $plan = Plan::with('person.individual')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
-                if ($plan) {
+                if (($plan) && ($plan->person)) {
                     $service->person=$plan->person->individual;
                     $service->servicetype=$plan->servicetype;
                 } else {
