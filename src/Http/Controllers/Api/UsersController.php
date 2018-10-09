@@ -36,6 +36,6 @@ class UsersController extends Controller
 
     public function index()
     {
-        return User::orderBy('name')->get();
+        return User::where('level','<>','user')->orderBy('name')->get();
     }
 }
