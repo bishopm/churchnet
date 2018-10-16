@@ -110,8 +110,10 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('/api/circuits/{circuit}/query', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@query','as'=>'api.circuits.query']);
 
         // Rosters
-        Route::post('/api/rosters', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@index','as'=>'api.rosters.index']);
+        Route::post('/api/rosterlist', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@index','as'=>'api.rosters.index']);
         Route::get('/api/rosters/{id}/{year}/{month}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@show','as'=>'api.rosters.show']);
+        Route::get('api/rosters/{roster}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@edit','as'=>'api.rosters.edit']);
+        Route::post('api/rosters', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@store','as'=>'api.rosters.store']);
 
         // Services
         Route::get('api/circuits/{circuit}/services/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@create','as'=>'api.services.create']);

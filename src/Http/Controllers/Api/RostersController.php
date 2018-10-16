@@ -46,8 +46,10 @@ class RostersController extends Controller
             }
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
-                $row->$wk->label=$ri->individual->firstname . " " . $ri->individual->surname;
-                $row->$wk->id=$ri->individual_id;
+                if ($wk) {
+                    $row->$wk->label=$ri->individual->firstname . " " . $ri->individual->surname;
+                    $row->$wk->id=$ri->individual_id;
+                }
             }
             $data['rows'][]=$row;
         }
@@ -66,5 +68,16 @@ class RostersController extends Controller
             $data['columns'][]=$col;
         }
         return json_encode($data);
+    }
+
+    public function edit($id)
+    {
+        return Roster::with('rostergroups')->where('id', $id)->first();
+    }
+
+    public function store(Request $request)
+    {
+        $roster = Roster::create(['name' => $request->name, 'dayofweek' => $request->dayofweek, 'society_id' => $request->society_id]);
+        return $roster;
     }
 }
