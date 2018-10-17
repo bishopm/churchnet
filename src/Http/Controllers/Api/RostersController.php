@@ -72,7 +72,7 @@ class RostersController extends Controller
 
     public function edit($id)
     {
-        return Roster::with('rostergroups')->where('id', $id)->first();
+        return Roster::with('rostergroups.group','society')->where('id', $id)->first();
     }
 
     public function store(Request $request)
