@@ -10,7 +10,9 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('api/reading/{reading}/{bible}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading','as'=>'api.lectionary.reading']);
     Route::get('api/feeds/ffdl', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@ffdl','as'=>'api.feeds.ffdl']);
     Route::get('/api/feeditems/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditems','as'=>'api.feeds.feeditems']);
+    Route::get('/api/feedpost/{post}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedpost','as'=>'api.feeds.feedpost']);
     Route::post('/api/feeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@store','as'=>'api.feeditems.store']);
+    Route::post('/api/myfeeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@myfeeds','as'=>'api.feeditems.myfeeds']);
     Route::get('api/lectionary/{lyear?}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@wholeyear','as'=>'api.lectionary.wholeyear']);
     Route::get('/api/circuits/{circuit}/upcomingmeetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
     Route::get('/api/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);

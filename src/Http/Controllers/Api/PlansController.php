@@ -12,7 +12,7 @@ use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Label;
-use Bishopm\Churchnet\Repositories\WeekdaysRepository;
+use Bishopm\Churchnet\Models\Weekday;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
@@ -23,7 +23,6 @@ use Bishopm\Churchnet\Repositories\LabelsRepository;
 
 class PlansController extends Controller
 {
-    private $weekdays;
     private $meetings;
     private $societies;
     private $preachers;
@@ -32,9 +31,7 @@ class PlansController extends Controller
     private $plans;
     private $labels;
   
-    public function __construct(
-  
-        WeekdaysRepository $weekdays,
+    public function __construct(  
         MeetingsRepository $meetings,
         SocietiesRepository $societies,
         PreachersRepository $preachers,
@@ -43,7 +40,6 @@ class PlansController extends Controller
         PlansRepository $plans,
         LabelsRepository $labels
     ) {
-        $this->weekdays=$weekdays;
         $this->meetings=$meetings;
         $this->societies=$societies;
         $this->preachers=$preachers;
@@ -108,13 +104,23 @@ class PlansController extends Controller
     public function getservicedates($circuit, $yy, $mm)
     {
         $services=array();
+        $first = strtotime($yy . "-" . $mm . '-01');
         $sun=strtotime("first sunday " . $yy . "-" . $mm);
         $last = strtotime("last day of " . $yy . "-" . $mm);
+        $weekdays = Weekday::where('servicedate','>=',$first)->where('servicedate','<=',$last)->orderBy('servicedate','ASC')->get();
+        foreach ($weekdays as $wd){
+            $services[] = $wd->servicedate;
+        }
         while ($sun <= $last) {
-            $services[] = date("j M", $sun);
+            $services[] = $sun;
             $sun = $sun + 604800;
         }
-        return $services;
+        asort($services);
+        $fin=array();
+        foreach ($services as $sss) {
+            $fin[]=date("j M", $sss);
+        }
+        return $fin;
     }
 
     public function updateplan($circuit, Request $request)

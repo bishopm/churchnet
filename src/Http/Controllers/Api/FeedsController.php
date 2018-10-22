@@ -75,6 +75,45 @@ class FeedsController extends Controller
         return $data;
     }
 
+    public function myfeeds(Request $request) {
+        $feeds = Feeditem::with('feedpost','distributable')
+        ->where(function ($query) use ($request) {
+            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->whereIn('distributable_id', $request->societies)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $request->circuits)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $request->districts);
+        })->get();
+        foreach ($feeds as $feed) {
+            if ($feed->distributable_type == 'Bishopm\Churchnet\Models\Society') {
+                $feed->entity = $feed->distributable->society;
+            } elseif ($feed->distributable_type == 'Bishopm\Churchnet\Models\Circuit') {
+                $feed->entity = $feed->distributable->circuit;
+            } elseif ($feed->distributable_type == 'Bishopm\Churchnet\Models\District') {
+                $feed->entity = $feed->distributable->district;
+            }
+        }
+        return $feeds;
+    }
+
+    public function feedpost($id) {
+        $post = Feedpost::with('feeditems')->find($id);
+        $sss=array();
+        $ccc=array();
+        $ddd=array();
+        foreach ($post->feeditems as $feeditem) {
+            if ($feeditem->distributable_type == 'Bishopm\Churchnet\Models\Society') {
+                $sss[] = (string)$feeditem->distributable_id;
+            } elseif ($feeditem->distributable_type == 'Bishopm\Churchnet\Models\Circuit') {
+                $ccc[] = (string)$feeditem->distributable_id;
+            } elseif ($feeditem->distributable_type == 'Bishopm\Churchnet\Models\District') {
+                $ddd[] = (string)$feeditem->distributable_id;
+            }
+        }
+        $post->societies = $sss;
+        $post->circuits = $ccc;
+        $post->districts = $ddd;
+        return $post;
+    }
+
     public function store(Request $request)
     {
         $feedpost=Feedpost::create($request->post);

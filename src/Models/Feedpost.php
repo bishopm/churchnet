@@ -8,8 +8,8 @@ class Feedpost extends Model
 {
     protected $guarded = array('id');
 
-    public function feeditem()
+    public function feeditems()
     {
-        return $this->belongsTo('Bishopm\Churchnet\Models\Feeditem');
+        return $this->hasMany('Bishopm\Churchnet\Models\Feeditem');
     }
 }

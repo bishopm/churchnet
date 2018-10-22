@@ -11,7 +11,7 @@ class Feeditem extends Model
 
     public function distributable()
     {
-        return $this->morphMany();
+        return $this->morphTo();
     }
 
     public function feedpost()
