@@ -58,7 +58,11 @@ class PlansController extends Controller
 
     public function plan($slug, $y='', $m='')
     {
-        $this->circuit=$this->circuit->findBySlug($slug);
+        if (is_numeric($slug)) {
+            $this->circuit=$this->circuit->find($slug);
+        } else {
+            $this->circuit=$this->circuit->findBySlug($slug);
+        }
         $this->settings=$this->settings->allforcircuit($this->circuit->id);
         $one=range(2, 4);
         $two=range(5, 7);
