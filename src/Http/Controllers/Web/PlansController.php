@@ -56,7 +56,7 @@ class PlansController extends Controller
         $this->tag=$tag;
     }
 
-    public function plan($slug)
+    public function plan($slug, $y='', $m='')
     {
         $this->circuit=$this->circuit->findBySlug($slug);
         $this->settings=$this->settings->allforcircuit($this->circuit->id);
@@ -64,8 +64,10 @@ class PlansController extends Controller
         $two=range(5, 7);
         $three=range(8, 10);
         $four=range(11, 12);
-        $m=intval(date('n'));
-        $y=intval(date('Y'));
+        if (($y=='') or ($m=='')) {
+            $m=intval(date('n'));
+            $y=intval(date('Y'));
+        }
         if (in_array($m, $one)) {
             $this->show($y, 1);
         } elseif (in_array($m, $two)) {
