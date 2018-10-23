@@ -27,9 +27,9 @@ class MeetingsController extends Controller
         $this->societies = $societies;
     }
 
-    public function index($circuit)
+    public function index(Request $request)
     {
-        return $this->meeting->allWithRelation('society');
+        return Meeting::where('circuit_id', $request->circuit)->get();
     }
 
     public function upcoming($circuit)

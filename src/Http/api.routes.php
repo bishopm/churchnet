@@ -73,7 +73,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/individuals/{individual}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@update','as'=>'api.individuals.update']);
 
         // Meetings
-        Route::get('/api/circuits/{circuit}/meetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@index','as'=>'api.meetings.index']);
+        Route::post('/api/circuits/{circuit}/meetings/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@index','as'=>'api.meetings.index']);
         Route::post('api/circuits/{circuit}/meetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@store','as'=>'api.meetings.store']);
         Route::get('api/circuits/{circuit}/meetings/{meeting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@edit','as'=>'api.meetings.edit']);
         Route::put('api/circuits/{circuit}/meetings/{meeting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@update','as'=>'api.meetings.update']);

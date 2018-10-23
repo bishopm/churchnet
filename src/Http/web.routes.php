@@ -64,7 +64,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@update','as'=>'districts.update']);
         Route::post('methodist/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@store','as'=>'districts.store']);
         Route::delete('methodist/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@destroy','as'=>'districts.destroy']);
-
+     
         // Pages
         Route::get('admin/pages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@index','as'=>'admin.pages.index']);
         Route::get('admin/pages/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@create','as'=>'admin.pages.create']);
