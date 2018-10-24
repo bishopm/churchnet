@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Auth;
 
 use JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -23,7 +24,7 @@ class ApiAuthController extends Controller
         try {
             // attempt to verify the credentials and create a token for the user
             if (! $token = JWTAuth::attempt($credentials)) {
-                return response()->json(['error' => 'invalid_credentials'], 401);
+                return "Invalid credentials";
             }
         } catch (JWTException $e) {
             // something went wrong whilst attempting to encode the token
@@ -57,21 +58,19 @@ class ApiAuthController extends Controller
 
     public function register(Request $request)
     {
-        $existing = User::where('circuit_id', '=', $request->circuit)->get();
-        if (count($existing)) {
-            return response('Already taken: ' . json_encode($existing));
+        $existing = User::where('phone', '=', $request->cellphone)->first();
+        if ($existing) {
+            $user = $existing;
         } else {
             $user= new User;
-            $user->name = $request->username;
-            $user->app_secret = $request->app_secret;
-            $user->app_name = $request->app_name;
-            $user->circuit_id = $request->circuit;
-            $user->email = $request->email;
-            $user->app_url = $request->app_url;
-            $user->save();
-            $token = JWTAuth::fromUser($user);
-            return response($token);
         }
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user->phone = $request->cellphone;
+        $user->password = Hash::make($request->password);
+        $user->save();
+        $token = JWTAuth::fromUser($user);
+        return response($token);
     }
 
     public function check()

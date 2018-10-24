@@ -30,7 +30,7 @@ class MeetingsController extends Controller
 
     public function index(Request $request)
     {
-        return Meeting::with('society')->where('circuit_id', $request->circuit)->orderBy('meetingdatetime','DESC')->get();
+        return Meeting::with('society')->where('circuit_id', $request->circuit)->orderBy('meetingdatetime', 'DESC')->get();
     }
 
     public function upcoming($circuit)
@@ -59,11 +59,14 @@ class MeetingsController extends Controller
         return view('connexion::meetings.show', $data);
     }
 
-    public function store($circuit, CreateMeetingRequest $request)
+    public function store(Request $request)
     {
-        $data=$request->except('token');
-        $data['circuit_id']=$circuit;
-        $this->meeting->create($data);
+        $meeting = new Meeting;
+        $meeting->circuit_id = $request->circuit_id;
+        $meeting->society_id = $request->society_id;
+        $meeting->meetingdatetime = strtotime($request->meetingdatetime);
+        $meeting->description = $request->description;
+        $meeting->save();
         return "New meeting added";
     }
     
