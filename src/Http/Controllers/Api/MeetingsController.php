@@ -6,6 +6,7 @@ use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Meeting;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateMeetingRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateMeetingRequest;
 
@@ -29,7 +30,7 @@ class MeetingsController extends Controller
 
     public function index(Request $request)
     {
-        return Meeting::where('circuit_id', $request->circuit)->get();
+        return Meeting::with('society')->where('circuit_id', $request->circuit)->orderBy('meetingdatetime','DESC')->get();
     }
 
     public function upcoming($circuit)
