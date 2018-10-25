@@ -48,7 +48,7 @@ class MeetingsController extends Controller
         return $data;
     }
 
-    public function edit($circuit, $meeting)
+    public function edit($meeting)
     {
         return $this->meeting->find($meeting);
     }
@@ -61,19 +61,14 @@ class MeetingsController extends Controller
 
     public function store(Request $request)
     {
-        $meeting = new Meeting;
-        $meeting->circuit_id = $request->circuit_id;
-        $meeting->society_id = $request->society_id;
-        $meeting->meetingdatetime = strtotime($request->meetingdatetime);
-        $meeting->description = $request->description;
-        $meeting->save();
+        $this->meeting->create($request->all());
         return "New meeting added";
     }
     
-    public function update($circuit, Meeting $meeting, UpdateMeetingRequest $request)
+    public function update($id, Request $request)
     {
-        $data=$request->except('token');
-        $this->meeting->update($meeting, $data);
+        $meeting = Meeting::find($id);
+        $meeting->update($request->all());
         return "Meeting has been updated";
     }
 
