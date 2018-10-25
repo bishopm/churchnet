@@ -50,7 +50,9 @@ class MeetingsController extends Controller
 
     public function edit($meeting)
     {
-        return $this->meeting->find($meeting);
+        $mtg = $this->meeting->find($meeting);
+        $mtg->datestr = date('Y-m-d H:i', $mtg->meetingdatetime);
+        return $mtg;
     }
 
     public function show(Meeting $meeting)
@@ -61,6 +63,7 @@ class MeetingsController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge(array('meetingdatetime' => strtotime(substr($request->meetingdatetime, 0, 19))));
         $this->meeting->create($request->all());
         return "New meeting added";
     }
@@ -68,12 +71,15 @@ class MeetingsController extends Controller
     public function update($id, Request $request)
     {
         $meeting = Meeting::find($id);
+        $request->merge(array('meetingdatetime' => strtotime(substr($request->meetingdatetime, 0, 19))));
         $meeting->update($request->all());
         return "Meeting has been updated";
     }
 
-    public function destroy($circuit, Meeting $meeting)
+    public function destroy($id)
     {
-        $this->meeting->destroy($meeting);
+        $mtg=Meeting::find($id);
+        $this->meeting->destroy($mtg);
+        return "Meeting has been deleted";
     }
 }
