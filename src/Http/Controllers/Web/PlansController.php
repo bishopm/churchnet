@@ -357,13 +357,15 @@ class PlansController extends Controller
             $dum=array();
             $thissoc=$this->societies->find($preacher1->individual->household->society_id)->society;
             $dum['name']=$preacher1->individual->title . " " . $preacher1->individual->firstname . " " . $preacher1->individual->surname;
-            if ($preacher1->position=="Emeritus preacher") {
+            if ($this->tag->checktag($preacher1, 'Emeritus preacher')) {
                 $dum['name'] = $dum['name'] . "*";
             }
             $dum['soc']=$preacher1->individual->household->society_id;
             $dum['cellphone']=$preacher1->individual->cellphone;
             $dum['fullplan']=$preacher1->fullplan;
-            $dum['position']=$preacher1->position;
+            if ($this->tag->checktag($preacher1, 'Local preacher on trial')) {
+                $dum['fullplan']="Trial";
+            }
             if (!$dum['fullplan']) {
                 $vdum['9999' . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
             } else {
@@ -440,7 +442,7 @@ class PlansController extends Controller
             $pdf->text($left_side+$spacer, $y, "Circuit Secretary");
             $pdf->SetFont('Arial', '', 8);
             $y=$y+4;
-            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname);
+            $pdf->text($left_side+$spacer, $y, $csecretary->title . " " . substr($csecretary->firstname, 0, 1) . " " . $csecretary->surname  . " (" . $csecretary->cellphone . ")");
             $pdf->SetFont('Arial', 'B', 11);
             $y=$y+6;
         }
