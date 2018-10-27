@@ -48,7 +48,7 @@ class CircuitsController extends Controller
 
     public function show($id)
     {
-        return Circuit::with('users','societies')->where('id',$id)->first();
+        return Circuit::with('users', 'societies')->where('id', $id)->first();
     }
 
     public function withsocieties($id)
@@ -78,6 +78,6 @@ class CircuitsController extends Controller
 
     public function search(Request $request)
     {
-        return Circuit::whereIn('district_id', $request->districts)->orderBy('circuitnumber')->get();
+        return Circuit::whereIn('district_id', $request->districts)->where('circuit', 'like', '%' . $request->search . '%')->orderBy('circuitnumber')->get();
     }
 }
