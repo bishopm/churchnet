@@ -3,6 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Roster;
+use Bishopm\Churchnet\Models\Rosteritem;
 use Bishopm\Churchnet\Models\Service;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -47,7 +48,7 @@ class RostersController extends Controller
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
                 if ($wk) {
-                    $row->$wk->label=$ri->individual->firstname . " " . $ri->individual->surname;
+                    $row->$wk->label=substr($ri->individual->firstname,0,1) . " " . $ri->individual->surname;
                     $row->$wk->id=$ri->individual_id;
                 }
             }
@@ -79,5 +80,15 @@ class RostersController extends Controller
     {
         $roster = Roster::create(['name' => $request->name, 'dayofweek' => $request->dayofweek, 'society_id' => $request->society_id]);
         return $roster;
+    }
+
+    public function storeitem(Request $request)
+    {
+        $delete = Rosteritem::where('rostergroup_id', $request->rostergroup_id)->where('roster_id', $request->roster_id)->where('rosterdate', $request->rosterdate)->first();
+        if ($delete) {
+            $delete->delete();
+        }
+        $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individual_id' => $request->individual_id, 'roster_id' => $request->roster_id]);
+        return $rosteritem;
     }
 }
