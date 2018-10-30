@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Roster;
 use Bishopm\Churchnet\Models\Rosteritem;
+use Bishopm\Churchnet\Models\Rostergroup;
 use Bishopm\Churchnet\Models\Service;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -25,7 +26,7 @@ class RostersController extends Controller
 
     public function show($id, $yr, $mth)
     {
-        $roster = Roster::with('rostergroups.group', 'rostergroups.rosteritems.individual', 'society')->find($id);
+        $roster = Roster::with('rostergroups.group', 'rostergroups.rosteritems', 'society')->where('id', $id)->first();
         $firstweek = "First " . $roster->dayofweek . " of " . $mth . " " . $yr;
         $weeks[0] = date("Y-m-d", strtotime($firstweek));
         $weeks[] = date("Y-m-d", strtotime($weeks[0] . " + 1 week"));
@@ -40,6 +41,7 @@ class RostersController extends Controller
             $row->groups = new \stdClass;
             $row->groups->label = $rg->group->groupname;
             $row->groups->id = $rg->group->id;
+            $row->groups->rostergroup_id = $rg->id;
             foreach ($weeks as $kk=>$wk) {
                 $row->$kk = new \stdClass;
                 $row->$kk->label='';
@@ -47,8 +49,8 @@ class RostersController extends Controller
             }
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
-                if ($wk) {
-                    $row->$wk->label=substr($ri->individual->firstname,0,1) . " " . $ri->individual->surname;
+                if (($wk) or ($wk === 0)) {
+                    $row->$wk->label=substr($ri->individual->firstname, 0, 1) . " " . $ri->individual->surname;
                     $row->$wk->id=$ri->individual_id;
                 }
             }
@@ -73,7 +75,7 @@ class RostersController extends Controller
 
     public function edit($id)
     {
-        return Roster::with('rostergroups.group','society')->where('id', $id)->first();
+        return Roster::with('rostergroups.group', 'society')->where('id', $id)->first();
     }
 
     public function store(Request $request)
@@ -84,11 +86,16 @@ class RostersController extends Controller
 
     public function storeitem(Request $request)
     {
-        $delete = Rosteritem::where('rostergroup_id', $request->rostergroup_id)->where('roster_id', $request->roster_id)->where('rosterdate', $request->rosterdate)->first();
+        $delete = Rosteritem::where('rostergroup_id', $request->rostergroup_id)->where('rosterdate', $request->rosterdate)->first();
         if ($delete) {
             $delete->delete();
         }
-        $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individual_id' => $request->individual_id, 'roster_id' => $request->roster_id]);
+        $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individual_id' => $request->individual_id]);
         return $rosteritem;
+    }
+
+    public function storerostergroup(Request $request)
+    {
+        return Rostergroup::create(['group_id' => $request->group_id, 'roster_id' => $request->roster_id, 'maxpeople' => $request->maxpeople]);
     }
 }

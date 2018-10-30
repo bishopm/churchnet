@@ -117,6 +117,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/rosters/{roster}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@edit','as'=>'api.rosters.edit']);
         Route::post('api/rosters', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@store','as'=>'api.rosters.store']);
         Route::post('api/rosteritems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@storeitem','as'=>'api.rosters.storeitem']);
+        Route::post('api/rostergroups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@storerostergroup','as'=>'api.rosters.storerostergroup']);
 
         // Services
         Route::get('api/circuits/{circuit}/services/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@create','as'=>'api.services.create']);
