@@ -51,7 +51,7 @@ class RostersController extends Controller
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
                 if (($wk) or ($wk === 0)) {
-                    $indivs = explode(',',$ri->individuals);
+                    $indivs = explode(',', $ri->individuals);
                     $people=array();
                     foreach ($indivs as $indiv) {
                         $person = Individual::find($indiv);
@@ -98,18 +98,14 @@ class RostersController extends Controller
         if ($delete) {
             $delete->delete();
         }
-        if ($request->individualarray) {
-            $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individuals' => implode(",",$request->individualarray)]);
-        } else {
-            $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individuals' => $request->individual_id]);
-        }       
+        $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individuals' => implode(",", $request->individuals)]);
         return $rosteritem;
     }
 
     public function storerostergroup(Request $request)
     {
         $rostergroup = Rostergroup::create(['group_id' => $request->group_id, 'roster_id' => $request->roster_id, 'maxpeople' => $request->maxpeople]);
-        return Rostergroup::with('group')->where('id',$rostergroup->id)->first();
+        return Rostergroup::with('group')->where('id', $rostergroup->id)->first();
     }
 
     public function deleterostergroup($id)
