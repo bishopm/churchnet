@@ -3,6 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Roster;
+use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Rosteritem;
 use Bishopm\Churchnet\Models\Rostergroup;
 use Bishopm\Churchnet\Models\Service;
@@ -42,16 +43,23 @@ class RostersController extends Controller
             $row->groups->label = $rg->group->groupname;
             $row->groups->id = $rg->group->id;
             $row->groups->rostergroup_id = $rg->id;
+            $row->groups->maxpeople = $rg->maxpeople;
             foreach ($weeks as $kk=>$wk) {
                 $row->$kk = new \stdClass;
-                $row->$kk->label='';
-                $row->$kk->id='';
+                $row->$kk->people=[];
             }
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
                 if (($wk) or ($wk === 0)) {
-                    $row->$wk->label=substr($ri->individual->firstname, 0, 1) . " " . $ri->individual->surname;
-                    $row->$wk->id=$ri->individual_id;
+                    $indivs = explode(',',$ri->individuals);
+                    $people=array();
+                    foreach ($indivs as $indiv) {
+                        $person = Individual::find($indiv);
+                        $dum['label']=substr($person->firstname, 0, 1) . " " . $person->surname;
+                        $dum['id']=$person->id;
+                        $people[]=$dum;
+                    }
+                    $row->$wk->people=$people;
                 }
             }
             $data['rows'][]=$row;
@@ -90,12 +98,24 @@ class RostersController extends Controller
         if ($delete) {
             $delete->delete();
         }
-        $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individual_id' => $request->individual_id]);
+        if ($request->individualarray) {
+            $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individuals' => implode(",",$request->individualarray)]);
+        } else {
+            $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individuals' => $request->individual_id]);
+        }       
         return $rosteritem;
     }
 
     public function storerostergroup(Request $request)
     {
-        return Rostergroup::create(['group_id' => $request->group_id, 'roster_id' => $request->roster_id, 'maxpeople' => $request->maxpeople]);
+        $rostergroup = Rostergroup::create(['group_id' => $request->group_id, 'roster_id' => $request->roster_id, 'maxpeople' => $request->maxpeople]);
+        return Rostergroup::with('group')->where('id',$rostergroup->id)->first();
+    }
+
+    public function deleterostergroup($id)
+    {
+        $rostergroup = Rostergroup::find($id);
+        $rostergroup->delete();
+        return "Roster group deleted";
     }
 }
