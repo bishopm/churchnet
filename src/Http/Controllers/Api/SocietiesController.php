@@ -93,10 +93,13 @@ class SocietiesController extends Controller
         return $soc;
     }
     
-    public function update($circuit, Society $society, UpdateSocietyRequest $request)
+    public function update(Request $request)
     {
-        $this->society->update($society, $request->except('token'));
-        return "Society has been updated";
+        $upd = $request->society;
+        unset($upd['services']);
+        $society = Society::find($upd['id']);
+        $society->update($upd);
+        return $society;
     }
 
     public function destroy($circuit, Society $society)

@@ -3,19 +3,13 @@
 namespace Bishopm\Churchnet\Http\Controllers;
 
 use App\Http\Controllers\Controller;
-use Auth;
 use Bishopm\Connexion\Mail\GenericMail;
 use Bishopm\Connexion\Events\MessagePosted;
 use Illuminate\Support\Facades\Mail;
 use Pusher\Pusher;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Bishopm\Connexion\Repositories\IndividualsRepository;
-use Bishopm\Connexion\Repositories\GroupsRepository;
-use Bishopm\Connexion\Repositories\MessagesRepository;
-use Bishopm\Connexion\Http\Requests\MessageRequest;
 use Bishopm\Connexion\Libraries\SMSfunctions;
-use Bishopm\Connexion\Repositories\SettingsRepository;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -26,37 +20,6 @@ class MessagesController extends Controller
      *
      * @return Response
      */
-    private $groups;
-    private $individuals;
-    private $settings;
-    private $messages;
-
-    public function __construct(GroupsRepository $groups, IndividualsRepository $individuals, SettingsRepository $settings, MessagesRepository $messages)
-    {
-        $this->groups = $groups;
-        $this->individuals = $individuals;
-        $this->settings = $settings;
-        $this->messages = $messages;
-        $this->settingsarray=$this->settings->makearray();
-        $this->pusher = new Pusher(
-            $this->settingsarray['pusher_app_key'],
-            $this->settingsarray['pusher_app_secret'],
-            $this->settingsarray['pusher_app_id'],
-            array( 'cluster' => $this->settingsarray['pusher_cluster'], 'encrypted' => true )
-        );
-    }
-
-    public function create($group=0)
-    {
-        $data['group']=$group;
-        $data['groups']=$this->groups->all();
-        $data['individuals']=$this->individuals->all();
-        $settings=$this->settings->makearray();
-        if ($settings['sms_provider']=="bulksms") {
-            $data['credits']=SMSfunctions::BS_get_credits($settings['sms_username'], $settings['sms_password']);
-        }
-        return view('connexion::messages.create', $data);
-    }
 
     public function store(MessageRequest $request)
     {
