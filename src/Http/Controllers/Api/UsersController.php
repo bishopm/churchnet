@@ -31,11 +31,12 @@ class UsersController extends Controller
         $user['id'] = $data->id;
         $user['name'] = $data->name;
         $user['level'] = $data->level;
+        $user['email'] = $data->email;
         return $user;
     }
 
     public function index()
     {
-        return User::where('level','<>','user')->orderBy('name')->get();
+        return User::where('level', '<>', 'user')->orderBy('name')->get();
     }
 }
