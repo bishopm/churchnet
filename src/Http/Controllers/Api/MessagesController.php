@@ -1,15 +1,18 @@
 <?php
 
-namespace Bishopm\Churchnet\Http\Controllers;
+namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Bishopm\Connexion\Mail\GenericMail;
-use Bishopm\Connexion\Events\MessagePosted;
+use Bishopm\Churchnet\Mail\GenericMail;
+use Bishopm\Churchnet\Models\Group;
+use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Events\MessagePosted;
 use Illuminate\Support\Facades\Mail;
 use Pusher\Pusher;
 use Carbon\Carbon;
+use Swift_SmtpTransport;
 use Illuminate\Support\Facades\DB;
-use Bishopm\Connexion\Libraries\SMSfunctions;
+use Bishopm\Churchnet\Libraries\SMSfunctions;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -21,19 +24,18 @@ class MessagesController extends Controller
      * @return Response
      */
 
-    public function store(MessageRequest $request)
+    public function send(Request $request)
     {
-        $recipients=$this->getrecipients($request->groups, $request->individuals, $request->grouprec, $request->msgtype);
-        if ($request->msgtype=="email") {
-            $results=$this->sendemail($request, $recipients);
-            return view('connexion::messages.emailresults', compact('results'));
-        } elseif ($request->msgtype=="sms") {
-            $results=$this->sendsms($request->smsmessage, $recipients);
-            return view('connexion::messages.smsresults', compact('results'));
-        } elseif ($request->msgtype=="app") {
+        $data = $request->message;
+        $recipients=$this->getrecipients($data['groups'], $data['individuals'], "", $data['messagetype']);
+        if ($data['messagetype']=="email") {
+            return $this->sendemail($data, $recipients);
+        } elseif ($data['messagetype']=="sms") {
+            return $this->sendsms($data['textmessage'], $recipients, $data['society_id']);
+        } elseif ($data['messagetype']=="app") {
             $sender=Auth::user()->id;
             foreach ($recipients as $key=>$rec) {
-                $msg = $this->sendmessage($sender, $key, $request->emailmessage);
+                $msg = $this->sendmessage($sender, $key, $data['emailmessage']);
             }
         }
     }
@@ -97,18 +99,11 @@ class MessagesController extends Controller
         } else {
             if (null!==$groups) {
                 foreach ($groups as $group) {
-                    if ($grouprec=="leadersonly") {
-                        $indiv=$this->individuals->find($this->groups->find($group)->leader);
+                    $indivs=Group::find($group)->individuals;
+                    foreach ($indivs as $indiv) {
                         $recipients[$indiv->household_id][$indiv->id]['name']=$indiv->fullname;
                         $recipients[$indiv->household_id][$indiv->id]['email']=$indiv->email;
                         $recipients[$indiv->household_id][$indiv->id]['cellphone']=$indiv->cellphone;
-                    } else {
-                        $indivs=$this->groups->find($group)->individuals;
-                        foreach ($indivs as $indiv) {
-                            $recipients[$indiv->household_id][$indiv->id]['name']=$indiv->fullname;
-                            $recipients[$indiv->household_id][$indiv->id]['email']=$indiv->email;
-                            $recipients[$indiv->household_id][$indiv->id]['cellphone']=$indiv->cellphone;
-                        }
                     }
                 }
             }
@@ -127,8 +122,9 @@ class MessagesController extends Controller
     protected function sendemail($data, $recipients)
     {
         $results=array();
-        $sender = $data->sender;
+        $sender = $data['sender'];
         $sendertold=false;
+        $settings = Society::find($data['society_id']);
         foreach ($recipients as $household) {
             foreach ($household as $indiv) {
                 $dum['name']=$indiv['name'];
@@ -137,6 +133,11 @@ class MessagesController extends Controller
                     $sendertold=true;
                 }
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
+                    $transport = (new Swift_SmtpTransport($settings->email_host, $settings->email_port))
+                       ->setUsername($settings->email_user)
+                       ->setPassword($settings->email_pw)
+                       ->setEncryption($settings->email_encryption);
+                    Mail::setSwiftMailer(new \Swift_Mailer($transport));
                     Mail::to($indiv['email'])->send(new GenericMail($data));
                     $dum['emailresult']="OK";
                 } else {
@@ -152,34 +153,24 @@ class MessagesController extends Controller
         return $results;
     }
 
-    public function sendsms($message, $recipients)
+    public function sendsms($message, $recipients, $soc)
     {
-        $settings=$this->settings->makearray();
-        if ($settings['sms_provider']=="bulksms") {
-            $data['credits']=SMSfunctions::BS_get_credits($settings['sms_username'], $settings['sms_password']);
-            $url = 'http://community.bulksms.com/eapi/submission/send_sms/2/2.0';
-            $port = 80;
-            if (count($recipients)>$data['credits']) {
-                return Redirect::back()->withInput()->withErrors("Insufficient Bulk SMS credits to send SMS");
-            }
-        } elseif ($settings['sms_provider']=="smsfactory") {
-            // SMS Factory stuff
+        $society = Society::find($soc);
+        $credits=SMSfunctions::BS_get_credits($society['bulksms_user'], $society['bulksms_pw']);
+        $url = 'http://community.bulksms.com/eapi/submission/send_sms/2/2.0';
+        $port = 80;
+        if (count($recipients)>$credits) {
+            return "Insufficient Bulk SMS credits to send SMS";
         }
         foreach ($recipients as $household) {
             foreach ($household as $sms) {
-                $seven_bit_msg=$message . " (From " . $settings['site_abbreviation'] . ")";
-                if ($settings['sms_provider']=="bulksms") {
-                    $transient_errors = array(40 => 1);
-                    $msisdn = "+27" . substr($sms['cellphone'], 1);
-                    $post_body = SMSfunctions::BS_seven_bit_sms($settings['sms_username'], $settings['sms_password'], $seven_bit_msg, $msisdn);
-                }
+                $seven_bit_msg=$message;
+                $transient_errors = array(40 => 1);
+                $msisdn = "+27" . substr($sms['cellphone'], 1);
+                $post_body = SMSfunctions::BS_seven_bit_sms($society['bulksms_user'], $society['bulksms_pw'], $seven_bit_msg, $msisdn);
                 $dum2['name']=$sms['name'];
                 if (SMSfunctions::checkcell($sms['cellphone'])) {
-                    if ($settings['sms_provider']=="bulksms") {
-                        $dum2['smsresult'] = SMSfunctions::BS_send_message($post_body, $url, $port);
-                    } elseif ($settings['sms_provider']=="smsfactory") {
-                        $dum2['smsresult'] = SMSfunctions::SF_sendSms($settings['sms_username'], $settings['sms_password'], $sms['cellphone'], $seven_bit_msg);
-                    }
+                    $dum2['smsresult'] = SMSfunctions::BS_send_message($post_body, $url, $port);
                     $dum2['address']=$sms['cellphone'];
                 } else {
                     if ($sms['cellphone']=="") {

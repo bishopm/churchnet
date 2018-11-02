@@ -79,6 +79,9 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/meetings/{meeting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@edit','as'=>'api.meetings.edit']);
         Route::delete('api/meetings/{meeting}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@destroy','as'=>'api.meetings.destroy']);
 
+        // Messages
+        Route::post('api/messages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MessagesController@send','as'=>'api.messages.send']);
+
         // People
         Route::get('/api/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@index','as'=>'api.people.index']);
         Route::get('/api/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@show','as'=>'api.people.show']);

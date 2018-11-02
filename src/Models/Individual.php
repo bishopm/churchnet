@@ -37,4 +37,9 @@ class Individual extends Model
             $q->whereIn('society_id', $societies);
         })->orderBy('surname', 'ASC')->orderBy('firstname', 'ASC');
     }
+
+    public function getFullnameAttribute()
+    {
+        return $this->firstname . " " . $this->surname;
+    }
 }
