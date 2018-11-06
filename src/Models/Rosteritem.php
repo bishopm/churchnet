@@ -12,5 +12,4 @@ class Rosteritem extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Rostergroup');
     }
-    
 }

@@ -24,6 +24,12 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);
     Route::get('resources/{resource}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@show','as'=>'resources.show']);
 
+    // Rosters
+    Route::get('/rosters/{roster}/current', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RostersController@currentroster','as'=>'rosters.current']);
+    Route::get('/rosters/{roster}/next', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RostersController@nextroster','as'=>'rosters.next']);
+    Route::post('/admin/rosters/{rosters}/sms/{send}', 'Bishopm\Churchnet\Http\Controllers\Web\RostersController@sms');
+    Route::get('/admin/rosters/{roster}/report/{year}/{month}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\RostersController@report','as'=>'admin.rosters.report']);
+
     // Tags
     Route::get('tag/{tag}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\HomeController@tag','as'=>'tag']);
     
