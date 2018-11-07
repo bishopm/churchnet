@@ -60,7 +60,7 @@ class RostersController extends Controller
         $x=15;
         $pdf->SetAutoPageBreak(0, 0);
         $pdf->SetFont('Arial', 'B', 12);
-        $pdf->SetTitle($churchname . " - " . $roster->rostername);
+        $pdf->SetTitle($churchname . " - " . $roster->name);
 
         // SET UP DATA STRUCTURE
         DB::enableQueryLog();
@@ -74,38 +74,54 @@ class RostersController extends Controller
                     $data[$grp->group->groupname][$week]=array();
                 }
             }
-            // ksort($data[$week]);
+            ksort($data);
         }
-        $title=$churchname . ": " . $roster->rostername. " (" . date("F", strtotime($weeks[0])) . " " . $yy . ")";
+        $title=$churchname . ": " . $roster->name. " (" . date("F", strtotime($weeks[0])) . " " . $yy . ")";
         $pdf->setxy(10, 8);
         $pdf->cell(0, 0, $title, 0, 0, 'C');
         $first=true;
-        $yy=32;
         $pdf->SetFont('Arial', 'B', 10);
         $pdf->SetTextColor(0, 0, 0);
+        $pdf->SetFillColor(215, 215, 215);
+        $rcount=0;
+        $headings=array();
         foreach ($data as $gg=>$row) {
+            $yy=$rcount*6+22;
             $pdf->SetFont('Arial', 'B', 10);
             $pdf->setxy(10, $yy);
             $pdf->cell(0, 0, $gg, 0, 0);
             $xx=60;
-            $rcount=0;
+            $maxi=1;
             foreach ($row as $wk=>$cell) {
                 $pdf->SetFont('Arial', '', 10);
-                $pdf->setxy($xx, 22);
-                $pdf->cell(0, 0, $wk, 0, 0);
-                $yy=$rcount*20+32;
+                if (!in_array(date("j F Y", strtotime($wk)),$headings)){
+                    $headings[] = date("j F Y", strtotime($wk));
+                }
                 $yadd=0;
                 foreach ($cell as $ii) {
+                    if (count($cell)>$maxi){
+                        $maxi=count($cell);
+                    }
                     $pdf->setxy($xx, $yy+$yadd);
                     if ($ii) {
-                        $pdf->cell(0, 0, $ii['firstname'] . ' ' . $ii['surname'], 0, 0);
+                        $pdf->cell(45, 0, $ii['firstname'] . ' ' . $ii['surname'], 0, 0, 'C');
                     }
                     $yadd=$yadd+4;
                 }
-                $xx=$xx+50;
-                $rcount++;
+                $xx=$xx+45;
             }
-            // $pdf->multicell(25, 4, $hh, 0, 'C');
+            $pdf->rect(10,$yy-3,278,1+($maxi*5));
+            $rcount=$rcount+$maxi;
+        }
+        $pdf->SetFont('Arial', 'B', 10);
+        $xx=60;
+        foreach ($headings as $heading){
+            if (($xx==105) or ($xx==195)){
+                $pdf->rect($xx,12,45,$yy-14+($maxi*5));
+            }
+            $pdf->setxy($xx, 16);
+            $pdf->cell(45, 0, $heading, 0, 0, 'C');
+            $xx=$xx+45;
         }
         $pdf->Output();
         exit;
