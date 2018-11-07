@@ -81,6 +81,36 @@ class RostersController extends Controller
         return json_encode($data);
     }
 
+    public function messages($id)
+    {
+        $this->roster=Roster::find($id);
+        $nextday = date('Y-m-d', strtotime('next ' . $this->roster->dayofweek));
+        $messages = array();
+        $items = Rosteritem::where('rosterdate', $nextday)->with('rostergroup')->whereHas('rostergroup', function ($query) {
+            $query->where('roster_id', '=', $this->roster->id);
+        })->get();
+        foreach ($items as $item) {
+            $individs = explode(',', $item->individuals);
+            foreach ($individs as $individ) {
+                $message = new \stdClass;
+                $indiv = Individual::find($individ);
+                $message->firstname = $indiv->firstname;
+                $message->surname = $indiv->surname;
+                $message->cellphone = $indiv->cellphone;
+                $messages[$individ]['person']=$message;
+                $messages[$individ]['groups'][] = $item->rostergroup->group->groupname;
+            }
+        }
+        $msgs=array();
+        foreach ($messages as $message) {
+            $message['text'] = $message['person']->firstname . ", " . $this->roster->message . " (" . implode(', ', $message['groups']) . ")";
+            $msgs['texts'][]= $message;
+        }
+        $msgs['roster']['name'] = $this->roster->name;
+        $msgs['roster']['date'] = $nextday;
+        return $msgs;
+    }
+
     public function edit($id)
     {
         return Roster::with('rostergroups.group', 'society')->where('id', $id)->first();
