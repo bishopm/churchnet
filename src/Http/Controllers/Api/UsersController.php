@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\User;
+use Bishopm\Churchnet\Models\Individual;
 use Illuminate\Http\Request;
 use Auth;
 
@@ -38,5 +39,35 @@ class UsersController extends Controller
     public function index()
     {
         return User::where('level', '<>', 'user')->orderBy('name')->get();
+    }
+
+    public function store(Request $request)
+    {
+        $usr = $request->user;
+        if ($usr['indiv']) {
+            $user=User::create([
+                'name' => $usr['indiv']['firstname'] . ' ' . $usr['indiv']['surname'],
+                'individual_id' => $usr['indiv']['id'],
+                'phone' => $usr['indiv']['cellphone'],
+                'email' => $usr['indiv']['email'],
+                'level' => 'editor'
+            ]);
+        } else {
+            $indiv = Individual::create([
+                'firstname' => $usr['firstname'],
+                'surname' => $usr['surname'],
+                'sex' => $usr['sex'],
+                'title' => $usr['title'],
+                'cellphone' => $usr['cellphone']
+            ]);
+            $user=User::create([
+                'name' => $indiv->firstname . ' ' . $indiv->surname,
+                'individual_id' => $indiv->id,
+                'phone' => $indiv->cellphone,
+                'email' => $indiv->email,
+                'level' => 'editor'
+            ]);
+        }
+        return $user;
     }
 }
