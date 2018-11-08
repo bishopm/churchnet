@@ -166,6 +166,7 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Users
         Route::get('api/users', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@index','as'=>'api.users.index']);
+        Route::post('api/users', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@store','as'=>'api.users.store']);
         Route::get('api/users/{user}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails','as'=>'api.users.details']);
         Route::get('api/check', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check','as'=>'api.check']);
 
