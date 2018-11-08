@@ -134,7 +134,7 @@ class RostersController extends Controller
 
     public function storerostergroup(Request $request)
     {
-        $rostergroup = Rostergroup::create(['group_id' => $request->group_id, 'roster_id' => $request->roster_id, 'maxpeople' => $request->maxpeople]);
+        $rostergroup = Rostergroup::create(['group_id' => $request->group_id, 'roster_id' => $request->roster_id, 'maxpeople' => $request->maxpeople, 'extrainfo' => $request->extrainfo]);
         return Rostergroup::with('group')->where('id', $rostergroup->id)->first();
     }
 
