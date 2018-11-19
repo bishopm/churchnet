@@ -23,7 +23,7 @@ Route::middleware(['handlecors'])->group(function () {
     // Districts
     Route::get('api/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
     Route::get('api/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@show','as'=>'api.districts.show']);
-    Route::group(['middleware' => ['jwt.auth','handlecors']], function () {
+    Route::group(['middleware' => ['jwt.auth','handlecors', 'ispermitted']], function () {
 
         // Journey routes
         Route::post('/api/phone', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@phone','as'=>'api.individuals.phone']);
@@ -49,9 +49,9 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/groups/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@create','as'=>'api.groups.create']);
         Route::get('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@show','as'=>'api.groups.show']);
         Route::get('api/groups/{group}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@edit','as'=>'api.groups.edit']);
-        Route::put('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@update','as'=>'api.groups.update']);
-        Route::post('api/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@store','as'=>'api.groups.store']);
         Route::post('api/groups/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@search','as'=>'api.groups.search']);
+        Route::post('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@update','as'=>'api.groups.update']);
+        Route::post('api/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@store','as'=>'api.groups.store']);
         Route::post('api/groups/{group}/remove', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@remove','as'=>'api.groups.remove']);
         Route::post('api/groups/{group}/add', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@add','as'=>'api.groups.add']);
         Route::delete('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@destroy','as'=>'api.groups.destroy']);

@@ -7,8 +7,6 @@ use Bishopm\Churchnet\Models\Group;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Bishopm\Churchnet\Http\Requests\CreateGroupRequest;
-use Bishopm\Churchnet\Http\Requests\UpdateGroupRequest;
 
 class GroupsController extends Controller
 {
@@ -52,15 +50,18 @@ class GroupsController extends Controller
 
     public function show($id)
     {
-        return Group::with('individuals')->where('id', $id)->first();
+        $group = Group::with('individuals')->where('id', $id)->first();
+        if (in_array($group->society_id,\Illuminate\Support\Facades\Request::get('user_soc'))){
+            return $group;
+        } else {
+            return "Unauthorised";
+        }
     }
 
-    public function store(CreateGroupRequest $request)
+    public function store(Request $request)
     {
-        $soc=$this->group->create($request->all());
-
-        return redirect()->route('admin.groups.show', $soc->id)
-            ->withSuccess('New group added');
+        $grp=$this->group->create(array_merge($request->all(), ['slug' => str_slug($request->groupname)]));
+        return $grp->id;
     }
     
     public function remove($gid, Request $request)
@@ -80,10 +81,11 @@ class GroupsController extends Controller
         return Group::with('individuals')->where('id', $gid)->first();
     }
 
-    public function update(Group $group, UpdateGroupRequest $request)
+    public function update($id, Request $request)
     {
-        $this->group->update($group, $request->all());
-        return redirect()->route('admin.groups.index')->withSuccess('Group has been updated');
+        $group = $this->group->find($id);
+        $data = $this->group->update($group, $request->all());
+        return $data;
     }
 
     public function destroy(Group $group)

@@ -64,6 +64,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         AliasLoader::getInstance()->alias("Socialite", 'Laravel\Socialite\Facades\Socialite');
         $this->app['router']->aliasMiddleware('handlecors', 'Barryvdh\Cors\HandleCors');
         $this->app['router']->aliasMiddleware('jwt.auth', 'Tymon\JWTAuth\Middleware\GetUserFromToken');
+        $this->app['router']->aliasMiddleware('ispermitted', 'Bishopm\Churchnet\Middleware\IsPermitted');
         $this->registerBindings();
     }
 
