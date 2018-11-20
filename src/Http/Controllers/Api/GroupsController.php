@@ -51,7 +51,7 @@ class GroupsController extends Controller
     public function show($id)
     {
         $group = Group::with('individuals')->where('id', $id)->first();
-        if (in_array($group->society_id,\Illuminate\Support\Facades\Request::get('user_soc'))){
+        if (in_array($group->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $group;
         } else {
             return "Unauthorised";
@@ -88,9 +88,10 @@ class GroupsController extends Controller
         return $data;
     }
 
-    public function destroy(Group $group)
+    public function destroy($id)
     {
-        $this->group->destroy($group);
-        return view('connexion::groups.index')->withSuccess('The ' . $group->group . ' group has been deleted');
+        $group = $this->group->find($id);
+        $group->delete();
+        return 'Group has been deleted';
     }
 }

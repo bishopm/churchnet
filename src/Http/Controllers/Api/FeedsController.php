@@ -75,13 +75,14 @@ class FeedsController extends Controller
         return $data;
     }
 
-    public function myfeeds(Request $request) {
-        $feeds = Feeditem::with('feedpost','distributable')
+    public function myfeeds(Request $request)
+    {
+        $feeds = Feeditem::with('feedpost', 'distributable')
         ->where(function ($query) use ($request) {
             $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->whereIn('distributable_id', $request->societies)
                   ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $request->circuits)
                   ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $request->districts);
-        })->get();
+        })->has('feedpost')->get();
         foreach ($feeds as $feed) {
             if ($feed->distributable_type == 'Bishopm\Churchnet\Models\Society') {
                 $feed->entity = $feed->distributable->society;
@@ -94,7 +95,8 @@ class FeedsController extends Controller
         return $feeds;
     }
 
-    public function feedpost($id) {
+    public function feedpost($id)
+    {
         $post = Feedpost::with('feeditems')->find($id);
         $sss=array();
         $ccc=array();
