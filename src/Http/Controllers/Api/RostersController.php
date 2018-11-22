@@ -117,6 +117,11 @@ class RostersController extends Controller
         return $msgs;
     }
 
+    public function sendmessages(???)
+    {
+
+    }
+
     public function edit($id)
     {
         return Roster::with('rostergroups.group', 'society')->where('id', $id)->first();
