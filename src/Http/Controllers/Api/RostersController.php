@@ -89,6 +89,8 @@ class RostersController extends Controller
         $items = Rosteritem::where('rosterdate', $nextday)->with('rostergroup')->whereHas('rostergroup', function ($query) {
             $query->where('roster_id', '=', $this->roster->id);
         })->get();
+        $extras = array();
+        $dum = array();
         foreach ($items as $item) {
             $individs = explode(',', $item->individuals);
             foreach ($individs as $individ) {
@@ -98,7 +100,10 @@ class RostersController extends Controller
                 $message->surname = $indiv->surname;
                 $message->cellphone = $indiv->cellphone;
                 $messages[$individ]['person']=$message;
-                $messages[$individ]['groups'][] = $item->rostergroup->group->groupname;
+                $messages[$individ]['groups'][]=$item->rostergroup->group->groupname;
+                if ($item->rostergroup->extrainfo == 'yes') {
+                    $extras[$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
+                }
             }
         }
         $msgs=array();
@@ -108,6 +113,7 @@ class RostersController extends Controller
         }
         $msgs['roster']['name'] = $this->roster->name;
         $msgs['roster']['date'] = $nextday;
+        $msgs['roster']['extras'] = array_unique($extras);
         return $msgs;
     }
 
