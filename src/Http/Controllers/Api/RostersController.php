@@ -7,7 +7,9 @@ use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Rosteritem;
 use Bishopm\Churchnet\Models\Rostergroup;
 use Bishopm\Churchnet\Models\Service;
+use Bishopm\Churchnet\Models\Society;
 use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Libraries\SMSfunctions;
 use Illuminate\Http\Request;
 
 class RostersController extends Controller
@@ -84,7 +86,11 @@ class RostersController extends Controller
     public function messages($id)
     {
         $this->roster=Roster::find($id);
-        $nextday = date('Y-m-d', strtotime('next ' . $this->roster->dayofweek));
+        if (date('l')==$this->roster->dayofweek) {
+            $nextday = date('Y-m-d');
+        } else {
+            $nextday = date('Y-m-d', strtotime('next ' . $this->roster->dayofweek));
+        }
         $messages = array();
         $items = Rosteritem::where('rosterdate', $nextday)->with('rostergroup')->whereHas('rostergroup', function ($query) {
             $query->where('roster_id', '=', $this->roster->id);
@@ -100,7 +106,7 @@ class RostersController extends Controller
                 $message->surname = $indiv->surname;
                 $message->cellphone = $indiv->cellphone;
                 $messages[$individ]['person']=$message;
-                $messages[$individ]['groups'][]=$item->rostergroup->group->groupname;
+                $messages[$individ]['groups'][$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
                 if ($item->rostergroup->extrainfo == 'yes') {
                     $extras[$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
                 }
@@ -117,9 +123,35 @@ class RostersController extends Controller
         return $msgs;
     }
 
-    public function sendmessages(???)
+    public function sendmessages(Request $request)
     {
-
+        $society = Society::find($request->society);
+        $credits=SMSfunctions::BS_get_credits($society['bulksms_user'], $society['bulksms_pw']);
+        $url = 'http://community.bulksms.com/eapi/submission/send_sms/2/2.0';
+        $port = 80;
+        if (count($request->messages)>$credits) {
+            return "Insufficient Bulk SMS credits to send SMS";
+        }
+        foreach ($request->messages as $message) {
+            $seven_bit_msg=$message['text'] . ' (' . $message['extras'] . ')';
+            $transient_errors = array(40 => 1);
+            $msisdn = "+27" . substr($message['person']['cellphone'], 1);
+            $post_body = SMSfunctions::BS_seven_bit_sms($society['bulksms_user'], $society['bulksms_pw'], $seven_bit_msg, $msisdn);
+            $dum2['name']=$message['person']['firstname'] . ' ' . $message['person']['surname'];
+            if (SMSfunctions::checkcell($message['person']['cellphone'])) {
+                $dum2['smsresult'] = SMSfunctions::BS_send_message($post_body, $url, $port);
+                $dum2['address']=$message['person']['cellphone'];
+            } else {
+                if ($message['person']['cellphone']=="") {
+                    $dum2['address']="No cell number provided.";
+                } else {
+                    $dum2['address']="Invalid cell number: " . $message['person']['cellphone'] . ".";
+                }
+            }
+            $results[]=$dum2;
+        }
+        $data['results']=$results;
+        return $data['results'];
     }
 
     public function edit($id)
@@ -129,7 +161,17 @@ class RostersController extends Controller
 
     public function store(Request $request)
     {
-        $roster = Roster::create(['name' => $request->name, 'dayofweek' => $request->dayofweek, 'society_id' => $request->society_id]);
+        $roster = Roster::create(['name' => $request->name, 'dayofweek' => $request->dayofweek, 'society_id' => $request->society_id, 'message' => $request->message]);
+        return $roster;
+    }
+
+    public function update($id, Request $request)
+    {
+        $roster = Roster::find($id);
+        $roster->name = $request->name;
+        $roster->dayofweek=$request->dayofweek;
+        $roster->message=$request->message;
+        $roster->save();
         return $roster;
     }
 
