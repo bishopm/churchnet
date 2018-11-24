@@ -44,6 +44,13 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@store','as'=>'api.circuits.store']);
         Route::delete('api/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@destroy','as'=>'api.circuits.destroy']);
 
+        // Giving
+        Route::get('/api/payments/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@index','as'=>'api.payments.index']);
+        Route::post('api/payments', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@store','as'=>'api.payments.store']);
+        Route::post('api/payments/{payment}/update', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@update','as'=>'api.payments.update']);
+        Route::get('api/payments/{payment}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@edit','as'=>'api.payments.edit']);
+        Route::delete('api/payments/{payment}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@destroy','as'=>'api.payments.destroy']);
+
         // Groups
         Route::get('api/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@index','as'=>'api.groups.index']);
         Route::get('api/groups/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@create','as'=>'api.groups.create']);
