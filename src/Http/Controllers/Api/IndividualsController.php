@@ -53,6 +53,25 @@ class IndividualsController extends Controller
         return "Household and individual added";
     }
 
+    public function givers($id)
+    {
+        $this->society=$id;
+        $givers = Individual::where('giving','<>','0')->where('giving','<>','')->whereHas('household', function ($q) {
+            $q->where('society_id', $this->society);
+        })->select('giving')->orderBy('giving')->get();
+        $data=array();
+        $dum=array();
+        foreach ($givers as $giver){
+            if (!in_array($giver->giving,$dum)) {
+                $dum[]=$giver->giving;
+            }
+        }
+        sort($dum, SORT_NUMERIC);
+        $data['givers']=$dum;
+        $data['society']=Society::find($id)->society;
+        return $data;
+    }
+
     public function journeyadd(Request $request)
     {
         if ($request->action=="add") {
