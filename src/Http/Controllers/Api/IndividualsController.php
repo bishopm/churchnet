@@ -57,13 +57,13 @@ class IndividualsController extends Controller
     public function givers($id)
     {
         $this->society=$id;
-        $givers = Individual::where('giving','<>','0')->where('giving','<>','')->whereHas('household', function ($q) {
+        $givers = Individual::where('giving', '<>', '0')->where('giving', '<>', '')->whereHas('household', function ($q) {
             $q->where('society_id', $this->society);
         })->select('giving')->orderBy('giving')->get();
         $data=array();
         $dum=array();
-        foreach ($givers as $giver){
-            if (!in_array($giver->giving,$dum)) {
+        foreach ($givers as $giver) {
+            if (!in_array($giver->giving, $dum)) {
                 $dum[]=$giver->giving;
             }
         }
@@ -117,13 +117,50 @@ class IndividualsController extends Controller
 
     public function giving(Request $request)
     {
-        $indiv = Individual::find($request->id);
+        $indiv = Individual::with('household.individuals')->find($request->id);
         $data=array();
-        $data['pg'] = $indiv->giving;
+        $data['name'] = $indiv->firstname . ' ' . $indiv->surname;
+        $dum=array();
+        $data['pg'] = intval($indiv->giving);
         if ($data['pg']) {
-            $data['history'] = Payment::where('pgnumber',$data['pg'],'society_id',$request['society'])->get();
+            $data['history'] = Payment::where('pgnumber', $data['pg'])->where('society_id', $request['society'])->get();
+        }
+        if ($indiv->giving !== 0) {
+            $taken=Individual::societymember(array($request->society))->where('giving', '>', 0)->orderBy('giving')->select('giving')->get();
+            foreach ($taken as $take) {
+                if (!in_array(intval($take->giving), $dum)) {
+                    $dum[]=intval($take->giving);
+                }
+            }
+            sort($dum);
+            $data['available'] = array();
+            $val = 1;
+            while (count($data['available']) < 20) {
+                if (!in_array($val, $dum)) {
+                    $data['available'][]=$val;
+                }
+                $val++;
+            }
+            $data['householdpg'] = array();
+            foreach ($indiv->household->individuals as $ind) {
+                if ($ind->giving > 0) {
+                    if (array_key_exists($ind->giving, $data['householdpg'])) {
+                        $data['householdpg'][$ind->giving] = $data['householdpg'][$ind->giving] . ', ' . $ind->firstname;
+                    } else {
+                        $data['householdpg'][$ind->giving] = $ind->firstname;
+                    }
+                }
+            }
         }
         return $data;
+    }
+
+    public function updategiving(Request $request)
+    {
+        $indiv = Individual::find($request->id);
+        $indiv->giving = $request->pgnumber;
+        $indiv->save();
+        return "All done";
     }
 
     public function addmessage(Request $request)
