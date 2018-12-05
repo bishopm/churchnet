@@ -8,6 +8,7 @@ use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Preacher;
+use Bishopm\Churchnet\Models\Payment;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Chat;
 use Bishopm\Churchnet\Models\Message;
@@ -112,6 +113,17 @@ class IndividualsController extends Controller
             $message->ago = Carbon::parse($message->created_at)->diffForHumans();
         }
         return $chat;
+    }
+
+    public function giving(Request $request)
+    {
+        $indiv = Individual::find($request->id);
+        $data=array();
+        $data['pg'] = $indiv->giving;
+        if ($data['pg']) {
+            $data['history'] = Payment::where('pgnumber',$data['pg'],'society_id',$request['society'])->get();
+        }
+        return $data;
     }
 
     public function addmessage(Request $request)
