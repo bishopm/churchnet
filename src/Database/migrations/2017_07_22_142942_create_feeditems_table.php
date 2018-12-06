@@ -18,6 +18,7 @@ class CreateFeeditemsTable extends Migration
             $table->integer('distributable_id')->nullable();
             $table->string('distributable_type')->nullable();
             $table->integer('feedpost_id')->nullable();
+            $table->string('library')->nullable();
             $table->timestamps();
         });
     }

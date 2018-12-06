@@ -75,6 +75,31 @@ class FeedsController extends Controller
         return $data;
     }
 
+    public function feedlibrary($society)
+    {
+        $data=array();
+        $this->soc = Society::with('circuit.district')->find($society);
+        $this->cir = $this->soc->circuit;
+        $this->dis = $this->cir->district;
+        $feeditems = Feeditem::where('library', 'yes')->with('feedpost')
+        ->where(function ($query) {
+            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
+        })->get();
+        foreach ($feeditems as $item) {
+            if ($item->distributable_type=="Bishopm\Churchnet\Models\District") {
+                $item->source=$this->dis->district . " District";
+            } elseif ($item->distributable_type=="Bishopm\Churchnet\Models\Circuit") {
+                $item->source=$this->cir->circuit;
+            } else {
+                $item->source=$this->soc->society;
+            }
+            $data[$item->feedpost->category][]=$item;
+        }
+        return $data;
+    }
+
     public function myfeeds(Request $request)
     {
         $feeds = Feeditem::with('feedpost', 'distributable')
@@ -113,6 +138,12 @@ class FeedsController extends Controller
         $post->societies = $sss;
         $post->circuits = $ccc;
         $post->districts = $ddd;
+        return $post;
+    }
+
+    public function feeditem($id)
+    {
+        $post = Feeditem::with('feedpost')->find($id);
         return $post;
     }
 
