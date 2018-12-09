@@ -2,11 +2,9 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Models\Weekday;
 use App\Http\Controllers\Controller;
-use Bishopm\Churchnet\Http\Requests\CreateWeekdayRequest;
-use Bishopm\Churchnet\Http\Requests\UpdateWeekdayRequest;
+use Illuminate\Http\Request;
 
 class WeekdaysController extends Controller
 {
@@ -19,14 +17,9 @@ class WeekdaysController extends Controller
 
     private $weekday;
 
-    public function __construct(WeekdaysRepository $weekday)
+    public function index(Request $request)
     {
-        $this->weekday = $weekday;
-    }
-
-    public function index($circuit)
-    {
-        return $this->weekday->all();
+        return Weekday::where('circuit_id', $request->circuit)->get();
     }
 
     public function create()
