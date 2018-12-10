@@ -117,7 +117,12 @@ class FeedsController extends Controller
                 $feed->entity = $feed->distributable->district;
             }
         }
-        return $feeds;
+        $data=array();
+        foreach ($feeds as $feed) {
+            $data[strtotime($feed->feedpost->publicationdate)][]=$feed;
+        }
+        rsort($data);
+        return $data;
     }
 
     public function feedpost($id)
