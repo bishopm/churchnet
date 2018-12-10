@@ -33,29 +33,32 @@ class WeekdaysController extends Controller
         return $this->weekday->findfordate($circuit, $weekday);
     }
 
-    public function edit($circuit, $weekday)
+    public function edit($weekday)
     {
-        return $this->weekday->find($weekday);
+        $wk=Weekday::find($weekday);
+        $wk->datestr = date('Y-m-d H:i', $wk->servicedate);
+        return $wk;
     }
 
-    public function store($circuit, CreateWeekdayRequest $request)
+    public function store(Request $request)
     {
-        $data=$request->except('token');
-        $data['circuit_id']=$circuit;
-        $this->weekday->create($data);
+        $request->merge(array('servicedate' => strtotime(substr($request->servicedate, 0, 10))));
+        $wk = Weekday::create($request->all());
         return "New weekday added";
     }
     
-    public function update($circuit, Weekday $weekday, UpdateWeekdayRequest $request)
+    public function update($id, Request $request)
     {
-        $data=$request->except('token');
-        $data['circuit_id']=$circuit;
-        $this->weekday->update($weekday, $data);
+        $wkday = Weekday::find($id);
+        $request->merge(array('servicedate' => strtotime(substr($request->servicedate, 0, 10))));
+        $wkday->update($request->all());
         return "Weekday has been updated";
     }
     
-    public function destroy($circuit, Weekday $weekday)
+    public function destroy($id)
     {
-        $this->weekday->destroy($weekday);
+        $wk=Weekday::find($id);
+        $wk->delete();
+        return "Weekday has been deleted";
     }
 }

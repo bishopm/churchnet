@@ -126,10 +126,15 @@ class PlansController extends Controller
     public function updateplan($circuit, Request $request)
     {
         if ($request->id <> 0) {
-            $plan = Plan::where('service_id', $request->service_id)->where('planyear', $request->planyear)->where('planmonth', $request->planmonth)->where('planday', $request->planday)->first();
-            $plan->person_id = $request->person_id;
-            $plan->servicetype = $request->servicetype;
-            $plan->save();
+            if (($request->person_id=='') and ($request->servicetype=='')){
+                $plan=Plan::find($request->id)->delete();
+                return $request;
+            } else {
+                $plan = Plan::where('service_id', $request->service_id)->where('planyear', $request->planyear)->where('planmonth', $request->planmonth)->where('planday', $request->planday)->first();
+                $plan->person_id = $request->person_id;
+                $plan->servicetype = $request->servicetype;
+                $plan->save();
+            }
         } else {
             $plan = Plan::create(['circuit_id' => $circuit, 'society_id' => $request->society_id, 'service_id' => $request->service_id, 'planyear' => $request->planyear, 'planmonth' => $request->planmonth, 'planday' => $request->planday, 'person_id' => $request->person_id, 'servicetype' => $request->servicetype, 'trialservice' => $request->trialservice]);
         }

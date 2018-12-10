@@ -151,12 +151,35 @@ class FeedsController extends Controller
     {
         $feedpost=Feedpost::create($request->post);
         foreach ($request->circuits as $circuit) {
-            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit]);
+            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
         }
         foreach ($request->societies as $society) {
             $testsoc=Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
             if (!$testsoc) {
-                Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society]);
+                Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society, 'library' => $request->post['library']]);
+            }
+        }
+        return "ok";
+    }
+
+    public function update(Request $request)
+    {
+        $feedpost=Feedpost::with('feeditems')->find($request->id);
+        $feedpost->publicationdate = $request->post['publicationdate'];
+        $feedpost->body = $request->post['body'];
+        $feedpost->title = $request->post['title'];
+        $feedpost->category = $request->post['category'];
+        $feedpost->save();
+        // Delete previous linked feed items 
+        $feeditemclear = Feeditem::where('feedpost_id',$feedpost->id)->delete();
+        // Add amended linked feed items
+        foreach ($request->circuits as $circuit) {
+            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
+        }
+        foreach ($request->societies as $society) {
+            $testsoc=Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
+            if (!$testsoc) {
+                Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society, 'library' => $request->post['library']]);
             }
         }
         return "ok";
