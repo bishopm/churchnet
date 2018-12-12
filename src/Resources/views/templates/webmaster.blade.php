@@ -103,7 +103,7 @@
     </div>
   </nav>
   <section class="section">
-    <div class="content-wrapper">
+    <div class="content-wrapper container">
       @yield('content')
     </div>
   </section>
