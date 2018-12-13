@@ -80,6 +80,7 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Individuals
         Route::get('api/givers/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@givers','as'=>'api.individuals.givers']);
+        Route::get('api/leaders/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@leaders','as'=>'api.individuals.leaders']);
         Route::post('api/giving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@giving','as'=>'api.individuals.giving']);
         Route::post('api/updategiving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@updategiving','as'=>'api.individuals.updategiving']);
         Route::post('api/individuals/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@search','as'=>'api.individuals.search']);
@@ -194,7 +195,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('/api/weekdays/{weekday}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@edit','as'=>'api.weekdays.edit']);
         Route::get('/api/weekdays/bydate/{date}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@show','as'=>'api.weekdays.show']);
         Route::post('/api/weekdays/{weekday}/update', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@update','as'=>'api.weekdays.update']);
-        Route::post('api/weekdays', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@store','as'=>'api.weekdays.store']);        
+        Route::post('api/weekdays', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@store','as'=>'api.weekdays.store']);
         Route::delete('api/weekdays/{weekday}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@destroy','as'=>'api.weekdays.destroy']);
     });
 });

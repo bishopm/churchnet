@@ -18,6 +18,7 @@ use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateIndividualRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateIndividualRequest;
 use Carbon\Carbon;
+use Cviebrock\EloquentTaggable\Models\Tag;
 
 class IndividualsController extends Controller
 {
@@ -44,14 +45,27 @@ class IndividualsController extends Controller
 
     public function addcombined(Request $request)
     {
-        $addressee = $request->firstname . ' ' . $request->surname;
+        if ($request->title) {
+            $addressee = $request->title . ' ' . $request->firstname . ' ' . $request->surname;
+        } else {
+            $addressee = $request->firstname . ' ' . $request->surname;
+        }
         $household = Household::create(['addressee'=>$addressee, 'society_id'=>$request->society_id, 'sortsurname'=>$request->surname]);
-        $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'household_id'=>$household->id]);
+        if ($request->title) {
+            $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'title'=>$request->title, 'household_id'=>$household->id]);
+        } else {
+            $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'household_id'=>$household->id]);
+        }
         $household->householdcell = $individual->id;
         $household->save();
-        $user = User::where('phone', $request->phone)->first();
-        $user->individual_id=$individual->id;
-        return "Household and individual added";
+        if ($request->adduser == 'yes') {
+            $user = User::where('phone', $request->phone)->first();
+            $user->individual_id=$individual->id;
+        } else {
+            $soc = Society::find($request->society_id);
+            $individual->society = $soc->society;
+        }
+        return $individual;
     }
 
     public function givers($id)
@@ -70,6 +84,17 @@ class IndividualsController extends Controller
         sort($dum, SORT_NUMERIC);
         $data['givers']=$dum;
         $data['society']=Society::find($id)->society;
+        return $data;
+    }
+
+    public function leaders($circuit)
+    {
+        $socs = Society::where('circuit_id', $circuit)->pluck('id')->toArray();
+        $data = array();
+        $data['individuals'] = Individual::societymember($socs)->with('tags')->whereHas('tags', function ($query) {
+            $query->where('type', 'leader');
+        })->get();
+        $data['tags'] = Tag::where('type', 'leader')->orderBy('name')->get();
         return $data;
     }
 
