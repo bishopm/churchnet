@@ -98,6 +98,11 @@ class IndividualsController extends Controller
         return $data;
     }
 
+    public function editleaders(Request $request)
+    {
+        return $request;
+    }
+
     public function journeyadd(Request $request)
     {
         if ($request->action=="add") {

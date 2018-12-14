@@ -81,6 +81,7 @@ Route::middleware(['handlecors'])->group(function () {
         // Individuals
         Route::get('api/givers/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@givers','as'=>'api.individuals.givers']);
         Route::get('api/leaders/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@leaders','as'=>'api.individuals.leaders']);
+        Route::post('api/leaders', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@editleaders','as'=>'api.individuals.editleaders']);
         Route::post('api/giving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@giving','as'=>'api.individuals.giving']);
         Route::post('api/updategiving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@updategiving','as'=>'api.individuals.updategiving']);
         Route::post('api/individuals/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@search','as'=>'api.individuals.search']);
