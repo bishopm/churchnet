@@ -100,7 +100,30 @@ class IndividualsController extends Controller
 
     public function editleaders(Request $request)
     {
-        return $request;
+        if ($request->leader['action'] =='Add') {
+            if ($request->addnew == false) {
+                $indiv = Individual::with('tags')->where('id',$request->leader['individual_id'])->first();
+            } else {
+                $indiv = $this->addcombined(new Request($request->individual));
+            }
+            foreach ($request->leader['tags'] as $tagid) {
+                $tag = Tag::find($tagid)->name;
+                $indiv->tag($tag);
+            }
+            return "Leader added";
+        } else {
+            $indiv = Individual::with('tags')->where('id',$request->leader['individual_id'])->first();
+            foreach ($indiv->tags as $etag) {
+                if ($etag->type == 'leader') {
+                    $indiv->untag($etag->name);
+                }
+            }
+            foreach ($request->leader['tags'] as $tagid) {
+                $tag = Tag::find($tagid)->name;
+                $indiv->tag($tag);
+            }
+            return "Leader updated";
+        }
     }
 
     public function journeyadd(Request $request)
