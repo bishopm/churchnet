@@ -7,7 +7,7 @@ class SocietiesRepository extends EloquentBaseRepository
 {
     public function findsociety($id)
     {
-        return $this->model->with('services')->find($id);
+        return $this->model->with('services','users')->find($id);
     }
 
     public function dropdown()

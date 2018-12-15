@@ -64,10 +64,10 @@ class CircuitsController extends Controller
             ->withSuccess('New circuit added');
     }
     
-    public function update(Circuit $circuit, UpdateCircuitRequest $request)
+    public function update(Circuit $circuit, Request $request)
     {
         $this->circuit->update($circuit, $request->all());
-        return redirect()->route('admin.circuits.index')->withSuccess('Circuit has been updated');
+        return 'Circuit has been updated';
     }
 
     public function destroy(Circuit $circuit)

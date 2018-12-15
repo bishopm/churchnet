@@ -8,6 +8,7 @@ use Bishopm\Churchnet\Libraries\Fpdf\Fpdf;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
+use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
@@ -64,10 +65,23 @@ class PlansController extends Controller
             $this->circuit=$this->circuit->findBySlug($slug);
         }
         $this->settings=$this->settings->allforcircuit($this->circuit->id);
-        $one=range(2, 4);
-        $two=range(5, 7);
-        $three=range(8, 10);
-        $four=range(11, 12);
+        $planmonth = $this->circuit->plan_month;
+        if ($planmonth==1) {
+            $one=array(1,2,3);
+            $two=array(4,5,6);
+            $three=array(7,8,9);
+            $four=array(10,11,12);
+        } elseif ($planmonth==2) {
+            $one=array(2,3,4);
+            $two=array(5,6,7);
+            $three=array(8,9,10);
+            $four=array(11,12,1);
+        } elseif ($planmonth==3) {
+            $one=array(3,4,5);
+            $two=array(6,7,8);
+            $three=array(9,10,11);
+            $four=array(12,1,2);
+        }
         if (($y=='') or ($m=='')) {
             $m=intval(date('n'));
             $y=intval(date('Y'));
@@ -80,7 +94,9 @@ class PlansController extends Controller
             $this->show($y, 3);
         } elseif (in_array($m, $four)) {
             $this->show($y, 4);
-        } elseif ($m==1) {
+        } elseif (($m==1) and ($planmonth > 1)){
+            $this->show($y-1, 4);
+        } elseif (($m==2) and ($planmonth == 2)){
             $this->show($y-1, 4);
         }
     }
@@ -91,9 +107,9 @@ class PlansController extends Controller
         foreach ($this->settings as $sett) {
             $settings[$sett->setting_key]=$sett->setting_value;
         }
+        $fm = $this->circuit->plan_month;
         $data=array();
         $fin=array();
-        $fm=2;
         $m1=$qq*3-3+$fm;
         $y1=$yy;
         $m2=$qq*3-2+$fm;

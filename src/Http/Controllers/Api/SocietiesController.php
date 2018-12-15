@@ -7,6 +7,7 @@ use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Auth;
 use Bishopm\Churchnet\Http\Requests\CreateSocietyRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSocietyRequest;
 
@@ -38,6 +39,11 @@ class SocietiesController extends Controller
             $circs[]=intval($circ);
         }
         return Society::whereIn('circuit_id', $circs)->where('society', 'like', '%' . $request->search . '%')->orderBy('society')->get();
+    }
+
+    public function settings(Request $request)
+    {
+        return Society::whereIn('id', $request->societies['keys'])->orderBy('society')->get();
     }
 
     public function thisweek($circuit)
@@ -97,6 +103,7 @@ class SocietiesController extends Controller
     {
         $upd = $request->society;
         unset($upd['services']);
+        unset($upd['users']);
         $society = Society::find($upd['id']);
         $society->update($upd);
         return $society;

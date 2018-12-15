@@ -41,7 +41,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/circuits/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@create','as'=>'api.circuits.create']);
         Route::get('api/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@show','as'=>'api.circuits.show']);
         Route::get('api/circuits/{circuit}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@edit','as'=>'api.circuits.edit']);
-        Route::put('api/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@update','as'=>'api.circuits.update']);
+        Route::post('api/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@update','as'=>'api.circuits.update']);
         Route::post('api/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@store','as'=>'api.circuits.store']);
         Route::delete('api/circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@destroy','as'=>'api.circuits.destroy']);
 
@@ -159,6 +159,7 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Societies
         Route::post('/api/societies/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@search','as'=>'api.societies.search']);
+        Route::post('/api/societies/settings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@settings','as'=>'api.societies.settings']);
         Route::get('api/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
         Route::post('api/addsociety', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@appstore','as'=>'api.societies.appstore']);
         Route::post('api/societies/update', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@update','as'=>'api.societies.update']);
