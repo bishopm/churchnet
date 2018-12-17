@@ -19,7 +19,7 @@
     <div class="row">
         <div class="card" style="border:none;">
             <h3>Welcome to church.net.za</h3>
-            <p>We're collecting useful resources for local church ministry.<br>Have a look around and then feel free to make your own contribution :)</p>
+            <p>We're collecting useful resources for local church ministry. Have a look around and then feel free to make your own contribution :)</p>
         </div>
     </div>
     <div class="row">
