@@ -64,9 +64,10 @@ class CircuitsController extends Controller
             ->withSuccess('New circuit added');
     }
     
-    public function update(Circuit $circuit, Request $request)
+    public function update($circuit, Request $request)
     {
-        $this->circuit->update($circuit, $request->all());
+        $cir = $this->circuit->find($circuit);
+        $this->circuit->update($cir, $request->all());
         return 'Circuit has been updated';
     }
 

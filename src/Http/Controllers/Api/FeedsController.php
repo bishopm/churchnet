@@ -154,7 +154,13 @@ class FeedsController extends Controller
 
     public function store(Request $request)
     {
-        $feedpost=Feedpost::create($request->post);
+        $feedpost=Feedpost::create(
+            [
+                'category' => $request->post['category'],
+                'title' => $request->post['title'],
+                'body' => $request->post['body'],
+                'publicationdate' => $request->post['publicationdate']            
+            ]);
         foreach ($request->circuits as $circuit) {
             Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
         }
