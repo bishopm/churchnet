@@ -5,6 +5,9 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Meeting;
+use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\District;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateMeetingRequest;
@@ -30,7 +33,17 @@ class MeetingsController extends Controller
 
     public function index(Request $request)
     {
-        return Meeting::with('society')->where('circuit_id', $request->circuit)->orderBy('meetingdatetime', 'DESC')->get();
+        $mtype = "Bishopm\\Churchnet\\Models\\" . ucfirst($request->scope);
+        $data = array();
+        $data['meetings']=Meeting::with('society')->where('meetable_id', $request->id)->where('meetable_type',$mtype)->orderBy('meetingdatetime', 'DESC')->get();
+        if ($request->scope == 'society'){
+            $data['entity']=Society::find($request->id);
+        } elseif ($request->scope == 'circuit'){
+            $data['entity']=Circuit::find($request->id);
+        } elseif ($request->scope == 'society'){
+            $data['entity']=District::find($request->id);
+        }
+        return $data;
     }
 
     public function upcoming($circuit)

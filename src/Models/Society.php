@@ -47,4 +47,9 @@ class Society extends Model
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Household');
     }
+    
+    public function meetings()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Meeting', 'meetable');
+    }
 }

@@ -41,7 +41,7 @@ class Circuit extends Model
 
     public function meetings()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Meeting');
+        return $this->morphMany('Bishopm\Churchnet\Models\Meeting', 'meetable');
     }
 
     public function settings()
