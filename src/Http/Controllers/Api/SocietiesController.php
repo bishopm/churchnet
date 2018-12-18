@@ -63,6 +63,8 @@ class SocietiesController extends Controller
         $yy=date("Y", strtotime('sunday'));
         $mm=date("n", strtotime('sunday'));
         $dd=date("j", strtotime('sunday'));
+        $ss=date("d M Y", strtotime('sunday'));
+        $data=array();
         $societies = Society::with('services')->where('circuit_id', $circuit)->get();
         foreach ($societies as $society) {
             foreach ($society->services as $service) {
@@ -76,7 +78,9 @@ class SocietiesController extends Controller
                 }
             }
         }
-        return $societies;
+        $data['societies'] = $societies;
+        $data['sunday'] = $ss;
+        return $data;
     }
 
     public function edit($circuit, Society $society)
