@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Feedpost;
 use Illuminate\Http\Request;
@@ -39,6 +40,10 @@ class FeedsController extends Controller
         $this->soc = Society::with('circuit.district')->find($society);
         $this->cir = $this->soc->circuit;
         $this->dis = $this->cir->district;
+        $data['diary'] = Meeting::with('society')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $this->soc->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*21)
+                            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $this->cir->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*21)
+                            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $this->dis->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*21)->get();
+        $data['diarycount']=count($data['diary']);
         $this->monday = date("Y-m-d", strtotime('Monday this week'));
         $feeditems = Feeditem::monday($this->monday)->with('feedpost')
         ->where(function ($query) {
@@ -159,8 +164,9 @@ class FeedsController extends Controller
                 'category' => $request->post['category'],
                 'title' => $request->post['title'],
                 'body' => $request->post['body'],
-                'publicationdate' => $request->post['publicationdate']            
-            ]);
+                'publicationdate' => $request->post['publicationdate']
+            ]
+        );
         foreach ($request->circuits as $circuit) {
             Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
         }
@@ -181,8 +187,8 @@ class FeedsController extends Controller
         $feedpost->title = $request->post['title'];
         $feedpost->category = $request->post['category'];
         $feedpost->save();
-        // Delete previous linked feed items 
-        $feeditemclear = Feeditem::where('feedpost_id',$feedpost->id)->delete();
+        // Delete previous linked feed items
+        $feeditemclear = Feeditem::where('feedpost_id', $feedpost->id)->delete();
         // Add amended linked feed items
         foreach ($request->circuits as $circuit) {
             Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);

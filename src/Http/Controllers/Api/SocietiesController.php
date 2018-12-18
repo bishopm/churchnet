@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -34,11 +35,22 @@ class SocietiesController extends Controller
 
     public function search(Request $request)
     {
-        $circs=array();
-        foreach ($request->circuits as $circ) {
-            $circs[]=intval($circ);
+        if (isset($request->scope)) {
+            if ($request->scope == 'society') {
+                return Society::where('id', $request->entity)->get();
+            } elseif ($request->scope == 'circuit') {
+                return Society::where('circuit_id', $request->entity)->orderBy('society')->get();
+            } elseif ($request->scope == 'district') {
+                $circs = Circuit::where('district_id', $request->entity)->select('id')->get()->toArray();
+                return Society::whereIn('circuit_id', $circs)->orderBy('society')->get();
+            }
+        } else {
+            $circs=array();
+            foreach ($request->circuits as $circ) {
+                $circs[]=intval($circ);
+            }
+            return Society::whereIn('circuit_id', $circs)->where('society', 'like', '%' . $request->search . '%')->orderBy('society')->get();
         }
-        return Society::whereIn('circuit_id', $circs)->where('society', 'like', '%' . $request->search . '%')->orderBy('society')->get();
     }
 
     public function settings(Request $request)
@@ -77,7 +89,7 @@ class SocietiesController extends Controller
         return view('connexion::societies.create');
     }
 
-    public function show($circuit,$society)
+    public function show($circuit, $society)
     {
         return $this->society->findsociety($society);
     }

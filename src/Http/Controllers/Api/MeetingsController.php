@@ -35,28 +35,38 @@ class MeetingsController extends Controller
     {
         $mtype = "Bishopm\\Churchnet\\Models\\" . ucfirst($request->scope);
         $data = array();
-        $data['meetings']=Meeting::with('society')->where('meetable_id', $request->id)->where('meetable_type',$mtype)->orderBy('meetingdatetime', 'DESC')->get();
-        if ($request->scope == 'society'){
+        $data['meetings']=Meeting::with('society')->where('meetable_id', $request->id)->where('meetable_type', $mtype)->orderBy('meetingdatetime', 'DESC')->get();
+        if ($request->scope == 'society') {
             $data['entity']=Society::find($request->id);
-        } elseif ($request->scope == 'circuit'){
+        } elseif ($request->scope == 'circuit') {
             $data['entity']=Circuit::find($request->id);
-        } elseif ($request->scope == 'society'){
+        } elseif ($request->scope == 'district') {
             $data['entity']=District::find($request->id);
         }
         return $data;
     }
 
-    public function upcoming($circuit)
+    public function upcoming($scope, $soc)
     {
         $now = time();
-        $upcomings = Meeting::with('society')->where('meetingdatetime', '>', $now)->where('circuit_id', $circuit)->orderBy('meetingdatetime')->get();
         $data = array();
+        $society = Society::with('circuit.district')->find($soc);
+        if ($scope == 'Society') {
+            $upcomings = Meeting::with('society')->where('meetingdatetime', '>', $now)->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $society->id)->orderBy('meetingdatetime')->get();
+            $data['entity'] = $society->society;
+        } elseif ($scope == 'Circuit') {
+            $upcomings = Meeting::with('society')->where('meetingdatetime', '>', $now)->where('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $society->circuit->id)->orderBy('meetingdatetime')->get();
+            $data['entity'] = $society->circuit->circuit;
+        } elseif ($scope == 'District') {
+            $upcomings = Meeting::with('society')->where('meetingdatetime', '>', $now)->where('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $society->circuit->district->id)->orderBy('meetingdatetime')->get();
+            $data['entity'] = $society->circuit->district->district . " District";
+        }
         foreach ($upcomings as $upcoming) {
             $dum['start'] = date("j F Y (H:i)", $upcoming->meetingdatetime);
             $dum['details'] = $upcoming->description;
             $dum['society'] = $upcoming->society->society;
             $dum['society_id'] = $upcoming->society->id;
-            $data[]=$dum;
+            $data['events'][]=$dum;
         }
         return $data;
     }
@@ -77,6 +87,7 @@ class MeetingsController extends Controller
     public function store(Request $request)
     {
         $request->merge(array('meetingdatetime' => strtotime(substr($request->meetingdatetime, 0, 19))));
+        $request->merge(array('meetable_type' => 'Bishopm\\Churchnet\\Models\\' . ucfirst($request->meetable_type)));
         $this->meeting->create($request->all());
         return "New meeting added";
     }
@@ -85,6 +96,7 @@ class MeetingsController extends Controller
     {
         $meeting = Meeting::find($id);
         $request->merge(array('meetingdatetime' => strtotime(substr($request->meetingdatetime, 0, 19))));
+        $request->merge(array('meetable_type' => 'Bishopm\\Churchnet\\Models\\' . ucfirst($request->meetable_type)));
         $meeting->update($request->all());
         return "Meeting has been updated";
     }

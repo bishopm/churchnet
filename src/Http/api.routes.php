@@ -15,7 +15,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('/api/feeditem/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditem','as'=>'api.feeds.feeditem']);
     Route::post('/api/myfeeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@myfeeds','as'=>'api.feeditems.myfeeds']);
     Route::get('api/lectionary/{lyear?}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@wholeyear','as'=>'api.lectionary.wholeyear']);
-    Route::get('/api/circuits/{circuit}/upcomingmeetings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
+    Route::get('/api/upcomingmeetings/{scope}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@upcoming','as'=>'api.meetings.upcoming']);
     Route::get('/api/circuits/{circuit}/societies', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@index','as'=>'api.societies.index']);
     Route::get('/api/circuits/{circuit}/withsocieties', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@withsocieties','as'=>'api.circuits.withsocieties']);
     Route::get('/api/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
