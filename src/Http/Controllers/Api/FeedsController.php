@@ -126,7 +126,7 @@ class FeedsController extends Controller
         foreach ($feeds as $feed) {
             $data[strtotime($feed->feedpost->publicationdate)][]=$feed;
         }
-        rsort($data);
+        rsort($data); 
         return $data;
     }
 
