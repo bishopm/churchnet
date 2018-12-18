@@ -126,7 +126,7 @@ class FeedsController extends Controller
         foreach ($feeds as $feed) {
             $data[strtotime($feed->feedpost->publicationdate)][]=$feed;
         }
-        return $data;
+        return array_reverse($data);
     }
 
     public function feedpost($id)
