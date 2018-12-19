@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
@@ -24,7 +25,6 @@ class PlansController extends Controller
 {
     private $settings;
     private $weekdays;
-    private $meetings;
     private $societies;
     private $people;
     private $plans;
@@ -36,7 +36,6 @@ class PlansController extends Controller
     public function __construct(
         SettingsRepository $settings,
         WeekdaysRepository $weekdays,
-        MeetingsRepository $meetings,
         SocietiesRepository $societies,
         PeopleRepository $people,
         PlansRepository $plans,
@@ -47,7 +46,6 @@ class PlansController extends Controller
     ) {
         $this->settings=$settings;
         $this->weekdays=$weekdays;
-        $this->meetings=$meetings;
         $this->societies=$societies;
         $this->people=$people;
         $this->plans=$plans;
@@ -94,9 +92,9 @@ class PlansController extends Controller
             $this->show($y, 3);
         } elseif (in_array($m, $four)) {
             $this->show($y, 4);
-        } elseif (($m==1) and ($planmonth > 1)){
+        } elseif (($m==1) and ($planmonth > 1)) {
             $this->show($y-1, 4);
-        } elseif (($m==2) and ($planmonth == 2)){
+        } elseif (($m==2) and ($planmonth == 2)) {
             $this->show($y-1, 4);
         }
     }
@@ -130,7 +128,7 @@ class PlansController extends Controller
         $lastSunday=strtotime($firstSunday);
         $lastDay=mktime(23, 59, 59, $m3, cal_days_in_month(CAL_GREGORIAN, $m3, $y3), $y3);
         $extras=$this->weekdays->valueBetween('servicedate', $firstDateTime, $lastDay);
-        $data['meetings']=$this->meetings->valueBetween('meetingdatetime', $firstDateTime, $lastDay);
+        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')->get();
         $dum['dt']=$lastSunday;
         $dum['yy']=intval(date("Y", $lastSunday));
         $dum['mm']=intval(date("n", $lastSunday));

@@ -55,7 +55,13 @@ class SocietiesController extends Controller
 
     public function settings(Request $request)
     {
-        return Society::whereIn('id', $request->societies['keys'])->orderBy('society')->get();
+        $asocs = array();
+        foreach ($request->societies['keys'] as $key) {
+            if ($request->societies[$key]=='admin') {
+                $asocs[]=$key;
+            }
+        }
+        return Society::whereIn('id', $asocs)->orderBy('society')->get();
     }
 
     public function thisweek($circuit)
