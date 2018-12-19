@@ -110,7 +110,7 @@ class FeedsController extends Controller
         $feeds = Feeditem::with('feedpost', 'distributable')
         ->where(function ($query) use ($request) {
             $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->whereIn('distributable_id', $request->societies)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $request->circuits)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->whereIn('distributable_id', $request->circuits)
                   ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $request->districts);
         })->has('feedpost')->get();
         foreach ($feeds as $feed) {

@@ -71,7 +71,7 @@ class SocietiesController extends Controller
         $dd=date("j", strtotime('sunday'));
         $ss=date("d M Y", strtotime('sunday'));
         $data=array();
-        $societies = Society::with('services')->where('circuit_id', $circuit)->get();
+        $societies = Society::with('services')->whereHas('services')->where('circuit_id', $circuit)->orderBy('society')->get();
         foreach ($societies as $society) {
             foreach ($society->services as $service) {
                 $plan = Plan::with('person.individual')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
