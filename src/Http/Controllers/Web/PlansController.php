@@ -128,7 +128,7 @@ class PlansController extends Controller
         $lastSunday=strtotime($firstSunday);
         $lastDay=mktime(23, 59, 59, $m3, cal_days_in_month(CAL_GREGORIAN, $m3, $y3), $y3);
         $extras=$this->weekdays->valueBetween('servicedate', $firstDateTime, $lastDay);
-        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')->get();
+        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')->orderBy('meetingdatetime', 'ASC')->get();
         $dum['dt']=$lastSunday;
         $dum['yy']=intval(date("Y", $lastSunday));
         $dum['mm']=intval(date("n", $lastSunday));
