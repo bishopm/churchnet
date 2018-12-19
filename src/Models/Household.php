@@ -17,4 +17,9 @@ class Household extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Society');
     }
+
+    public function pastorals()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Pastoral')->orderBy('pastoraldate');
+    }
 }

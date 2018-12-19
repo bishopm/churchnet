@@ -39,8 +39,8 @@ class HouseholdsController extends Controller
     {
         $socs=array();
         if (isset($request->circuit)) {
-            $circuit = Circuit::with('societies')->where('id',$request->circuit)->first();
-            foreach ($circuit->societies as $soc){
+            $circuit = Circuit::with('societies')->where('id', $request->circuit)->first();
+            foreach ($circuit->societies as $soc) {
                 $socs[]=$soc->id;
             }
         } else {
@@ -70,9 +70,9 @@ class HouseholdsController extends Controller
 
     public function show($id)
     {
-        $household = Household::with('individuals.groups','individuals.tags')->where('id', $id)->first();
-        $household->alltags = Tag::where('type','leader')->get();
-        if (in_array($household->society->id,\Illuminate\Support\Facades\Request::get('user_soc'))){
+        $household = Household::with('individuals.groups', 'individuals.tags', 'pastorals.individual')->where('id', $id)->first();
+        $household->alltags = Tag::where('type', 'leader')->get();
+        if (in_array($household->society->id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $household;
         } else {
             return "Unauthorised";
