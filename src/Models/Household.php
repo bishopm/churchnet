@@ -20,6 +20,6 @@ class Household extends Model
 
     public function pastorals()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Pastoral')->orderBy('pastoraldate');
+        return $this->hasMany('Bishopm\Churchnet\Models\Pastoral')->orderBy('pastoraldate','DESC');
     }
 }
