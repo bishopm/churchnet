@@ -149,11 +149,11 @@ class RostersController extends Controller
                 } elseif ($society['sms_service']=='smsportal') {
                     $msg=array('Destination'=>$msisdn, 'Content'=>$msgtxt);
                 }
-                $results[]=$smss->send_message($message);
+                $res=$smss->send_message($message);
+                $results[]=array('to'=>$msisdn, 'body'=>$msgtxt, 'result'=>$res);
             }
         }
-        $data['results']=$results;
-        return $data['results'];
+        return $results;
     }
 
     public function edit($id)
