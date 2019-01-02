@@ -12,7 +12,8 @@ use Pusher\Pusher;
 use Carbon\Carbon;
 use Swift_SmtpTransport;
 use Illuminate\Support\Facades\DB;
-use Bishopm\Churchnet\Libraries\SMSfunctions;
+use Bishopm\Churchnet\Services\BulkSMSService;
+use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
 
 class MessagesController extends Controller
@@ -153,37 +154,58 @@ class MessagesController extends Controller
         return $results;
     }
 
+    private function checkcell($cell)
+    {
+        if (strlen($cell)!==10) {
+            return false;
+        } else {
+            if (preg_match("/^[0-9]+$/", $cell)) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
     public function sendsms($message, $recipients, $soc)
     {
         $society = Society::find($soc);
-        $credits=SMSfunctions::BS_get_credits($society['bulksms_user'], $society['bulksms_pw']);
-        $url = 'http://community.bulksms.com/eapi/submission/send_sms/2/2.0';
-        $port = 80;
-        if (count($recipients)>$credits) {
-            return "Insufficient Bulk SMS credits to send SMS";
+        if ($society['sms_service']=='bulksms') {
+            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+        } elseif ($society['sms_service']=='smsportal') {
+            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
         }
+        /* $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
+        if (count($recipients)>$credits) {
+            return "Insufficient SMS credits to send SMS";
+        }*/
+        $messages = array();
         foreach ($recipients as $household) {
             foreach ($household as $sms) {
-                $seven_bit_msg=$message;
-                $transient_errors = array(40 => 1);
                 $msisdn = "+27" . substr($sms['cellphone'], 1);
-                $post_body = SMSfunctions::BS_seven_bit_sms($society['bulksms_user'], $society['bulksms_pw'], $seven_bit_msg, $msisdn);
                 $dum2['name']=$sms['name'];
-                if (SMSfunctions::checkcell($sms['cellphone'])) {
-                    $dum2['smsresult'] = SMSfunctions::BS_send_message($post_body, $url, $port);
-                    $dum2['address']=$sms['cellphone'];
-                } else {
-                    if ($sms['cellphone']=="") {
-                        $dum2['address']="No cell number provided.";
-                    } else {
-                        $dum2['address']="Invalid cell number: " . $sms['cellphone'] . ".";
+                if ($this->checkcell($sms['cellphone'])) {
+                    if ($society['sms_service']=='bulksms') {
+                        $messages[]=array('to'=>$msisdn, 'body'=>$message);
+                    } elseif ($society['sms_service']=='smsportal') {
+                        $messages[]=array('Destination'=>$msisdn, 'Content'=>$message);
                     }
                 }
-                $results[]=$dum2;
             }
-            $data['results']=$results;
-            $data['type']="SMS";
         }
-        return $data['results'];
+        $data['results']=$smss->send_message($messages);
+        $data['type']="SMS";
+        return $data;
+    }
+
+    public function getsmscredits(Request $request)
+    {
+        $society = Society::find($request->society);
+        if ($society['sms_service']=='bulksms') {
+            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+        } elseif ($society['sms_service']=='smsportal') {
+            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+        }
+        return $smss->get_credits();
     }
 }

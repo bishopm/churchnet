@@ -98,6 +98,11 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Messages
         Route::post('api/messages', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MessagesController@send','as'=>'api.messages.send']);
+        Route::post('api/messages/smscredits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\MessagesController@getsmscredits','as'=>'api.messages.smscredits']);
+
+        // Pastorals
+        Route::post('api/pastorals', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PastoralsController@update','as'=>'api.pastorals.update']);
+        Route::post('api/pastorals/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PastoralsController@destroy','as'=>'api.pastorals.destroy']);
 
         // People
         Route::get('/api/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@index','as'=>'api.people.index']);
