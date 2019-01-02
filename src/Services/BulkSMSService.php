@@ -1,5 +1,5 @@
 <?php
-
+ 
 namespace Bishopm\Churchnet\Services;
 
 use Bishopm\Churchnet\Services\SMSInterface;
@@ -56,15 +56,8 @@ class BulkSMSService implements SMSInterface
         // Wait 10 seconds while trying to connect
         curl_setopt ( $ch, CURLOPT_CONNECTTIMEOUT, 10 );
         $output = array();
-        $output['server_response'] = curl_exec( $ch );
-        $curl_info = curl_getinfo( $ch );
-        $output['http_status'] = $curl_info[ 'http_code' ];
+        $output = curl_exec( $ch );
         curl_close( $ch );
-        if ($output['http_status'] != 201) {
-          return "Error sending.  HTTP status " . $output['http_status'] . " Response was " .$output['server_response'];
-        } else {
-          $credits = json_decode(substr($output['server_response'],strpos($output['server_response'],'{')));
-          return $credits->credits->balance;
-        }
+        return json_decode($output)->credits->balance;
       }
 }

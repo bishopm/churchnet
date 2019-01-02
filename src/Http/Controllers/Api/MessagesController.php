@@ -175,10 +175,10 @@ class MessagesController extends Controller
         } elseif ($society['sms_service']=='smsportal') {
             $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
         }
-        /* $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
+        $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
         if (count($recipients)>$credits) {
             return "Insufficient SMS credits to send SMS";
-        }*/
+        }
         $messages = array();
         foreach ($recipients as $household) {
             foreach ($household as $sms) {

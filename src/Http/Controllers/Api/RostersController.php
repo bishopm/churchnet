@@ -9,7 +9,8 @@ use Bishopm\Churchnet\Models\Rostergroup;
 use Bishopm\Churchnet\Models\Service;
 use Bishopm\Churchnet\Models\Society;
 use App\Http\Controllers\Controller;
-use Bishopm\Churchnet\Libraries\SMSfunctions;
+use Bishopm\Churchnet\Services\BulkSMSService;
+use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
 
 class RostersController extends Controller
@@ -125,30 +126,31 @@ class RostersController extends Controller
 
     public function sendmessages(Request $request)
     {
-        $society = Society::find($request->society);
-        $credits=SMSfunctions::BS_get_credits($society['bulksms_user'], $society['bulksms_pw']);
-        $url = 'http://community.bulksms.com/eapi/submission/send_sms/2/2.0';
-        $port = 80;
+        $society = Society::find($request->society); 
+        if ($society['sms_service']=='bulksms') {
+            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+        } elseif ($society['sms_service']=='smsportal') {
+            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+        }
+        $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
         if (count($request->messages)>$credits) {
             return "Insufficient Bulk SMS credits to send SMS";
         }
+        $results = array();
         foreach ($request->messages as $message) {
-            $seven_bit_msg=$message['text'] . ' (' . $message['extras'] . ')';
-            $transient_errors = array(40 => 1);
-            $msisdn = "+27" . substr($message['person']['cellphone'], 1);
-            $post_body = SMSfunctions::BS_seven_bit_sms($society['bulksms_user'], $society['bulksms_pw'], $seven_bit_msg, $msisdn);
-            $dum2['name']=$message['person']['firstname'] . ' ' . $message['person']['surname'];
-            if (SMSfunctions::checkcell($message['person']['cellphone'])) {
-                $dum2['smsresult'] = SMSfunctions::BS_send_message($post_body, $url, $port);
-                $dum2['address']=$message['person']['cellphone'];
-            } else {
-                if ($message['person']['cellphone']=="") {
-                    $dum2['address']="No cell number provided.";
-                } else {
-                    $dum2['address']="Invalid cell number: " . $message['person']['cellphone'] . ".";
-                }
+            $msgtxt=$message['text'];
+            if (array_key_exists('extras',$message)) {
+                $msgtxt = $msgtxt . ' (' . $message['extras'] . ')';
             }
-            $results[]=$dum2;
+            $msisdn = "+27" . substr($message['person']['cellphone'], 1);
+            if ((preg_match("/^[0-9]+$/", $message['person']['cellphone'])) and (strlen($message['person']['cellphone'])==10)){
+                if ($society['sms_service']=='bulksms') {
+                    $msg=array('to'=>$msisdn, 'body'=>$msgtxt);
+                } elseif ($society['sms_service']=='smsportal') {
+                    $msg=array('Destination'=>$msisdn, 'Content'=>$msgtxt);
+                }
+                $results[]=$smss->send_message($message);
+            }
         }
         $data['results']=$results;
         return $data['results'];
