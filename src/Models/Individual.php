@@ -35,6 +35,20 @@ class Individual extends Model
     {
         return $query->whereHas('household', function ($q) use ($societies) {
             $q->whereIn('society_id', $societies);
+        });
+    }
+
+    public function scopeInsociety($query, $society)
+    {
+        return $query->join('households', 'households.id', '=', 'household_id')->whereHas('household', function ($q) use ($society) {
+            $q->where('society_id', $society);
+        })->orderBy('surname', 'ASC')->orderBy('firstname', 'ASC');
+    }
+
+    public function scopeSociety($query, $society)
+    {
+        return $query->whereHas('household', function ($q) use ($society) {
+            $q->where('society_id', $society);
         })->orderBy('surname', 'ASC')->orderBy('firstname', 'ASC');
     }
 

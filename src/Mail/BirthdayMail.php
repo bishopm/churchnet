@@ -1,6 +1,6 @@
 <?php
 
-namespace Bishopm\Connexion\Mail;
+namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
 
@@ -28,6 +28,6 @@ class BirthdayMail extends Mailable
     {
         return $this->subject($this->emaildata['subject'])
             ->from($this->emaildata['sender'])
-            ->markdown('connexion::emails.birthday');
+            ->markdown('churchnet::emails.birthday');
     }
 }

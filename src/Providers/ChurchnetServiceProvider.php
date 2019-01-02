@@ -8,7 +8,10 @@ use Form;
 
 class ChurchnetServiceProvider extends ServiceProvider
 {
-    protected $commands = [];
+    protected $commands = [
+        'Bishopm\Churchnet\Console\BirthdayEmail',
+        'Bishopm\Churchnet\Console\PlannedGivingReportEmail',
+    ];
 
     /**
      * Perform post-registration booting of services.
@@ -56,6 +59,7 @@ class ChurchnetServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->commands($this->commands);
         AliasLoader::getInstance()->alias("Mapper", 'Cornford\Googlmapper\Facades\MapperFacade');
         AliasLoader::getInstance()->alias("JWTFactory", 'Tymon\JWTAuth\Facades\JWTFactory');
         AliasLoader::getInstance()->alias("JWTAuth", 'Tymon\JWTAuth\Facades\JWTAuth');

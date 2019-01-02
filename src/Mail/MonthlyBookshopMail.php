@@ -1,6 +1,6 @@
 <?php
 
-namespace Bishopm\Connexion\Mail;
+namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
 

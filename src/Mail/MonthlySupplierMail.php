@@ -1,9 +1,9 @@
 <?php
 
-namespace Bishopm\Connexion\Mail;
+namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
-use Bishopm\Connexion\Models\Setting;
+use Bishopm\Churchnet\Models\Setting;
 
 class MonthlySupplierMail extends Mailable
 {
