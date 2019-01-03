@@ -126,11 +126,11 @@ class RostersController extends Controller
 
     public function sendmessages(Request $request)
     {
-        $society = Society::find($request->society); 
+        $society = Society::find($request->society);
         if ($society['sms_service']=='bulksms') {
-            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+            $smss = new BulkSMSService($society['sms_user'], $society['sms_pw']);
         } elseif ($society['sms_service']=='smsportal') {
-            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+            $smss = new SMSPortalService($society['sms_user'], $society['sms_pw']);
         }
         $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
         if (count($request->messages)>$credits) {
@@ -139,17 +139,17 @@ class RostersController extends Controller
         $results = array();
         foreach ($request->messages as $message) {
             $msgtxt=$message['text'];
-            if (array_key_exists('extras',$message)) {
+            if (array_key_exists('extras', $message)) {
                 $msgtxt = $msgtxt . ' (' . $message['extras'] . ')';
             }
             $msisdn = "+27" . substr($message['person']['cellphone'], 1);
-            if ((preg_match("/^[0-9]+$/", $message['person']['cellphone'])) and (strlen($message['person']['cellphone'])==10)){
+            if ((preg_match("/^[0-9]+$/", $message['person']['cellphone'])) and (strlen($message['person']['cellphone'])==10)) {
                 if ($society['sms_service']=='bulksms') {
                     $msg=array('to'=>$msisdn, 'body'=>$msgtxt);
                 } elseif ($society['sms_service']=='smsportal') {
                     $msg=array('Destination'=>$msisdn, 'Content'=>$msgtxt);
                 }
-                $res=$smss->send_message($message);
+                $res=$smss->send_message($msg);
                 $results[]=array('to'=>$msisdn, 'body'=>$msgtxt, 'result'=>$res);
             }
         }
