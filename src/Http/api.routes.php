@@ -55,6 +55,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/payments/{payment}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@edit','as'=>'api.payments.edit']);
         Route::post('api/payments/{payment}/update', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@update','as'=>'api.payments.update']);
         Route::delete('api/payments/{payment}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@destroy','as'=>'api.payments.destroy']);
+        Route::post('/api/givingstats', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PaymentsController@stats','as'=>'api.payments.stats']);
 
         // Groups
         Route::get('api/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@index','as'=>'api.groups.index']);
