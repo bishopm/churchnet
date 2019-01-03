@@ -8,7 +8,8 @@ use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Specialday;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Group;
-use DB, Log;
+use DB;
+use Log;
 use Bishopm\Churchnet\Mail\BirthdayMail;
 use Illuminate\Support\Facades\Mail;
 
@@ -63,7 +64,7 @@ class BirthdayEmail extends Command
             $sun=strval(date('m-d', strtotime("next Monday")+518400));
             $msg="Birthdays for the week: (starting " . $thisyr . "-" . $mon . ")<br><br>";
             $days=array($mon,$tue,$wed,$thu,$fri,$sat,$sun);
-            $birthdays=Individual::insociety($soc)->wherein(DB::raw('substr(birthdate, 6, 5)'), $days)->whereNull('individuals.deleted_at')->select('individuals.firstname','individuals.surname','individuals.cellphone', 'households.homephone', 'households.householdcell', DB::raw('substr(birthdate, 6, 5) as bd'))->orderByRaw('bd')->get();
+            $birthdays=Individual::insociety($soc)->wherein(DB::raw('substr(birthdate, 6, 5)'), $days)->whereNull('individuals.deleted_at')->select('individuals.firstname', 'individuals.surname', 'individuals.cellphone', 'households.homephone', 'households.householdcell', DB::raw('substr(birthdate, 6, 5) as bd'))->orderByRaw('bd')->get();
             foreach ($birthdays as $bday) {
                 $msg=$msg . "*" . date("D d M", strtotime($thisyr . "-" . $bday->bd)) . "* **" . $bday->firstname . " " . $bday->surname . ":**";
                 if ($bday->cellphone) {

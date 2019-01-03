@@ -17,7 +17,7 @@ class PaymentsController extends Controller
 
     public function index($society)
     {
-        return Payment::where('society_id', $society)->get();
+        return Payment::where('society_id', $society)->orderBy('paymentdate', 'DESC')->get();
     }
 
     public function upcoming($circuit)
@@ -35,14 +35,12 @@ class PaymentsController extends Controller
         return $data;
     }
 
-    public function edit($payment)
+    public function edit($id)
     {
-        $mtg = $this->payment->find($payment);
-        $mtg->datestr = date('Y-m-d H:i', $mtg->paymentdatetime);
-        return $mtg;
+        return Payment::find($id);
     }
 
-    public function show(Payment $payment)
+    public function show($payment)
     {
         $data['payment']=$payment;
         return view('connexion::payments.show', $data);
@@ -50,23 +48,21 @@ class PaymentsController extends Controller
 
     public function store(Request $request)
     {
-        $request->merge(array('paymentdatetime' => strtotime(substr($request->paymentdatetime, 0, 19))));
-        $this->payment->create($request->all());
+        $payment = Payment::create(['society_id'=>$request->society_id, 'paymentdate'=>substr($request->paymentdate, 0, 10), 'pgnumber'=>$request->pgnumber, 'amount'=>$request->amount]);
         return "New payment added";
     }
     
     public function update($id, Request $request)
     {
         $payment = Payment::find($id);
-        $request->merge(array('paymentdatetime' => strtotime(substr($request->paymentdatetime, 0, 19))));
         $payment->update($request->all());
         return "Payment has been updated";
     }
 
     public function destroy($id)
     {
-        $mtg=Payment::find($id);
-        $this->payment->destroy($mtg);
+        $payment=Payment::find($id);
+        $payment->delete();
         return "Payment has been deleted";
     }
 }

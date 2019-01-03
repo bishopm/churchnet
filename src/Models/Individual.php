@@ -34,7 +34,7 @@ class Individual extends Model
     public function scopeSocietymember($query, $societies)
     {
         return $query->whereHas('household', function ($q) use ($societies) {
-            $q->whereIn('society_id', $societies);
+            $q->whereIn('society_id', $societies)->orderBy('surname', 'ASC')->orderBy('firstname', 'ASC');
         });
     }
 
@@ -42,14 +42,7 @@ class Individual extends Model
     {
         return $query->join('households', 'households.id', '=', 'household_id')->whereHas('household', function ($q) use ($society) {
             $q->where('society_id', $society);
-        })->orderBy('surname', 'ASC')->orderBy('firstname', 'ASC');
-    }
-
-    public function scopeSociety($query, $society)
-    {
-        return $query->whereHas('household', function ($q) use ($society) {
-            $q->where('society_id', $society);
-        })->orderBy('surname', 'ASC')->orderBy('firstname', 'ASC');
+        });
     }
 
     public function getFullnameAttribute()
