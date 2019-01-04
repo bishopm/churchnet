@@ -9,16 +9,21 @@
             <div class="col-xs-12 col-sm-6">
                 <h1 class="title">{{$society->society}} <span class="subtitle small"><a href="{{url('/')}}/circuits/{{$society->circuit->slug}}">{{$society->circuit->circuit}}</a></span></h1>
                 <ul class="list-unstyled">
-                    @if ($society->address)
-                        <li>{{$society->address}}</li>
+                    @if ($society->location->address)
+                        <li>{{$society->location->address}}</li>
                     @endif
-                    @if ($society->contact)
-                        <li><b>Contact details:</b> {{$society->contact}}</li>
+                    @if ($society->location->phone)
+                        <li><b>Phone:</b> {{$society->location->phone}}</li>
+                    @endif
+                    @if ($society->email)
+                        <li><b>Email:</b> {{$society->email}}</li>
                     @endif
                     @if ($society->website)
                         <li><b>Website:</b> <a target="_blank" href="{{$society->website}}">{{$society->website}}</a></li>
                     @endif
-                    <li>{{$society->latitude}}&#176;, {{$society->longitude}}&#176;</li>
+                    @if ($society->location->latitude)
+                        <li>{{$society->location->latitude}}&#176;, {{$society->location->longitude}}&#176;</li>
+                    @endif
                 </ul>
                 <hr>
                 <h1 class="subtitle">Service times</h1>

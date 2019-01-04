@@ -9,8 +9,9 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\District;
+use Bishopm\Churchnet\Models\Denomination;
 use Bishopm\Churchnet\Models\Meeting;
-use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\WeekdaysRepository;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
@@ -23,7 +24,6 @@ use Bishopm\Churchnet\Repositories\TagsRepository;
 
 class PlansController extends Controller
 {
-    private $settings;
     private $weekdays;
     private $societies;
     private $people;
@@ -34,7 +34,6 @@ class PlansController extends Controller
     private $tag;
 
     public function __construct(
-        SettingsRepository $settings,
         WeekdaysRepository $weekdays,
         SocietiesRepository $societies,
         PeopleRepository $people,
@@ -44,7 +43,6 @@ class PlansController extends Controller
         LabelsRepository $labels,
         TagsRepository $tag
     ) {
-        $this->settings=$settings;
         $this->weekdays=$weekdays;
         $this->societies=$societies;
         $this->people=$people;
@@ -62,8 +60,11 @@ class PlansController extends Controller
         } else {
             $this->circuit=$this->circuit->findBySlug($slug);
         }
-        $this->settings=$this->settings->allforcircuit($this->circuit->id);
         $planmonth = $this->circuit->plan_month;
+        if (($y=='') or ($m=='')) {
+            $m=intval(date('n'));
+            $y=intval(date('Y'));
+        }
         if ($planmonth==1) {
             $one=array(1,2,3);
             $two=array(4,5,6);
@@ -80,9 +81,8 @@ class PlansController extends Controller
             $three=array(9,10,11);
             $four=array(12,1,2);
         }
-        if (($y=='') or ($m=='')) {
-            $m=intval(date('n'));
-            $y=intval(date('Y'));
+        if ((($m==1) and ($planmonth > 1)) or (($m==2) and ($planmonth == 2))){
+            $y=$y-1;
         }
         if (in_array($m, $one)) {
             $this->show($y, 1);
@@ -92,19 +92,11 @@ class PlansController extends Controller
             $this->show($y, 3);
         } elseif (in_array($m, $four)) {
             $this->show($y, 4);
-        } elseif (($m==1) and ($planmonth > 1)) {
-            $this->show($y-1, 4);
-        } elseif (($m==2) and ($planmonth == 2)) {
-            $this->show($y-1, 4);
         }
     }
 
     public function show($yy, $qq)
     {
-        $settings=array();
-        foreach ($this->settings as $sett) {
-            $settings[$sett->setting_key]=$sett->setting_value;
-        }
         $fm = $this->circuit->plan_month;
         $data=array();
         $fin=array();
@@ -136,6 +128,7 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
+        $district=District::with('individuals','denomination.individuals')->find($data['circuit']->district_id);
         $data['preachers']=$this->circuit->preachers;
         $data['ministers']=$this->circuit->tagged('Circuit minister')->get();
         $data['supernumeraries']=$this->circuit->tagged('Supernumerary minister')->get();
@@ -397,12 +390,15 @@ class PlansController extends Controller
         $y=30;
         $col=1;
         $pdf->SetFont('Arial', '', 8);
-        $pdf->text($left_side+$spacer, $y, "Presiding Bishop: " . $settings['presiding_bishop']);
-        $y=$y+4;
-        $pdf->text($left_side+$spacer, $y, "General Secretary: " . $settings['general_secretary']);
-        $y=$y+4;
-        $pdf->text($left_side+$spacer, $y, "District Bishop: " . $settings['district_bishop']);
-        $y=$y+6;
+        foreach ($district->denomination->individuals as $denoms) {
+            $pdf->text($left_side+$spacer, $y, $denoms->pivot->description . ": " . $denoms->title . " " . substr($denoms->firstname,0,1) . " " . $denoms->surname);
+            $y=$y+4;
+        }
+        foreach ($district->individuals as $dist) {
+            $pdf->text($left_side+$spacer, $y, $dist->pivot->description . ": " . $dist->title . " " . substr($dist->firstname,0,1) . " " . $dist->surname);
+            $y=$y+4;
+        }
+        $y=$y+2;
         $pdf->SetFont('Arial', 'B', 11);
         $pdf->text($left_side+$spacer, $y, "Circuit Ministers");
         $y=$y+4;

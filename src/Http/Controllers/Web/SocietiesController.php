@@ -46,8 +46,10 @@ class SocietiesController extends Controller
     {
         $data['society']=$this->society->findBySlugForCircuitSlug($circuit, $slug);
         $data['stewards']=$data['society']->circuit->tagged('Society steward')->get();
-        Mapper::map($data['society']->latitude, $data['society']->longitude, ['zoom' => 16, 'type' => 'HYBRID']);
-        Mapper::marker($data['society']->latitude, $data['society']->longitude, ['title' => $data['society']->society . " society"]);
+        if ($data['society']->location) {
+            Mapper::map($data['society']->location->latitude, $data['society']->location->longitude, ['zoom' => 16, 'type' => 'HYBRID']);
+            Mapper::marker($data['society']->location->latitude, $data['society']->location->longitude, ['title' => $data['society']->society . " society"]);
+        }
         return view('churchnet::societies.show', $data);
     }
 

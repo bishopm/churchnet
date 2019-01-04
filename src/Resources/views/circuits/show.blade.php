@@ -6,7 +6,7 @@
 <div class="container mt-5">
     <div class="row">
         <div class="col-12">
-            <h4>{{$circuit->circuitnumber}} {{$circuit->circuit}} <small><a href="{{url('/')}}/districts/{{$circuit->district_id}}">{{$circuit->district->district}} District</a></small></h4>
+            <h4>{{$circuit->circuitnumber}} {{$circuit->circuit}} <small><a href="{{url('/')}}/districts/{{$circuit->district_id}}">{{$circuit->district->district}} {{$circuit->district->denomination->provincial}}</a></small></h4>
             @if ($circuit->office_contact)
                 {{$circuit->office_contact}} 
             @endif
@@ -18,7 +18,7 @@
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-6">
-            <h4>Societies</h4>
+            <h4>{{str_plural($circuit->district->denomination->local)}}</h4>
             @forelse ($circuit->societies as $society)
                 @if ($loop->last)
                     <a href="{{url('/')}}/circuits/{{$circuit->slug}}/{{$society->slug}}">{{$society->society}}</a>.
@@ -39,7 +39,6 @@
             @empty
                 No ministers have been added to this circuit yet
             @endforelse
-            <hr>
             @if (count($supernumeraries))
                 <b>Supernumerary ministers: </b>
                 @foreach ($supernumeraries as $sup)
@@ -49,20 +48,22 @@
                         {{$sup->individual->title}} {{$sup->individual->firstname}} {{$sup->individual->surname}}, 
                     @endif
                 @endforeach
-                <hr>
             @endif
             @if (isset($stewards))
+                <hr>
                 <h4>Circuit stewards</h4>
-                @foreach ($stewards as $stw)
+                @forelse ($stewards as $stw)
                     @if ($loop->last)
                         {{$stw->title}} {{$stw->firstname}} {{$stw->surname}}.
                     @else
                         {{$stw->title}} {{$stw->firstname}} {{$stw->surname}}, 
                     @endif
-                @endforeach
-                <hr>
+                @empty
+                    This circuit has not added any stewards to the system
+                @endforelse
             @endif
             @if (isset($preachers))
+                <hr>
                 <h4>Local preachers</h4>
                 @forelse ($preachers as $lp)
                     @if (!$loop->last)

@@ -9,7 +9,7 @@
             <h1 class="title">Churches</h1>
             <ul class="list-unstyled">
             @foreach ($denominations as $denomination)
-                <li><a href="{{url('/')}}/churches/{{$denomination->slug}}/districts">{{$denomination->denomination}}</a></li>
+                <li><a href="{{url('/')}}/churches/{{$denomination->slug}}">{{$denomination->denomination}}</a></li>
             @endforeach
             </ul>
         </div>

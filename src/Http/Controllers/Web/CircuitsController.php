@@ -13,7 +13,6 @@ use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
 use Mapper;
 use Auth;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
-use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
 
 class CircuitsController extends Controller
@@ -28,15 +27,13 @@ class CircuitsController extends Controller
     private $circuit;
     private $plans;
     private $preachers;
-    private $settings;
     private $districts;
 
-    public function __construct(CircuitsRepository $circuit, PlansRepository $plans, PreachersRepository $preachers, SettingsRepository $settings, DistrictsRepository $districts)
+    public function __construct(CircuitsRepository $circuit, PlansRepository $plans, PreachersRepository $preachers, DistrictsRepository $districts)
     {
         $this->circuit = $circuit;
         $this->plans = $plans;
         $this->preachers = $preachers;
-        $this->settings = $settings;
         $this->districts = $districts;
     }
 
@@ -70,11 +67,7 @@ class CircuitsController extends Controller
 
     public function show($circuitnum)
     {
-        $data['circuit']=Circuit::with('societies', 'people.tags')->where('slug', $circuitnum)->first();
-        $settings=$this->settings->allforcircuit($data['circuit']->id);
-        foreach ($settings as $setting) {
-            $data['settings'][$setting->setting_key]=$setting->setting_value;
-        }
+        $data['circuit']=Circuit::with('societies', 'people.tags', 'district.denomination')->where('slug', $circuitnum)->first();
         $first=true;
         $socs=array();
         foreach ($data['circuit']->societies as $society) {

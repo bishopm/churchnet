@@ -13,6 +13,21 @@ class District extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Circuit');
     }
 
+    public function location()
+    {
+        return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');
+    }
+
+    public function individuals()
+    {
+        return $this->belongsToMany('Bishopm\Churchnet\Models\Individual')->withPivot('description')->orderBy('display_order','ASC');
+    }
+
+    public function denomination()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Denomination');
+    }
+
     public function settings()
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Setting', 'relatable');

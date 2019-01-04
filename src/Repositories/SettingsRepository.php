@@ -19,7 +19,7 @@ class SettingsRepository extends EloquentBaseRepository
     public function allforcircuit($circuitnumber)
     {
         $this->circuit=Circuit::find($circuitnumber);
-        $allkeys=array('Connexion*presiding_bishop','Connexion*general_secretary','Circuit*superintendent','Circuit*circuit_secretary','Circuit*supervisor_of_studies','Circuit*local_preachers_secretary','District*district_bishop','Circuit*circuit_stewards','Circuit*circuit_treasurer');
+        $allkeys=array('Connexion*presiding_bishop','Connexion*general_secretary','District*district_bishop');
         $settings=DB::table('settings')->where('level', '=', 'Connexion')
         ->orWhere(function ($query) {
             $query->where('level', '=', 'District')

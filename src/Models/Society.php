@@ -18,6 +18,11 @@ class Society extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Service');
     }
 
+    public function location()
+    {
+        return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');
+    }
+
     public function rosters()
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Roster');

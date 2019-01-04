@@ -13,4 +13,19 @@ class Denomination extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\District');
     }
 
+    public function circuits()
+    {
+        return $this->hasManyThrough('Bishopm\Churchnet\Models\Circuit','Bishopm\Churchnet\Models\District');
+    }
+
+    public function individuals()
+    {
+        return $this->belongsToMany('Bishopm\Churchnet\Models\Individual')->withPivot('description')->orderBy('display_order','ASC');
+    }
+
+    public function location()
+    {
+        return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');
+    }
+
 }
