@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\HouseholdsRepository;
 use Bishopm\Churchnet\Models\Household;
+use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Circuit;
 use Cviebrock\EloquentTaggable\Models\Tag;
@@ -49,6 +50,15 @@ class HouseholdsController extends Controller
             }
         }
         return Household::with('individuals')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->get();
+    }
+
+    public function stickers(Request $request)
+    {
+        $indivs = Individual::insociety($request->society)
+                        ->where('surname', 'like', '%' . $request->search . '%')
+                        ->orWhere('firstname', 'like', '%' . $request->search . '%')
+                        ->orWhere('cellphone', 'like', '%' . $request->search . '%')->select('household_id')->groupBy('household_id')->get();
+        return Household::with('individuals')->whereIn('id', $indivs)->get();
     }
 
     public function query($household, Request $request)
