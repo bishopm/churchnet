@@ -31,7 +31,7 @@ class PlansController extends Controller
     private $plans;
     private $labels;
   
-    public function __construct(  
+    public function __construct(
         MeetingsRepository $meetings,
         SocietiesRepository $societies,
         PreachersRepository $preachers,
@@ -107,8 +107,8 @@ class PlansController extends Controller
         $first = strtotime($yy . "-" . $mm . '-01');
         $sun=strtotime("first sunday " . $yy . "-" . $mm);
         $last = strtotime("last day of " . $yy . "-" . $mm);
-        $weekdays = Weekday::where('servicedate','>=',$first)->where('servicedate','<=',$last)->orderBy('servicedate','ASC')->get();
-        foreach ($weekdays as $wd){
+        $weekdays = Weekday::where('servicedate', '>=', $first)->where('servicedate', '<=', $last)->orderBy('servicedate', 'ASC')->get();
+        foreach ($weekdays as $wd) {
             $services[] = $wd->servicedate;
         }
         while ($sun <= $last) {
@@ -126,7 +126,7 @@ class PlansController extends Controller
     public function updateplan($circuit, Request $request)
     {
         if ($request->id <> 0) {
-            if (($request->person_id=='') and ($request->servicetype=='')){
+            if (($request->person_id=='') and ($request->servicetype=='')) {
                 $plan=Plan::find($request->id)->delete();
                 return $request;
             } else {
@@ -176,7 +176,7 @@ class PlansController extends Controller
         $societies = Society::where('circuit_id', $circuit)->pluck('id')->toArray();
         $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) {
             $q->where('status', 'preacher')->orWhere('status', 'minister');
-        })->get();
+        })->orderBy('surname')->orderBy('firstname')->get();
         $plans = Plan::with('service.society', 'person.individual')->where('planyear', $yy)->where('planmonth', $mm)->whereIn('society_id', $societies)->get();
         $labels = Label::where('circuit_id', $circuit)->orderBy('label')->get();
         $allplans=$this->populate_array($dates, $circuit);
