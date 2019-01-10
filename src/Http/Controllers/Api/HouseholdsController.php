@@ -80,7 +80,7 @@ class HouseholdsController extends Controller
 
     public function show($id)
     {
-        $household = Household::with('individuals.groups', 'individuals.tags', 'pastorals.individual')->where('id', $id)->first();
+        $household = Household::with('individuals.groups', 'individuals.tags', 'pastorals.individual', 'location')->where('id', $id)->first();
         $household->alltags = Tag::where('type', 'leader')->get();
         if (in_array($household->society->id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $household;

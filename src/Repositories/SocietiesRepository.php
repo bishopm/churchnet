@@ -7,7 +7,7 @@ class SocietiesRepository extends EloquentBaseRepository
 {
     public function findsociety($id)
     {
-        return $this->model->with('services','users')->find($id);
+        return $this->model->with('services', 'users', 'location')->find($id);
     }
 
     public function dropdown()
@@ -24,7 +24,7 @@ class SocietiesRepository extends EloquentBaseRepository
     public function findBySlugForCircuitSlug($circuit, $slug)
     {
         $circuit_id = Circuit::where('slug', $circuit)->first()->id;
-        return $this->model->with('services','location')->where('circuit_id', $circuit_id)->where('slug', $slug)->first();
+        return $this->model->with('services', 'location')->where('circuit_id', $circuit_id)->where('slug', $slug)->first();
     }
 
     public function create($data)
