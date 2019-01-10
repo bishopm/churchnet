@@ -35,7 +35,7 @@ class GroupsController extends Controller
         foreach ($request->societies as $soc) {
             $socs[]=intval($soc);
         }
-        return Group::with('individuals')->whereIn('society_id', $socs)->where('groupname', 'like', '%' . $request->search . '%')->orderBy('groupname')->get();
+        return Group::whereIn('society_id', $socs)->where('groupname', 'like', '%' . $request->search . '%')->orderBy('groupname')->get();
     }
 
     public function query($group, Request $request)
