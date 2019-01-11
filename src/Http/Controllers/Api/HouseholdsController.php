@@ -61,6 +61,28 @@ class HouseholdsController extends Controller
         return Household::with('individuals')->whereIn('id', $indivs)->get();
     }
 
+    public function newstickers(Request $request)
+    {
+        $addressee='';
+        $fsize = count($request->indivs);
+        foreach ($request->indivs as $ndx=>$indiv) {
+            $addressee = $addressee . $indiv['firstname'] . ' ' . $indiv['surname'];
+            if (($fsize > 1) and ($ndx < $fsize-2)) {
+                $addressee = $addressee . ", ";
+            } elseif (($fsize > 1) and ($ndx == $fsize-2)) {
+                $addressee = $addressee . " and ";
+            }
+        }
+        $household = Household::create(['addressee'=>$addressee, 'sortsurname'=>$request->indivs[0]['surname']]);
+        foreach ($request->indivs as $ind) {
+            if ($ind['memberstatus']=='adult') {
+                $ind['memberstatus']='non-member';
+            }
+            $newindiv = Individual::create(['firstname'->$ind['firstname'], 'surname'=>$ind['surname'], 'sex'=>$ind['sex'], 'cellphone']);
+        }
+        return $addressee;
+    }
+
     public function query($household, Request $request)
     {
         return DB::select(DB::raw($request->sql))->toArray();

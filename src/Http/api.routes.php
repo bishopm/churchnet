@@ -76,6 +76,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/households/{household}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@edit','as'=>'api.households.edit']);
         Route::post('api/households', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@store','as'=>'api.households.store']);
         Route::post('api/households/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@search','as'=>'api.households.search']);
+        Route::post('api/households/newstickers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@newstickers','as'=>'api.households.newstickers']);
         Route::post('api/households/stickers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@stickers','as'=>'api.households.stickers']);
         Route::post('api/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@update','as'=>'api.households.update']);
         Route::delete('api/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@destroy','as'=>'api.households.destroy']);
