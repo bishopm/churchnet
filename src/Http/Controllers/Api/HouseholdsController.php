@@ -74,13 +74,28 @@ class HouseholdsController extends Controller
             }
         }
         $household = Household::create(['addressee'=>$addressee, 'sortsurname'=>$request->indivs[0]['surname']]);
+        $indivs=array();
         foreach ($request->indivs as $ind) {
             if ($ind['memberstatus']=='adult') {
                 $ind['memberstatus']='non-member';
             }
-            $newindiv = Individual::create(['firstname'->$ind['firstname'], 'surname'=>$ind['surname'], 'sex'=>$ind['sex'], 'cellphone']);
+            if (!$ind['cellphone']){
+                $ind['cellphone']='';
+            }
+            $newindiv = Individual::create([
+                'firstname'=>$ind['firstname'], 
+                'surname'=>$ind['surname'], 
+                'sex'=>$ind['sex'], 
+                'cellphone'=>$ind['cellphone'],
+                'household_id'=>$household->id
+            ]);
+            $indivs[]=$newindiv;
+            if ((!$household->householdcell) and (strlen($ind['cellphone']))==10){
+                $household->householdcell = $newindiv->id;
+                $household->save();
+            }
         }
-        return $addressee;
+        return $indivs;
     }
 
     public function query($household, Request $request)
