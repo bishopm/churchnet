@@ -25,9 +25,9 @@ class ServicesController extends Controller
         $this->service = $service;
     }
 
-    public function index()
+    public function index($society)
     {
-        return $this->service->all();
+        return Service::where('society_id',$society)->orderBy('servicetime')->get();
     }
 
     public function edit($circuit, $service)

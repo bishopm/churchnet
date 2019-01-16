@@ -35,6 +35,9 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('/api/individual', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@journeyadd','as'=>'api.individuals.journeyadd']);
         Route::post('/api/household', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@journeyedit','as'=>'api.individuals.journeyedit']);
 
+        // Attendances
+        Route::post('api/attendances', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\AttendancesController@store','as'=>'api.attendances.store']);
+
         // Circuits
         Route::get('api/circuits', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@index','as'=>'api.circuits.index']);
         Route::post('/api/circuits/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@search','as'=>'api.circuits.search']);
@@ -152,6 +155,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::delete('api/rostergroups/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@deleterostergroup','as'=>'api.rosters.deleterostergroup']);
 
         // Services
+        Route::get('api/services/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@index','as'=>'api.services.index']);
         Route::get('api/circuits/{circuit}/services/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@create','as'=>'api.services.create']);
         Route::get('api/circuits/{circuit}/services/{service}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@show','as'=>'api.services.show']);
         Route::post('api/circuits/{circuit}/services', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@store','as'=>'api.services.store']);
