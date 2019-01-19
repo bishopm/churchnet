@@ -55,9 +55,8 @@ class HouseholdsController extends Controller
     public function stickers(Request $request)
     {
         $indivs = Individual::insociety($request->society)
-                        ->where('surname', 'like', '%' . $request->search . '%')
-                        ->orWhere('firstname', 'like', '%' . $request->search . '%')
-                        ->orWhere('cellphone', 'like', '%' . $request->search . '%')->select('household_id')->groupBy('household_id')->get();
+                        ->withsearch($request->search)
+                        ->select('household_id')->groupBy('household_id')->get();
         return Household::with('individuals')->whereIn('id', $indivs)->get();
     }
 

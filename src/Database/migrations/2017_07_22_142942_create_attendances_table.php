@@ -17,6 +17,7 @@ class CreateAttendancesTable extends Migration
             $table->integer('service_id');
             $table->integer('individual_id');
             $table->date('attendancedate');
+            $table->nullableTimestamps();
         });
     }
 
