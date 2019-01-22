@@ -171,9 +171,9 @@ class MessagesController extends Controller
     {
         $society = Society::find($soc);
         if ($society['sms_service']=='bulksms') {
-            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+            $smss = new BulkSMSService($society['sms_user'], $society['sms_pw']);
         } elseif ($society['sms_service']=='smsportal') {
-            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+            $smss = new SMSPortalService($society['sms_user'], $society['sms_pw']);
         }
         $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
         if (count($recipients)>$credits) {
@@ -202,9 +202,9 @@ class MessagesController extends Controller
     {
         $society = Society::find($request->society);
         if ($society['sms_service']=='bulksms') {
-            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+            $smss = new BulkSMSService($society['sms_user'], $society['sms_pw']);
         } elseif ($society['sms_service']=='smsportal') {
-            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+            $smss = new SMSPortalService($society['sms_user'], $society['sms_pw']);
         }
         return $smss->get_credits();
     }
