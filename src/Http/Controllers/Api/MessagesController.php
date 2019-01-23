@@ -136,8 +136,7 @@ class MessagesController extends Controller
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
                     $transport = (new Swift_SmtpTransport($settings->email_host, $settings->email_port))
                        ->setUsername($settings->email_user)
-                       ->setPassword($settings->email_pw)
-                       ->setEncryption($settings->email_encryption);
+                       ->setPassword($settings->email_pw);
                     Mail::setSwiftMailer(new \Swift_Mailer($transport));
                     Mail::to($indiv['email'])->send(new GenericMail($data));
                     $dum['emailresult']="OK";
