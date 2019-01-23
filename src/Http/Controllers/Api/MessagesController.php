@@ -27,9 +27,12 @@ class MessagesController extends Controller
 
     public function send(Request $request)
     {
-        $data = $request->message;
+        $data = json_decode($request->message, true);
         $recipients=$this->getrecipients($data['groups'], $data['individuals'], "", $data['messagetype']);
         if ($data['messagetype']=="email") {
+            if ($request->hasFile('file')) {
+                $data['file'] = $request->file('file');
+            }
             return $this->sendemail($data, $recipients);
         } elseif ($data['messagetype']=="sms") {
             return $this->sendsms($data['textmessage'], $recipients, $data['society_id']);
@@ -126,6 +129,8 @@ class MessagesController extends Controller
         $sender = $data['sender'];
         $sendertold=false;
         $settings = Society::find($data['society_id']);
+        $data['society'] = $settings->society;
+        $data['website'] = $settings->website;
         foreach ($recipients as $household) {
             foreach ($household as $indiv) {
                 $dum['name']=$indiv['name'];
