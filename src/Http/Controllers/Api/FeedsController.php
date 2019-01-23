@@ -42,7 +42,8 @@ class FeedsController extends Controller
         $this->dis = $this->cir->district;
         $data['diary'] = Meeting::with('society')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $this->soc->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)
                             ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $this->cir->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)
-                            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $this->dis->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)->get();
+                            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $this->dis->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)
+                            ->orderBy('meetingdatetime', 'ASC')->get();
         $data['diarycount']=count($data['diary']);
         $this->monday = date("Y-m-d", strtotime('Monday this week'));
         $feeditems = Feeditem::monday($this->monday)->with('feedpost')
