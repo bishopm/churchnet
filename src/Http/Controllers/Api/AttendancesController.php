@@ -28,11 +28,13 @@ class AttendancesController extends Controller
 
     public function store(Request $request)
     {
-        return $request->all();
-        // An array of indivs cycled through
-        // $att=Attendance::create([$request->all());
-
-        // return redirect()->route('admin.attendances.show', $soc->id)->withSuccess('New attendance added');
+        foreach ($request->individuals as $indiv) {
+            $att=Attendance::create([
+                'service_id'=>$request->service_id, 
+                'individual_id'=>$indiv
+            ]);
+        }
+        return "Attendance recorded";
     }
     
     public function update($attendance, Request $request)

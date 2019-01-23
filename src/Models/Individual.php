@@ -45,6 +45,13 @@ class Individual extends Model
         });
     }
 
+    public function scopeWithsearch($query, $search)
+    {
+        return $query->where('firstname', 'like', '%' . $search . '%')
+                     ->orWhere('surname', 'like', '%' . $search . '%')
+                     ->orWhere('cellphone', 'like', '%' . $search . '%');
+    }
+
     public function getFullnameAttribute()
     {
         return $this->firstname . " " . $this->surname;
