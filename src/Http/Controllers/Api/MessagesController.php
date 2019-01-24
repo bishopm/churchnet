@@ -27,9 +27,12 @@ class MessagesController extends Controller
 
     public function send(Request $request)
     {
-        $data = $request->message;
+        $data = json_decode($request->message, true);
         $recipients=$this->getrecipients($data['groups'], $data['individuals'], "", $data['messagetype']);
         if ($data['messagetype']=="email") {
+            if ($request->hasFile('file')) {
+                $data['file'] = $request->file('file');
+            }
             return $this->sendemail($data, $recipients);
         } elseif ($data['messagetype']=="sms") {
             return $this->sendsms($data['textmessage'], $recipients, $data['society_id']);
@@ -126,6 +129,8 @@ class MessagesController extends Controller
         $sender = $data['sender'];
         $sendertold=false;
         $settings = Society::find($data['society_id']);
+        $data['society'] = $settings->society;
+        $data['website'] = $settings->website;
         foreach ($recipients as $household) {
             foreach ($household as $indiv) {
                 $dum['name']=$indiv['name'];
@@ -136,8 +141,7 @@ class MessagesController extends Controller
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
                     $transport = (new Swift_SmtpTransport($settings->email_host, $settings->email_port))
                        ->setUsername($settings->email_user)
-                       ->setPassword($settings->email_pw)
-                       ->setEncryption($settings->email_encryption);
+                       ->setPassword($settings->email_pw);
                     Mail::setSwiftMailer(new \Swift_Mailer($transport));
                     Mail::to($indiv['email'])->send(new GenericMail($data));
                     $dum['emailresult']="OK";
@@ -171,9 +175,9 @@ class MessagesController extends Controller
     {
         $society = Society::find($soc);
         if ($society['sms_service']=='bulksms') {
-            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+            $smss = new BulkSMSService($society['sms_user'], $society['sms_pw']);
         } elseif ($society['sms_service']=='smsportal') {
-            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+            $smss = new SMSPortalService($society['sms_user'], $society['sms_pw']);
         }
         $credits=$smss->get_credits($society['sms_user'], $society['sms_pw']);
         if (count($recipients)>$credits) {
@@ -202,9 +206,9 @@ class MessagesController extends Controller
     {
         $society = Society::find($request->society);
         if ($society['sms_service']=='bulksms') {
-            $smss = new BulkSMSService($society['sms_user'],$society['sms_pw']);
+            $smss = new BulkSMSService($society['sms_user'], $society['sms_pw']);
         } elseif ($society['sms_service']=='smsportal') {
-            $smss = new SMSPortalService($society['sms_user'],$society['sms_pw']);
+            $smss = new SMSPortalService($society['sms_user'], $society['sms_pw']);
         }
         return $smss->get_credits();
     }

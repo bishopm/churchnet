@@ -81,7 +81,7 @@ class PlansController extends Controller
             $three=array(9,10,11);
             $four=array(12,1,2);
         }
-        if ((($m==1) and ($planmonth > 1)) or (($m==2) and ($planmonth == 2))){
+        if ((($m==1) and ($planmonth > 1)) or (($m==2) and ($planmonth == 3))) {
             $y=$y-1;
         }
         if (in_array($m, $one)) {
@@ -128,7 +128,7 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
-        $district=District::with('individuals','denomination.individuals')->find($data['circuit']->district_id);
+        $district=District::with('individuals', 'denomination.individuals')->find($data['circuit']->district_id);
         $data['preachers']=$this->circuit->preachers;
         $data['ministers']=$this->circuit->tagged('Circuit minister')->get();
         $data['supernumeraries']=$this->circuit->tagged('Supernumerary minister')->get();
@@ -391,11 +391,11 @@ class PlansController extends Controller
         $col=1;
         $pdf->SetFont('Arial', '', 8);
         foreach ($district->denomination->individuals as $denoms) {
-            $pdf->text($left_side+$spacer, $y, $denoms->pivot->description . ": " . $denoms->title . " " . substr($denoms->firstname,0,1) . " " . $denoms->surname);
+            $pdf->text($left_side+$spacer, $y, $denoms->pivot->description . ": " . $denoms->title . " " . substr($denoms->firstname, 0, 1) . " " . $denoms->surname);
             $y=$y+4;
         }
         foreach ($district->individuals as $dist) {
-            $pdf->text($left_side+$spacer, $y, $dist->pivot->description . ": " . $dist->title . " " . substr($dist->firstname,0,1) . " " . $dist->surname);
+            $pdf->text($left_side+$spacer, $y, $dist->pivot->description . ": " . $dist->title . " " . substr($dist->firstname, 0, 1) . " " . $dist->surname);
             $y=$y+4;
         }
         $y=$y+2;
