@@ -97,6 +97,24 @@ class HouseholdsController extends Controller
         return $indivs;
     }
 
+    public function stickerupdate(Request $request)
+    {
+        $household = Household::with('individuals')->find($request->id);
+        $household->addressee = $request->addressee;
+        $household->save();
+        $indivs=array();
+        foreach ($request->individuals as $individual) {
+            $indiv = Individual::find($individual['id']);
+            $indiv->firstname = $individual['firstname'];
+            $indiv->surname = $individual['surname'];
+            $indiv->sex = $individual['sex'];
+            $indiv->cellphone = $individual['cellphone'];
+            $indiv->save();
+            $indivs[]=$indiv;
+        }
+        return $indivs;
+    }
+
     public function query($household, Request $request)
     {
         return DB::select(DB::raw($request->sql))->toArray();
