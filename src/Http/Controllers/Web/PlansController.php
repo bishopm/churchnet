@@ -115,12 +115,19 @@ class PlansController extends Controller
             $y3=$y3+1;
         }
         $firstDateTime=mktime(0, 0, 0, $m1, 1, $y1);
+        $previousDateTime = strtotime("-3 months", $firstDateTime);
+        $nextDateTime = strtotime("+3 months", $firstDateTime);
         $firstDay=date("N", $firstDateTime);
         $firstSunday=date("d M Y", mktime(0, 0, 0, $m1, 8-$firstDay, $y1));
         $lastSunday=strtotime($firstSunday);
         $lastDay=mktime(23, 59, 59, $m3, cal_days_in_month(CAL_GREGORIAN, $m3, $y3), $y3);
+        $previouslastDay=strtotime("+3 months", $previousDateTime) - 60*60*24;
+        $nextlastDay=strtotime("+3 months", $nextDateTime) - 60*60*24;
         $extras=$this->weekdays->valueBetween('servicedate', $firstDateTime, $lastDay);
-        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')->orderBy('meetingdatetime', 'ASC')->get();
+        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')
+            ->orWhere('meetingdatetime', '>=', $previousDateTime)->where('meetingdatetime', '<=', $previouslastDay)->where('preachingplan', 'next')
+            ->orWhere('meetingdatetime', '>=', $nextDateTime)->where('meetingdatetime', '<=', $nextlastDay)->where('preachingplan', 'previous')
+            ->orderBy('meetingdatetime', 'ASC')->get();
         $dum['dt']=$lastSunday;
         $dum['yy']=intval(date("Y", $lastSunday));
         $dum['mm']=intval(date("n", $lastSunday));
