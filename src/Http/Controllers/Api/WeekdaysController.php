@@ -19,7 +19,7 @@ class WeekdaysController extends Controller
 
     public function index(Request $request)
     {
-        return Weekday::where('circuit_id', $request->circuit)->get();
+        return Weekday::where('circuit_id', $request->circuit)->orderBy('servicedate', 'DESC')->get();
     }
 
     public function create()
