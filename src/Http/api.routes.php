@@ -20,6 +20,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('/api/circuits/{circuit}/withsocieties', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@withsocieties','as'=>'api.circuits.withsocieties']);
     Route::get('/api/circuits/{circuit}/societies/thisweek', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek','as'=>'api.societies.thisweek']);
     Route::get('api/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
+    Route::get('api/services/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@index','as'=>'api.services.index']);
 
     // Districts
     Route::get('api/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
@@ -156,7 +157,6 @@ Route::middleware(['handlecors'])->group(function () {
         Route::delete('api/rostergroups/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@deleterostergroup','as'=>'api.rosters.deleterostergroup']);
 
         // Services
-        Route::get('api/services/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@index','as'=>'api.services.index']);
         Route::get('api/circuits/{circuit}/services/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@create','as'=>'api.services.create']);
         Route::get('api/circuits/{circuit}/services/{service}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@show','as'=>'api.services.show']);
         Route::post('api/circuits/{circuit}/services', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@store','as'=>'api.services.store']);
