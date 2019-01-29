@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\AliasLoader;
+use Illuminate\Console\Scheduling\Schedule;
 use Form;
 
 class ChurchnetServiceProvider extends ServiceProvider
@@ -20,6 +21,11 @@ class ChurchnetServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        $this->app->booted(function () {
+            $schedule = app(Schedule::class);
+            //$schedule->command('churchnet:givingemails')->dailyAt('13:00');
+            $schedule->command('churchnet:birthdayemail')->weeklyOn(1, '8:00');
+        });
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/../Http/api.routes.php';
             require __DIR__.'/../Http/web.routes.php';
