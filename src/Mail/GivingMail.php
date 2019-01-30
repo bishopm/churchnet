@@ -25,8 +25,8 @@ class GivingMail extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->data['subject'])
+        return $this->subject($this->data['title'])
             ->from($this->data['sender'])
-            ->markdown('connexion::emails.givingreport');
+            ->markdown('churchnet::emails.givingreport');
     }
 }

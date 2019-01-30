@@ -26,8 +26,8 @@ class SimpleMail extends Mailable
      */
     public function build()
     {
-        return $this->subject($this->emaildata->subject)
-                ->from($this->emaildata->sender)
-                ->markdown('connexion::emails.generic');   
+        return $this->subject($this->emaildata['title'])
+        ->from($this->emaildata['sender'])
+        ->markdown('churchnet::emails.generic');
     }
 }

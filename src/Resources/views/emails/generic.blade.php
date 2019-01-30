@@ -1,7 +1,7 @@
 @component('mail::layout')
     {{-- Header --}}
     @slot('header')
-        @component('mail::header', ['url' => 'https://church.net.za'])
+        @component('mail::header', ['url' => $emaildata['website']])
             {{$emaildata['title']}}
         @endcomponent        
     @endslot

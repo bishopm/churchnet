@@ -57,10 +57,17 @@ class RostersController extends Controller
                     $indivs = explode(',', $ri->individuals);
                     $people=array();
                     foreach ($indivs as $indiv) {
-                        $person = Individual::find($indiv);
-                        $dum['label']=substr($person->firstname, 0, 1) . " " . $person->surname;
-                        $dum['id']=$person->id;
-                        $people[]=$dum;
+                        if ($indiv >= 1) {
+                            $person = Individual::find($indiv);
+                            if ($person) {
+                                $dum['label']=substr($person->firstname, 0, 1) . " " . $person->surname;
+                                $dum['id']=$person->id;
+                            } else {
+                                $dum['label']=$indiv;
+                                $dum['id']=$indiv;
+                            }
+                            $people[]=$dum;
+                        }
                     }
                     $row->$wk->people=$people;
                 }

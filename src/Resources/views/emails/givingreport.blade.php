@@ -1,6 +1,11 @@
-@component('mail::message')
-# {{$data['subject']}}
-
+@component('mail::layout')
+    {{-- Header --}}
+    @slot('header')
+        @component('mail::header', ['url' => $data['website']])
+            {{$data['title']}}
+        @endcomponent        
+    @endslot
+{{-- Body --}}
 Dear Planned Giver **{{$data['pg']}}**
 
 On behalf of the {{$data['churchabbr']}} leadership and community, we are writing to thank you so much for making ministry possible here by participating in our Planned Giving programme. 
@@ -44,4 +49,18 @@ Thank you!
 **{{$data['churchabbr']}}**
 
 *Where your treasure is, there your heart will be also (Mt 6:21)*
+{{-- Subcopy --}}
+    @isset($subcopy)
+        @slot('subcopy')
+            @component('mail::subcopy')
+                {{ $subcopy }}
+            @endcomponent
+        @endslot
+    @endisset
+{{-- Footer --}}
+    @slot('footer')
+        @component('mail::footer')
+            {{$data['society']}} Methodist Church | {{$data['website']}}
+        @endcomponent
+    @endslot
 @endcomponent
