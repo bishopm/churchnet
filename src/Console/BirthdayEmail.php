@@ -93,7 +93,7 @@ class BirthdayEmail extends Command
             // Send to birthday group
             $setting=$society['birthday_group'];
             $churchname=$society['society'];
-            $churchemail=$society['contact'];
+            $churchemail=$society['email'];
             $group=Group::with('individuals')->find($setting);
             foreach ($group->individuals as $recip) {
                 $data['recipient']=$recip->firstname;
