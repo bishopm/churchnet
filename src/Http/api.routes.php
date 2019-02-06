@@ -213,4 +213,10 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/weekdays', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@store','as'=>'api.weekdays.store']);
         Route::delete('api/weekdays/{weekday}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@destroy','as'=>'api.weekdays.destroy']);
     });
+    Route::group(['middleware' => ['handlecors', 'isspecial']], function () {
+        // Special access
+        Route::get('/api/specialrosters/{id}/{year}/{month}/{society_id}/{user_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@show','as'=>'api.rosters.show']);
+        Route::post('/api/specialrosteritems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@storeitem','as'=>'api.rosters.storeitem']);
+        Route::get('/api/specialgroups/{group}/{society_id}/{user_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@show','as'=>'api.groups.show']);
+    });
 });
