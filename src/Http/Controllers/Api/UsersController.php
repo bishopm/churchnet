@@ -10,6 +10,7 @@ use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Permissible;
 use Illuminate\Http\Request;
 use Auth;
+use DB;
 
 class UsersController extends Controller
 {
@@ -67,6 +68,16 @@ class UsersController extends Controller
     public function index()
     {
         return User::where('level', '<>', 'user')->orderBy('name')->get();
+    }
+
+    public function specialaccess($society_id, $user_id, $accesstype, $token)
+    {
+        $checkspecial = DB::table('specialaccess')
+        ->where('society_id', $society_id)
+        ->where('user_id', $user_id)
+        ->where('accesstype', $accesstype)
+        ->where('token', $token)->first();
+        return $checkspecial->model;
     }
 
     public function permissibles(Request $request)
