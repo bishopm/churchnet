@@ -70,14 +70,17 @@ class UsersController extends Controller
         return User::where('level', '<>', 'user')->orderBy('name')->get();
     }
 
-    public function specialaccess($society_id, $user_id, $accesstype, $token)
+    public function specialaccess($society_id, $accesstype, $token)
     {
         $checkspecial = DB::table('specialaccess')
         ->where('society_id', $society_id)
-        ->where('user_id', $user_id)
         ->where('accesstype', $accesstype)
-        ->where('token', $token)->first();
-        return $checkspecial->model;
+        ->where('token', $token)->get();
+        foreach ($checkspecial as $cs) {
+            $data['model'] = $cs->model;
+            $data['users'][]= $cs->user_id;
+        }
+        return $data;
     }
 
     public function permissibles(Request $request)

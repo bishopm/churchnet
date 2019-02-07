@@ -15,7 +15,6 @@ class IsSpecial
         $user_soc=array($request->society_id);
         $checkspecial = DB::table('specialaccess')
         ->where('society_id', $request->society_id)
-        ->where('user_id', $request->user_id)
         ->where('accesstype', $request->accesstype)
         ->where('token', $request->token)->get();
         if (count($checkspecial)) {
@@ -26,7 +25,7 @@ class IsSpecial
             $request->attributes->add(['user_soc' => $user_soc]);
             return $next($request);
         } else {
-            return "Nothing to see";
+            abort(200, 'Not permitted to edit');
         }
     }
 }
