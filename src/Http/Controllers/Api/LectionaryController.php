@@ -202,13 +202,14 @@ class LectionaryController extends Controller
         // Lent
         $eastersunday = DB::table('eastersundays')->whereRaw('SUBSTRING(eastersunday, 1,  4) = '.$this->easteryr)->first()->eastersunday;
         $this->data[$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Resurrection of the Lord - Easter Day');
-        $this->data[-1+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Fifth Sunday in Lent');
-        $this->data[-2+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Fourth Sunday in Lent');
-        $this->data[-3+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Third Sunday in Lent');
-        $this->data[-4+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Second Sunday in Lent');
-        $this->data[-5+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'First Sunday in Lent');
-        $this->data[-6+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Transfiguration Sunday');
-        for ($i=6;$i<$this->weeks[$eastersunday]-6;$i++) {
+        $this->data[-1+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Sixth Sunday in Lent');
+        $this->data[-2+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Fifth Sunday in Lent');
+        $this->data[-3+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Fourth Sunday in Lent');
+        $this->data[-4+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Third Sunday in Lent');
+        $this->data[-5+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Second Sunday in Lent');
+        $this->data[-6+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'First Sunday in Lent');
+        $this->data[-7+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Transfiguration Sunday');
+        for ($i=7;$i<$this->weeks[$eastersunday]-7;$i++) {
             $this->data[$i]['lection']=$this->reading->findByDate($this->lyear, $this->data[$i]['date']);
         }
         $this->data[1+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Second Sunday of Easter');
