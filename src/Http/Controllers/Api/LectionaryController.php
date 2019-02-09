@@ -209,7 +209,7 @@ class LectionaryController extends Controller
         $this->data[-5+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Second Sunday in Lent');
         $this->data[-6+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'First Sunday in Lent');
         $this->data[-7+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Transfiguration Sunday');
-        for ($i=7;$i<$this->weeks[$eastersunday]-7;$i++) {
+        for ($i=6;$i<$this->weeks[$eastersunday]-6;$i++) {
             $this->data[$i]['lection']=$this->reading->findByDate($this->lyear, $this->data[$i]['date']);
         }
         $this->data[1+$this->weeks[$eastersunday]]['lection']=$this->reading->findByDesc($this->lyear, 'Second Sunday of Easter');
