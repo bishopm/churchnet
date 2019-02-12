@@ -22,4 +22,9 @@ class Rostergroup extends Model
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Rosteritem');
     }
+
+    public function scopeWhichroster($query, $id)
+    {
+        return $query->where('roster_id',$id);
+    }
 }

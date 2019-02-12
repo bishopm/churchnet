@@ -28,6 +28,22 @@ class RostersController extends Controller
         return $rosters;
     }
 
+    public function thisweek($id){
+        $date = date("Y-m-d", strtotime('next Sunday'));
+        $data = array();
+        $groups = Rostergroup::whichroster($id)->with('group')->get();
+        foreach ($groups as $group) {
+            $item = Rosteritem::rosterdate($date)->where('rostergroup_id',$group->id)->first();
+            $indivs = explode(',',$item->individuals);
+            foreach ($indivs as $indiv) {
+                $ind = Individual::find($indiv);
+                $data['team'][$group->group->groupname][]=$ind->firstname;
+            }
+        }
+        $data['sunday']=$date;
+        return $data;
+    }
+
     public function show($id, $yr, $mth)
     {
         $roster = Roster::with('rostergroups.group', 'rostergroups.rosteritems', 'society')->where('id', $id)->first();

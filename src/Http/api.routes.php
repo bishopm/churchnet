@@ -216,6 +216,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::group(['middleware' => ['handlecors', 'isspecial']], function () {
         // Special access
         Route::get('/api/specialrosters/{id}/{year}/{month}/{society_id}/{user_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@show','as'=>'api.rosters.show']);
+        Route::get('/api/specialrosters/thissunday/{id}/{society_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@thisweek','as'=>'api.rosters.thisweek']);
         Route::post('/api/specialrosteritems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@storeitem','as'=>'api.rosters.storeitem']);
         Route::get('/api/specialgroups/{group}/{society_id}/{user_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@show','as'=>'api.groups.show']);
         Route::get('/api/specialaccess/{society_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@specialaccess','as'=>'api.users.specialaccess']);

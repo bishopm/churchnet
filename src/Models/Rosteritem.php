@@ -12,4 +12,9 @@ class Rosteritem extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Rostergroup');
     }
+
+    public function scopeRosterdate($query, $date)
+    {
+        return $query->where('rosterdate',$date);
+    }
 }
