@@ -18,6 +18,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/callback/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@callback');
 
     // Public routes
+    Route::get('groupreport/{data}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@groupreport','as'=>'groupreport.index']);
     Route::get('churches', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DenominationsController@index','as'=>'denominations.index']);
     Route::get('churches/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DenominationsController@show','as'=>'denominations.show']);
     Route::get('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
@@ -84,7 +85,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('admin/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@store','as'=>'admin.people.store']);
         Route::delete('admin/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PeopleController@destroy','as'=>'admin.people.destroy']);
         */
-
+        
         // Readings
         Route::get('admin/readings', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@index','as'=>'admin.readings.index']);
         Route::get('admin/readings/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\ReadingsController@create','as'=>'admin.readings.create']);

@@ -44,8 +44,8 @@ class PeopleController extends Controller
             $circs[]=intval($circ);
         }
         $societies = Society::whereIn('circuit_id', $circs)->pluck('id')->toArray();
-        $people = Individual::societymember($societies)->whereHas('person')->with('person')->where('surname', 'like', '%' . $request->search . '%')->get();
-        return compact('people');
+        $data['people'] = Individual::societymember($societies)->whereHas('person')->with('person.tags')->where('surname', 'like', '%' . $request->search . '%')->orderBy('surname')->orderBy('firstname')->get();
+        return $data;
     }
 
     public function phone($circuit, Request $request)

@@ -176,6 +176,8 @@ class PlansController extends Controller
         $societies = Society::where('circuit_id', $circuit)->pluck('id')->toArray();
         $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) {
             $q->where('status', 'preacher')->orWhere('status', 'minister');
+        })->whereHas('person', function ($q1) {
+            $q1->where('active', 'yes');
         })->orderBy('surname')->orderBy('firstname')->get();
         $plans = Plan::with('service.society', 'person.individual')->where('planyear', $yy)->where('planmonth', $mm)->whereIn('society_id', $societies)->get();
         $labels = Label::where('circuit_id', $circuit)->orderBy('label')->get();
@@ -257,7 +259,7 @@ class PlansController extends Controller
         $sundays[]=$dum;
         $data['societies']=$this->societies->allforcircuit($circuit);
         $data['circuit']=$this->circuit->find($circuit);
-        $data['preachers']=Person::where('circuit_id', $data['circuit']->id)->with('tags')->where('status', 'preacher')->orderBy('surname')->orderBy('firstname')->get();
+        $data['preachers']=Person::where('circuit_id', $data['circuit']->id)->with('tags')->where('status', 'preacher')->where('active', 'yes')->orderBy('surname')->orderBy('firstname')->get();
         $data['ministers']=Person::withAnyTags(['Circuit minister', 'Superintendent'], 'minister')->with('tags')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
         $data['supernumeraries']=Person::withAnyTags(['Supernumerary minister'], 'minister')->with('tags')->where('circuit_id', $data['circuit']->id)->where('status', 'minister')->orderBy('surname')->orderBy('firstname')->get();
         $data['guests']=array();

@@ -80,9 +80,6 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/households/{household}/edit', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@edit','as'=>'api.households.edit']);
         Route::post('api/households', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@store','as'=>'api.households.store']);
         Route::post('api/households/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@search','as'=>'api.households.search']);
-        Route::post('api/households/newstickers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@newstickers','as'=>'api.households.newstickers']);
-        Route::post('api/households/stickerupdate', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@stickerupdate','as'=>'api.households.stickerupdate']);
-        Route::post('api/households/stickers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@stickers','as'=>'api.households.stickers']);
         Route::post('api/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@update','as'=>'api.households.update']);
         Route::delete('api/households/{household}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@destroy','as'=>'api.households.destroy']);
 
@@ -220,5 +217,12 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('/api/specialrosteritems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\RostersController@storeitem','as'=>'api.rosters.storeitem']);
         Route::get('/api/specialgroups/{group}/{society_id}/{user_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@show','as'=>'api.groups.show']);
         Route::get('/api/specialaccess/{society_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\UsersController@specialaccess','as'=>'api.users.specialaccess']);
+    });
+    Route::group(['middleware' => ['handlecors', 'isnametags']], function () {
+        // Special access for nametags
+        Route::post('api/householdstickers/newstickers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@newstickers','as'=>'api.households.newstickers']);
+        Route::post('api/householdstickers/stickers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@stickers','as'=>'api.households.stickers']);
+        Route::post('api/householdstickers/stickerupdate', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@stickerupdate','as'=>'api.households.stickerupdate']);
+        Route::get('api/householdstickers/{household}/{society_id}/{accesstype}/{token}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@show','as'=>'api.households.show']);
     });
 });

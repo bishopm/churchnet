@@ -531,4 +531,27 @@ class PlansController extends Controller
         $pdf->Output();
         exit;
     }
+
+    public function groupreport($data)
+    {
+        $group = json_decode(preg_replace('/[[:cntrl:]]/', '', $data));
+        $pdf = new Fpdf();
+        $pdf->AddPage('P');
+        $logopath=base_path() . '/public/vendor/bishopm/images/mcsa.jpg';
+        $pdf->SetAutoPageBreak(true, 0);
+        $pdf->SetFont('Arial', '', 9);
+        $pdf->Image($logopath, 5, 5, 0, 21);
+        $pdf->SetFillColor(0, 0, 0);
+        $pdf->SetFont('Arial', 'B', 14);
+        $pdf->text(50, 10, $group->groupname);
+        $yy=40;
+        $pdf->SetFont('Arial', '', 12);
+        foreach ($group->individuals as $indiv) {
+            $pdf->text(10, $yy, $indiv->surname . ', ' . $indiv->firstname);
+            $pdf->text(50, $yy, $indiv->cellphone);
+            $yy=$yy+7;
+        }
+        $pdf->Output();
+        exit;
+    }
 }
