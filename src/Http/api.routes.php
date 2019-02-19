@@ -92,6 +92,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/individuals/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@search','as'=>'api.individuals.search']);
         Route::post('api/individuals/searchnp', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@searchnonpreachers','as'=>'api.individuals.searchnp']);
         Route::post('api/individuals', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@store','as'=>'api.individuals.store']);
+        Route::post('api/individuals/delete/{individual}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@destroy','as'=>'api.individuals.destroy']);
         Route::post('api/individuals/{individual}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@update','as'=>'api.individuals.update']);
 
         // Meetings

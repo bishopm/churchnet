@@ -308,9 +308,29 @@ class IndividualsController extends Controller
         return $indiv;
     }
 
-    public function destroy(Individual $individual)
+    public function destroy(Request $request)
     {
-        $this->individual->destroy($individual);
-        return view('connexion::individuals.index')->withSuccess('The ' . $individual->individual . ' individual has been deleted');
+        $indiv = Individual::find($request->id);
+        if ($request->reason == 'delete') {
+            $indiv->forceDelete();
+            return "Individual has been deleted";
+        } elseif ($request->reason == 'archive') {
+            $indiv->delete();
+            return "Individual has been archived";
+        } else {
+            if (isset($request->deathdate)){
+                $indiv->household->specialdays()->create([
+                    'household_id' => $indiv->household_id,
+                    'anniversarytype' => 'Death',
+                    'anniversarydate' => $request->deathdate,
+                    'details' => $indiv->firstname . '\'s death'
+                ]);
+                $indiv->forceDelete();
+                return "Death has been recorded and the anniversary noted";
+            } else {
+                $indiv->forceDelete();
+                return "Individual has been deleted";
+            }
+        }
     }
 }

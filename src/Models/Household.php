@@ -23,6 +23,11 @@ class Household extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Pastoral')->orderBy('pastoraldate','DESC');
     }
 
+    public function specialdays()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Specialday')->orderBy('anniversarydate','DESC');
+    }
+
     public function location()
     {
         return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');
