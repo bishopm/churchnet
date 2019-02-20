@@ -22,6 +22,8 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('api/circuits/{circuit}/societies/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show','as'=>'api.societies.show']);
     Route::get('api/services/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@index','as'=>'api.services.index']);
 
+    Route::post('groupreport', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@groupreport','as'=>'groupreport.show']);
+
     // Districts
     Route::get('api/districts', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@index','as'=>'api.districts.index']);
     Route::get('api/districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@show','as'=>'api.districts.show']);
@@ -109,6 +111,10 @@ Route::middleware(['handlecors'])->group(function () {
         // Pastorals
         Route::post('api/pastorals', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PastoralsController@update','as'=>'api.pastorals.update']);
         Route::post('api/pastorals/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PastoralsController@destroy','as'=>'api.pastorals.destroy']);
+
+        // Anniversaries
+        Route::post('api/specialdays', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SpecialdaysController@update','as'=>'api.specialdays.update']);
+        Route::post('api/specialdays/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\SpecialdaysController@destroy','as'=>'api.specialdays.destroy']);
 
         // People
         Route::get('/api/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@index','as'=>'api.people.index']);

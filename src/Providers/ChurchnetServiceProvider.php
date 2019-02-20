@@ -43,7 +43,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         Form::component('pgHeader', 'churchnet::components.pgHeader', ['pgtitle', 'prevtitle', 'prevroute']);
         Form::component('pgButtons', 'churchnet::components.pgButtons', ['actionLabel', 'cancelRoute']);
         Form::component('bsFile', 'churchnet::components.file', ['name', 'attributes' => []]);
-        config(['googlmapper.key' => 'AIzaSyBQmfbfWGd1hxfR1sbnRXdCaQ5Mx5FjUhA']);
+        config(['googlmapper.key' => 'AIzaSyATsm2WL8gJbhRVGzYIymMbYa78XFvIEPc']);
         config(['googlmapper.marker' => false]);
         config(['jwt.ttl' => 525600]);
         config(['jwt.refresh_ttl' => 525600]);

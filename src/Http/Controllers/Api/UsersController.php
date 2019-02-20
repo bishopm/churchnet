@@ -16,7 +16,7 @@ class UsersController extends Controller
 {
     public function userdetails($id, $auth='')
     {
-        $data = User::with('districts', 'circuits', 'societies')->where('id', $id)->first();
+        $data = User::with('districts', 'circuits', 'societies.location')->where('id', $id)->first();
         $user = array();
         $dists = array();
         $circs = array();

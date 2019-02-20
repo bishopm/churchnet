@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\GroupsRepository;
 use Bishopm\Churchnet\Models\Group;
+use Bishopm\Churchnet\Models\Individual;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
@@ -50,9 +51,10 @@ class GroupsController extends Controller
 
     public function show($id)
     {
-        $group = Group::with('individuals')->where('id', $id)->first();
-        if (in_array($group->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
-            return $group;
+        $data['members'] = DB::select('SELECT individuals.id, individuals.email, individuals.firstname, individuals.surname, individuals.cellphone  FROM group_individual,individuals WHERE individuals.id = group_individual.individual_id AND group_individual.deleted_at IS NULL AND group_individual.group_id = ? ORDER BY individuals.surname, individuals.firstname', [$id]);
+        $data['group'] = Group::find($id);
+        if (in_array($data['group']->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
+            return $data;
         } else {
             return "Unauthorised";
         }
@@ -78,7 +80,7 @@ class GroupsController extends Controller
         } else {
             $newmem = DB::table('group_individual')->insert(['group_id' => $gid, 'individual_id' => $request->id]);
         }
-        return Group::with('individuals')->where('id', $gid)->first();
+        return Individual::where('id', $request->id)->select('firstname', 'surname', 'id', 'cellphone', 'email')->first();
     }
 
     public function update($id, Request $request)

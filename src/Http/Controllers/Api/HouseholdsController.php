@@ -78,18 +78,18 @@ class HouseholdsController extends Controller
             if ($ind['memberstatus']=='adult') {
                 $ind['memberstatus']='non-member';
             }
-            if (!$ind['cellphone']){
+            if (!$ind['cellphone']) {
                 $ind['cellphone']='';
             }
             $newindiv = Individual::create([
-                'firstname'=>$ind['firstname'], 
-                'surname'=>$ind['surname'], 
-                'sex'=>$ind['sex'], 
+                'firstname'=>$ind['firstname'],
+                'surname'=>$ind['surname'],
+                'sex'=>$ind['sex'],
                 'cellphone'=>$ind['cellphone'],
                 'household_id'=>$household->id
             ]);
             $indivs[]=$newindiv;
-            if ((!$household->householdcell) and (strlen($ind['cellphone']))==10){
+            if ((!$household->householdcell) and (strlen($ind['cellphone']))==10) {
                 $household->householdcell = $newindiv->id;
                 $household->save();
             }
@@ -151,7 +151,7 @@ class HouseholdsController extends Controller
     public function update($id, Request $request)
     {
         $household = $this->household->find($id);
-        $data = $this->household->update($household, $request->all());
+        $data = $this->household->update($household, $request->except('latitude', 'longitude'));
         return $data;
     }
 

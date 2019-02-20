@@ -18,7 +18,6 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('/callback/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@callback');
 
     // Public routes
-    Route::get('groupreport/{data}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PlansController@groupreport','as'=>'groupreport.index']);
     Route::get('churches', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DenominationsController@index','as'=>'denominations.index']);
     Route::get('churches/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DenominationsController@show','as'=>'denominations.show']);
     Route::get('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
