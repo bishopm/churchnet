@@ -28,7 +28,8 @@ class DenominationsController extends Controller
         $data['markers'] = array();
         foreach ($denomination->circuits as $circuit) {
             foreach ($circuit->societies as $society) {
-                $title=$society->society . " (" . $society->circuit->circuitnumber . " " . $society->circuit->circuit . ")";
+                $title="<b><a href=\"" . url('/circuits/' . $circuit->slug . '/' . $society->slug) . "\">" . $society->society . "</a></b> - <a href=\"" . url('/circuits/' . $circuit->slug) . "\">" . $society->circuit->circuitnumber . " " . $society->circuit->circuit . "</a>";
+                $title=str_replace('\'', '\\\'', $title);
                 $data['markers'][]=['title'=>$title, 'lat'=>$society->latitude, 'lng'=>$society->longitude];
             }
         }

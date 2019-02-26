@@ -2,6 +2,10 @@
 
 @section('title',$society->society)
 
+@section('css')
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+@stop
+
 @section('content')
 <div class="container mt-5">
     <div class="box">
@@ -44,11 +48,19 @@
             @endif
             </div>
             <div class="col-xs-12 col-sm-6">
-                <div style="width: 100%; height: 400px;">
-                    {!! Mapper::render() !!}
+                <div id="map1" style="width: 100%; height: 400px;">
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+
+@section('js')
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+    <script>
+        var mymap = L.map('map1').setView([{{$society->location->latitude}}, {{$society->location->longitude}}], 13);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+        L.marker([{{$society->location->latitude}}, {{$society->location->longitude}}]).addTo(mymap);
+    </script> 
+@stop

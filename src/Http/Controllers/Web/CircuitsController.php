@@ -10,7 +10,6 @@ use Bishopm\Churchnet\Models\Individual;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateCircuitRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
-use Mapper;
 use Auth;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
@@ -71,12 +70,9 @@ class CircuitsController extends Controller
         $first=true;
         $socs=array();
         foreach ($data['circuit']->societies as $society) {
-            if ($first) {
-                Mapper::map($society->latitude, $society->longitude, ['cluster' => false, 'marker' => false, 'type' => 'HYBRID', 'center'=>false]);
-                $first=false;
-            }
-            $info="go to <a href=\"" . url('/') . "/circuits/" . $data['circuit']->slug . "/" . $society->slug . "\">" . $society->society . "</a>";
-            Mapper::informationWindow($society->latitude, $society->longitude, $info, ['title' => $society->society]);
+            $title="<b><a href=\"" . url('/circuits/' . $data['circuit']->slug . '/' . $society->slug) . "\">" . $society->society . "</a></b>";
+            $title=str_replace('\'', '\\\'', $title);
+            $data['markers'][]=['title'=>$title, 'lat'=>$society->latitude, 'lng'=>$society->longitude];
             $socs[]=$society->id;
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));
@@ -92,7 +88,7 @@ class CircuitsController extends Controller
             }
             $data['ministers'][$min->individual->surname . $min->individual->firstname]=$min;
         }
-        if (isset($data['ministers'])){
+        if (isset($data['ministers'])) {
             ksort($data['ministers']);
         }
         $data['supernumeraries'] = $data['circuit']->tagged('supernumerary minister')->get();

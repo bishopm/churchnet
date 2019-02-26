@@ -46,8 +46,7 @@
             </ul>
         </div>
         <div class="col-sm-6">
-            <div style="width: 100%; height: 400px;">
-                Big map
+            <div id="map2" style="width: 100%; height: 400px;">
             </div>
         </div>
     </div>
@@ -60,5 +59,15 @@
         var mymap = L.map('map1').setView([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
         L.marker([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}]).addTo(mymap);
+        var mymap2 = L.map('map2').setView([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 4);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap2);
+        <?php
+        foreach ($markers as $marker) {
+            $lat = $marker['lat'];
+            $lng = $marker['lng'];
+            $tle = $marker['title'];
+            echo "L.marker([$lat,$lng]).addTo(mymap2).bindPopup('" . $tle . "');";
+        }
+        ?>
     </script> 
 @stop
