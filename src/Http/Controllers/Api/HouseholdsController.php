@@ -155,9 +155,19 @@ class HouseholdsController extends Controller
         return $data;
     }
 
-    public function destroy(Household $household)
+    public function destroy(Request $request)
     {
-        $this->household->destroy($household);
-        return view('connexion::households.index')->withSuccess('The ' . $household->household . ' household has been deleted');
+        $household = Household::find($request->id);
+        foreach ($household->individuals as $indiv) {
+            $indiv->forceDelete();
+        }
+        foreach ($household->pastorals as $past) {
+            $past->forceDelete();
+        }
+        foreach ($household->specialdays as $sd) {
+            $sd->forceDelete();
+        }
+        $household->forceDelete();
+        return "Household and related records deleted";
     }
 }
