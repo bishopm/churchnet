@@ -105,15 +105,29 @@
 @section('js')
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script>
-        var mymap = L.map('map').setView([{{$markers[0]['lat']}}, {{$markers[0]['lng']}}], 9);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+    <?php
+    if (isset($markers)) {
+    ?>    
+        var tilelayer = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+        var featureGroup = L.featureGroup([
         <?php
+        $i=0;
         foreach ($markers as $marker) {
+            $i++;
             $lat = $marker['lat'];
             $lng = $marker['lng'];
             $tle = $marker['title'];
-            echo "L.marker([$lat,$lng]).addTo(mymap).bindPopup('" . $tle . "');";
-        }
+            echo "L.marker([$lat,$lng]).bindPopup('" . $tle . "')";
+            if ($i < count($markers)) {
+                echo ", ";
+            } else {
+                echo "]);\n";
+            }
+        } ?>
+        var mymap = new L.Map('map', { 'center': [0, 0], 'zoom': 0, 'layers': [tilelayer, featureGroup] });  
+        mymap.fitBounds(featureGroup.getBounds(), {padding: [25,25]});
+        <?php
+    }
         ?>
     </script> 
 @stop

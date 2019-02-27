@@ -23,14 +23,13 @@ class DenominationsController extends Controller
 
     public function show($slug)
     {
-        $denomination=Denomination::where('slug', $slug)->with('individuals', 'districts', 'circuits.societies', 'location')->first();
-        $first=true;
+        $denomination=Denomination::where('slug', $slug)->with('individuals', 'districts', 'circuits.societies.location', 'location')->first();
         $data['markers'] = array();
         foreach ($denomination->circuits as $circuit) {
             foreach ($circuit->societies as $society) {
                 $title="<b><a href=\"" . url('/circuits/' . $circuit->slug . '/' . $society->slug) . "\">" . $society->society . "</a></b> - <a href=\"" . url('/circuits/' . $circuit->slug) . "\">" . $society->circuit->circuitnumber . " " . $society->circuit->circuit . "</a>";
                 $title=str_replace('\'', '\\\'', $title);
-                $data['markers'][]=['title'=>$title, 'lat'=>$society->latitude, 'lng'=>$society->longitude];
+                $data['markers'][]=['title'=>$title, 'lat'=>$society->location->latitude, 'lng'=>$society->location->longitude];
             }
         }
         $data['denomination']=$denomination;

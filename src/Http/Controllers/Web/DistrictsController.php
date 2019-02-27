@@ -40,14 +40,14 @@ class DistrictsController extends Controller
 
     public function show($districtnum)
     {
-        $district=District::with('circuits', 'individuals', 'location')->find($districtnum);
+        $district=District::with('circuits.societies.location', 'individuals', 'location')->find($districtnum);
         $first=true;
         foreach ($district->circuits as $circuit) {
             foreach ($circuit->societies as $society) {
                 if ($society->location) {
                     $title="<b><a href=\"" . url('/circuits/' . $circuit->slug . '/' . $society->slug) . "\">" . $society->society . "</a></b> - <a href=\"" . url('/circuits/' . $circuit->slug) . "\">" . $society->circuit->circuitnumber . " " . $society->circuit->circuit . "</a>";
                     $title=str_replace('\'', '\\\'', $title);
-                    $data['markers'][]=['title'=>$title, 'lat'=>$society->latitude, 'lng'=>$society->longitude];
+                    $data['markers'][]=['title'=>$title, 'lat'=>$society->location->latitude, 'lng'=>$society->location->longitude];
                 }
             }
         }

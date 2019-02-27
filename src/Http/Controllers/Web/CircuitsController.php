@@ -66,13 +66,13 @@ class CircuitsController extends Controller
 
     public function show($circuitnum)
     {
-        $data['circuit']=Circuit::with('societies', 'people.tags', 'district.denomination')->where('slug', $circuitnum)->first();
+        $data['circuit']=Circuit::with('societies.location', 'people.tags', 'district.denomination')->where('slug', $circuitnum)->first();
         $first=true;
         $socs=array();
         foreach ($data['circuit']->societies as $society) {
             $title="<b><a href=\"" . url('/circuits/' . $data['circuit']->slug . '/' . $society->slug) . "\">" . $society->society . "</a></b>";
             $title=str_replace('\'', '\\\'', $title);
-            $data['markers'][]=['title'=>$title, 'lat'=>$society->latitude, 'lng'=>$society->longitude];
+            $data['markers'][]=['title'=>$title, 'lat'=>$society->location->latitude, 'lng'=>$society->location->longitude];
             $socs[]=$society->id;
         }
         $data['plan']=count($this->plans->latestplan($data['circuit']->id));

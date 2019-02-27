@@ -81,7 +81,7 @@ if (isset($markers)) {
         }
     } ?>
         var mymap2 = new L.Map('map2', { 'center': [0, 0], 'zoom': 0, 'layers': [tilelayer, featureGroup] });  
-        mymap2.fitBounds(featureGroup.getBounds());
+        mymap2.fitBounds(featureGroup.getBounds(), {padding: [25,25]});
         <?php
 }
         ?>
