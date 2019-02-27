@@ -13,10 +13,10 @@
             <div class="col-xs-12 col-sm-6">
                 <h1 class="title">{{$society->society}} <span class="subtitle small"><a href="{{url('/')}}/circuits/{{$society->circuit->slug}}">{{$society->circuit->circuit}}</a></span></h1>
                 <ul class="list-unstyled">
-                    @if ($society->location->address)
+                    @if ($society->location and $society->location->address)
                         <li>{{$society->location->address}}</li>
                     @endif
-                    @if ($society->location->phone)
+                    @if ($society->location and $society->location->phone)
                         <li><b>Phone:</b> {{$society->location->phone}}</li>
                     @endif
                     @if ($society->email)
@@ -25,7 +25,7 @@
                     @if ($society->website)
                         <li><b>Website:</b> <a target="_blank" href="{{$society->website}}">{{$society->website}}</a></li>
                     @endif
-                    @if ($society->location->latitude)
+                    @if ($society->location and $society->location->latitude)
                         <li>{{$society->location->latitude}}&#176;, {{$society->location->longitude}}&#176;</li>
                     @endif
                 </ul>
@@ -57,10 +57,14 @@
 @endsection
 
 @section('js')
+    <?php if (isset($society->location)) {
+    ?>
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script>
         var mymap = L.map('map1').setView([{{$society->location->latitude}}, {{$society->location->longitude}}], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
         L.marker([{{$society->location->latitude}}, {{$society->location->longitude}}]).addTo(mymap);
     </script> 
+    <?php
+} ?>
 @stop

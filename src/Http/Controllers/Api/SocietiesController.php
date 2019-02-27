@@ -104,18 +104,17 @@ class SocietiesController extends Controller
         return $this->society->findsociety($society);
     }
 
-    public function store($circuit, CreateSocietyRequest $request)
+    public function appstore(Request $request)
     {
-        $soc=$this->society->create($request->except('token'));
-        $soc->circuit_id=$circuit;
-        $soc->slug = $soc->id;
-        $soc->save();
-        return $soc;
-    }
-
-    public function appstore(CreateSocietyRequest $request)
-    {
-        $soc=$this->society->create($request->all());
+        $socnew=$request->society;
+        $location=$socnew['location'];
+        unset($socnew['location']);
+        $soc=$this->society->create($socnew);
+        $soc->location()->create([
+            'address'=>$location['address'],
+            'latitude'=>$location['latitude'],
+            'longitude'=>$location['longitude']
+        ]);
         $soc->slug = $soc->id;
         $soc->save();
         return $soc;
@@ -124,9 +123,15 @@ class SocietiesController extends Controller
     public function update(Request $request)
     {
         $upd = $request->society;
+        $location=$upd['location'];
+        unset($upd['location']);
         unset($upd['services']);
         unset($upd['users']);
         $society = Society::find($upd['id']);
+        $society->location->address = $location['address'];
+        $society->location->longitude = $location['longitude'];
+        $society->location->latitude = $location['latitude'];
+        $society->location->save();
         $society->update($upd);
         return $society;
     }

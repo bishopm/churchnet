@@ -4,6 +4,7 @@
 
 @section('css')
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css" integrity="sha512-puBpdR0798OZvTTbP4A8Ix/l+A4dHDD0DGqYW6RQ+9jxkRFclaxxQb/SJAWZfWAkuyeQUytO7+7N4QKrDh+drA==" crossorigin=""/>
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
 @stop
 
 @section('content')
@@ -55,19 +56,31 @@
 
 @section('js')
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
+    <script type='text/javascript' src='https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js'></script>
     <script>
+<?php if (isset($denomination->location)) {
+    ?>
         var mymap = L.map('map1').setView([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 13);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
         L.marker([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}]).addTo(mymap);
-        var mymap2 = L.map('map2').setView([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 4);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap2);
         <?php
-        foreach ($markers as $marker) {
-            $lat = $marker['lat'];
-            $lng = $marker['lng'];
-            $tle = $marker['title'];
-            echo "L.marker([$lat,$lng]).addTo(mymap2).bindPopup('" . $tle . "');";
-        }
-        ?>
+}
+if (isset($markers)) {
+    ?>     
+    var mymap2 = new L.Map('map2', { 'center': [{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 'zoom': 4 });  
+    new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap2);
+    var markerClusters = L.markerClusterGroup();
+
+    <?php
+    foreach ($markers as $marker) {
+        $lat = $marker['lat'];
+        $lng = $marker['lng'];
+        $tle = $marker['title'];
+        echo "markerClusters.addLayer(L.marker([$lat,$lng]).bindPopup('" . $tle . "'));\n";
+    } ?>
+    mymap2.addLayer( markerClusters );
+<?php
+}
+?>
     </script> 
 @stop
