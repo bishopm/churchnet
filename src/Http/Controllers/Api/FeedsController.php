@@ -103,10 +103,16 @@ class FeedsController extends Controller
             }
             $data[$item->feedpost->category][]=$item;
         }
-        if ((is_array($data['song'])) or (is_array($data['song']))) {
-            $data['songs'] = count($data['song']) + count($data['liturgy']);
+        $tot=0;
+        if (isset($data['song'])) {
+            $tot = $tot + count($data['song']);
             unset($data['song']);
         }
+        if (isset($data['liturgy'])) {
+            $tot = $tot + count($data['liturgy']);
+            unset($data['liturgy']);
+        }
+        $data['songs']=$tot;
         return $data;
     }
 
@@ -126,10 +132,10 @@ class FeedsController extends Controller
         foreach ($feeditems as $item) {
             $data[$item->feedpost->category][$item->feedpost->title] = ['title'=>$item->feedpost->title, 'id'=>$item->feedpost_id];
         }
-        if (is_array($data['song'])) {
+        if (isset($data['song'])) {
             asort($data['song']);
         }
-        if (is_array($data['liturgy'])) {
+        if (isset($data['liturgy'])) {
             asort($data['liturgy']);
         }
         return $data;
