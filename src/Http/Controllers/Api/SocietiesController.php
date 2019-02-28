@@ -37,19 +37,19 @@ class SocietiesController extends Controller
     {
         if (isset($request->scope)) {
             if ($request->scope == 'society') {
-                return Society::where('id', $request->entity)->get();
+                return Society::with('location')->where('id', $request->entity)->get();
             } elseif ($request->scope == 'circuit') {
-                return Society::where('circuit_id', $request->entity)->orderBy('society')->get();
+                return Society::with('location')->where('circuit_id', $request->entity)->orderBy('society')->get();
             } elseif ($request->scope == 'district') {
                 $circs = Circuit::where('district_id', $request->entity)->select('id')->get()->toArray();
-                return Society::whereIn('circuit_id', $circs)->orderBy('society')->get();
+                return Society::with('location')->whereIn('circuit_id', $circs)->orderBy('society')->get();
             }
         } else {
             $circs=array();
             foreach ($request->circuits as $circ) {
                 $circs[]=intval($circ);
             }
-            return Society::whereIn('circuit_id', $circs)->where('society', 'like', '%' . $request->search . '%')->orderBy('society')->get();
+            return Society::with('location')->whereIn('circuit_id', $circs)->where('society', 'like', '%' . $request->search . '%')->orderBy('society')->get();
         }
     }
 

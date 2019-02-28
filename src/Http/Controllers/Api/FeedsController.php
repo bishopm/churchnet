@@ -103,6 +103,35 @@ class FeedsController extends Controller
             }
             $data[$item->feedpost->category][]=$item;
         }
+        if ((is_array($data['song'])) or (is_array($data['song']))) {
+            $data['songs'] = count($data['song']) + count($data['liturgy']);
+            unset($data['song']);
+        }
+        return $data;
+    }
+
+    public function hymns($society)
+    {
+        $data=array();
+        $this->soc = Society::with('circuit.district')->find($society);
+        $this->cir = $this->soc->circuit;
+        $this->dis = $this->cir->district;
+        $feeditems = Feeditem::where('library', 'yes')->with('feedpost')->whereHas('feedpost', function ($q) {
+            $q->where('category', '=', 'song')->orWhere('category', '=', 'liturgy');
+        })->where(function ($query) {
+            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
+                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
+        })->get();
+        foreach ($feeditems as $item) {
+            $data[$item->feedpost->category][$item->feedpost->title] = ['title'=>$item->feedpost->title, 'id'=>$item->feedpost_id];
+        }
+        if (is_array($data['song'])) {
+            asort($data['song']);
+        }
+        if (is_array($data['liturgy'])) {
+            asort($data['liturgy']);
+        }
         return $data;
     }
 

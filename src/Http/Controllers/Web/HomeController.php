@@ -49,7 +49,7 @@ class HomeController extends Controller
         });
         $data['cloud'] = $cloud->render();
         $data['recentresources'] = $this->resource->recents(15);
-        $data['users'] = User::orderBy('created_at','DESC')->get()->take(5);
+        $data['users'] = User::orderBy('created_at', 'DESC')->get()->take(5);
         return view('churchnet::home', $data);
     }
 

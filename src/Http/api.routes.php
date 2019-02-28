@@ -11,6 +11,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('api/feeds/ffdl', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@ffdl','as'=>'api.feeds.ffdl']);
     Route::get('/api/feeditems/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditems','as'=>'api.feeds.feeditems']);
     Route::get('/api/feedlibrary/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedlibrary','as'=>'api.feeds.feedlibrary']);
+    Route::get('/api/hymns/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@hymns','as'=>'api.feeds.hymns']);
     Route::get('/api/feedpost/{post}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedpost','as'=>'api.feeds.feedpost']);
     Route::get('/api/feeditem/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditem','as'=>'api.feeds.feeditem']);
     Route::post('/api/myfeeditems', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@myfeeds','as'=>'api.feeditems.myfeeds']);
