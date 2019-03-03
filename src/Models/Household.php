@@ -10,7 +10,7 @@ class Household extends Model
 
     public function individuals()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Individual')->orderBy('firstname');
+        return $this->hasMany('Bishopm\Churchnet\Models\Individual')->whereNull('deleted_at')->orderBy('firstname');
     }
 
     public function society()
