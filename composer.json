@@ -25,7 +25,7 @@
         "cviebrock/eloquent-taggable": "3.*",
         "lithiumdev/laravel-tagcloud": "~1.0",
         "simplepie/simplepie": "1.5.*",
-        "actuallymab/laravel-comment": "0.6.*",
+        "beyondcode/laravel-comments": "1.*",
         "laravel-notification-channels/webpush": "3.*",
         "laravel/horizon": "3.*"
     },
