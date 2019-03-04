@@ -4,11 +4,11 @@ namespace Bishopm\Churchnet\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentTaggable\Taggable;
-use Actuallymab\LaravelComment\Commentable;
+use BeyondCode\Comments\Traits\HasComments;
 
 class Page extends Model
 {
-    use Taggable, Commentable;
+    use Taggable, HasComments;
 
     protected $guarded = array('id');
 }

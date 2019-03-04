@@ -52,9 +52,9 @@ class ChurchnetServiceProvider extends ServiceProvider
         config(['services.facebook.client_id' => env('FB_CLIENT_ID')]);
         config(['services.facebook.client_secret' => env('FB_CLIENT_SECRET')]);
         config(['services.facebook.redirect' => env('FB_REDIRECT')]);
-        config(['services.google.client_id' => env('G+_CLIENT_ID')]);
-        config(['services.google.client_secret' => env('G+_CLIENT_SECRET')]);
-        config(['services.google.redirect' => env('G+_REDIRECT')]);
+        config(['services.google.client_id' => env('G_CLIENT_ID')]);
+        config(['services.google.client_secret' => env('G_CLIENT_SECRET')]);
+        config(['services.google.redirect' => env('G_REDIRECT')]);
         config(['taggable.model'=>'Bishopm\Churchnet\Models\Tagg']);
     }
 
