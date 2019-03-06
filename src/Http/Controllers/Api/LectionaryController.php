@@ -31,7 +31,9 @@ class LectionaryController extends Controller
         $res['date']=date("j F Y", strtotime($fin['date']));
         $res['description']=$fin['lection']['description'] . ' [' . $fin['lection']['year'] . ']';
         $res['readings']=explode(';', $fin['lection']['readings']);
-        if ($fin['lection']['description'] == "Resurrection of the Lord - Easter Day") {
+        if ($fin['lection']['description'] == "First Sunday in Lent") {
+            $res['extras'][date("j F Y", strtotime($fin['date'])-4*24*3600)]=$this->reading->findByDesc($this->lyear, 'Ash Wednesday');
+        } elseif ($fin['lection']['description'] == "Resurrection of the Lord - Easter Day") {
             $res['extras'][date("j F Y", strtotime($fin['date'])-6*24*3600)]=$this->reading->findByDesc($this->lyear, 'Holy Week Monday');
             $res['extras'][date("j F Y", strtotime($fin['date'])-5*24*3600)]=$this->reading->findByDesc($this->lyear, 'Holy Week Tuesday');
             $res['extras'][date("j F Y", strtotime($fin['date'])-4*24*3600)]=$this->reading->findByDesc($this->lyear, 'Holy Week Wednesday');

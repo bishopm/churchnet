@@ -8,7 +8,6 @@ use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateSocietyRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSocietyRequest;
-use Mapper;
 
 class SocietiesController extends Controller
 {
@@ -46,10 +45,6 @@ class SocietiesController extends Controller
     {
         $data['society']=$this->society->findBySlugForCircuitSlug($circuit, $slug);
         $data['stewards']=$data['society']->circuit->tagged('Society steward')->get();
-        if ($data['society']->location) {
-            Mapper::map($data['society']->location->latitude, $data['society']->location->longitude, ['zoom' => 16, 'type' => 'HYBRID']);
-            Mapper::marker($data['society']->location->latitude, $data['society']->location->longitude, ['title' => $data['society']->society . " society"]);
-        }
         return view('churchnet::societies.show', $data);
     }
 

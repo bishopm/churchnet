@@ -6,7 +6,7 @@ class PlansRepository extends EloquentBaseRepository
 {
     public function latestplan($circuit)
     {
-        return $this->model->where('circuit_id', $circuit)->orderBy('planyear', 'planmonth', 'planday')->get()->take(1);
+        return $this->model->where('circuit_id', $circuit)->get()->take(1);
     }
 
     public function preachingmonth($circuit, $yy, $mm)

@@ -12,6 +12,7 @@ class ChurchnetServiceProvider extends ServiceProvider
     protected $commands = [
         'Bishopm\Churchnet\Console\BirthdayEmail',
         'Bishopm\Churchnet\Console\PlannedGivingReportEmail',
+        'Bishopm\Churchnet\Console\PreacherReminder',
     ];
 
     /**

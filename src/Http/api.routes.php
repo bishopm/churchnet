@@ -1,6 +1,7 @@
 <?php
 
 Route::middleware(['handlecors'])->group(function () {
+    Route::post('/api/push', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PushController@store','as'=>'api.push.store']);
     Route::post('/api/churchnet/login', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@login','as'=>'api.login']);
     Route::post('/api/register', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@register','as'=>'api.register']);
 

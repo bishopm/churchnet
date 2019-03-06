@@ -4,11 +4,13 @@ namespace Bishopm\Churchnet\Models;
 
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
+use NotificationChannels\WebPush\HasPushSubscriptions;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
+    use HasPushSubscriptions;
 
     /**
      * The attributes that are mass assignable.
