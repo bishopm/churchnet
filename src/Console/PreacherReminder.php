@@ -54,8 +54,7 @@ class PreacherReminder extends Command
                 $message = $message . "\n" . $key . ": " . implode(', ',$soc);
             }
             $message = $message . "\n\nFor your information, the lectionary readings for Sunday are: " . implode(', ' ,$readings['readings']) . ".";
-            // Notification::send(User::find($dat['user_id']),new PushNotification($message));
-            echo $message . "\n";
+            Notification::send(User::find($dat['user_id']),new PushNotification($message));
         }
     }
 }

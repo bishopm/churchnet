@@ -11,6 +11,6 @@ class PlansRepository extends EloquentBaseRepository
 
     public function preachingmonth($circuit, $yy, $mm)
     {
-        return $this->model->with('person')->where('circuit_id', $circuit)->where('planyear', $yy)->where('planmonth', $mm)->orderBy('planyear', 'planmonth', 'planday')->get();
+        return $this->model->with('person')->where('circuit_id', $circuit)->where('planyear', $yy)->where('planmonth', $mm)->get();
     }
 }
