@@ -7,6 +7,8 @@ use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Feedpost;
+use Bishopm\Churchnet\Models\User;
+use Bishopm\Churchnet\Models\Reminder;
 use Illuminate\Http\Request;
 use SimplePie;
 
@@ -34,8 +36,9 @@ class FeedsController extends Controller
         return $data;
     }
 
-    public function feeditems($society)
+    public function feeditems(Request $request)
     {
+        $society=$request->society;
         $data=array();
         $this->soc = Society::with('circuit.district')->find($society);
         $this->cir = $this->soc->circuit;
@@ -76,6 +79,15 @@ class FeedsController extends Controller
                 $dum['pubdate']=date("d M Y", strtotime($item->get_date()));
                 $dum['image']=$item->get_link();
                 $data[$itype][]=$dum;
+            }
+        }
+        if ($request->individual) {
+            $user=User::where('individual_id', $request->individual)->first();
+            if ($user) {
+                $reminders = Reminder::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
+                if ($reminders) {
+                    $data['reminders']=$reminders;
+                }
             }
         }
         return $data;
