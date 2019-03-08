@@ -13,10 +13,11 @@ class PushNotification extends Notification
 {
     use Queueable;
 
-    private $message;
+    private $title, $message;
 
-    public function __construct($message)
+    public function __construct($title, $message)
     {
+        $this->title = $title;
         $this->message = $message;
     }
 
@@ -27,7 +28,7 @@ class PushNotification extends Notification
     public function toWebPush($notifiable, $notification)
     {
         return (new WebPushMessage)
-            ->title('Journey')
+            ->title($this->title)
             ->icon('statics/icons/icon-128x128.png')
             ->body($this->message);
     }

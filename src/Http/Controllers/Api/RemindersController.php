@@ -25,15 +25,10 @@ class RemindersController extends Controller
             return null;
         }
     }
-
-    public function store(CreateReminderRequest $request)
-    {
-        $this->reminder->create($request->except('image', 'token'));
-        return 'New reminder added';
-    }
     
-    public function destroy($circuit, Reminder $reminder)
+    public function destroy(Request $request)
     {
-        $this->reminder->destroy($reminder);
+        Reminder::find($request->id)->delete();
+        return "reminder " . $request->id . " deleted";
     }
 }

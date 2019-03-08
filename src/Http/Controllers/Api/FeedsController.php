@@ -85,9 +85,11 @@ class FeedsController extends Controller
             $user=User::where('individual_id', $request->individual)->first();
             if ($user) {
                 $reminders = Reminder::where('user_id', $user->id)->orderBy('created_at', 'DESC')->get();
-                if ($reminders) {
-                    $data['reminders']=$reminders;
-                }
+                $data['reminders']=$reminders;
+                $data['remindercount']=count($data['reminders']);
+            } else {
+                $data['remindercount']=0;
+                $data['reminders']=null;
             }
         }
         return $data;
