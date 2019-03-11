@@ -32,7 +32,7 @@ class FeedsController extends Controller
         $devotion=$feed->get_items()[1];
         $data['devotion']['title']=$devotion->get_title();
         $data['devotion']['content']=$devotion->get_content();
-        $data['devotion']['pubdate']=date("d M Y", 24*3600 + strtotime($devotion->get_date()));
+        $data['devotion']['pubdate']=date("d M Y", strtotime($devotion->get_date()));
         return $data;
     }
 
