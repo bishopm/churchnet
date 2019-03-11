@@ -27,6 +27,7 @@
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "1.*",
         "laravel-notification-channels/webpush": "3.*",
+        "predis/predis": "3.*",
         "laravel/horizon": "3.*"
     },
     "require-dev": {
