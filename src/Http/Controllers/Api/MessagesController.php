@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\DB;
 use Bishopm\Churchnet\Services\BulkSMSService;
 use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
+use Bishopm\Churchnet\Jobs\DeliverSMS;
 
 class MessagesController extends Controller
 {
@@ -31,7 +32,7 @@ class MessagesController extends Controller
         $recipients=$this->getrecipients($data['groups'], $data['individuals'], "", $data['messagetype']);
         if ($data['messagetype']=="email") {
             if ($request->hasFile('file')) {
-                $data['file'] = $request->file('file');
+                $data['file'] = base64_encode($request->file('file'));
             }
             return $this->sendemail($data, $recipients);
         } elseif ($data['messagetype']=="sms") {
@@ -141,9 +142,10 @@ class MessagesController extends Controller
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
                     $transport = (new Swift_SmtpTransport($settings->email_host, $settings->email_port))
                        ->setUsername($settings->email_user)
-                       ->setPassword($settings->email_pw);
+                       ->setPassword($settings->email_pw)
+                       ->setEncryption($settings->email_encryption);
                     Mail::setSwiftMailer(new \Swift_Mailer($transport));
-                    Mail::to($indiv['email'])->send(new GenericMail($data));
+                    Mail::to($indiv['email'])->queue(new GenericMail($data));   
                     $dum['emailresult']="OK";
                 } else {
                     $dum['emailresult']="Invalid";
@@ -153,7 +155,7 @@ class MessagesController extends Controller
         }
         // Send a copy to the sender
         if (!$sendertold) {
-            Mail::to($sender)->send(new GenericMail($data));
+            Mail::to($sender)->queue(new GenericMail($data));
         }
         return $results;
     }

@@ -18,7 +18,7 @@ class GenericMail extends Mailable
     {
         $this->emaildata=$emaildata;
     }
-
+    
     /**
      * Build the message.
      *
