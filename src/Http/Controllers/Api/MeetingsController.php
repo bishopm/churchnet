@@ -62,7 +62,7 @@ class MeetingsController extends Controller
             $data['entity'] = $society->circuit->district->district . " District";
         }
         foreach ($upcomings as $upcoming) {
-            $dum['start'] = date("j F Y (H:i)", $upcoming->meetingdatetime);
+            $dum['start'] = $upcoming->meetingdatetime;
             $dum['details'] = $upcoming->description;
             $dum['society'] = $upcoming->society->society;
             $dum['society_id'] = $upcoming->society->id;
