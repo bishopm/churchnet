@@ -52,7 +52,7 @@
 @endsection
 
 @section('js')
-<script src="https://npmcdn.com/leaflet-geometryutil"></script>
+<script src="{{asset('/vendor/bishopm/js/tagcanvas.js')}}"></script>
 <script type="text/javascript">
 var options = {
   weight: true,

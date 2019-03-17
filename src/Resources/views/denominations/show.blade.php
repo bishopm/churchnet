@@ -60,7 +60,6 @@
 @section('js')
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script type='text/javascript' src='https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js'></script>
-    <script src="{{asset('/vendor/bishopm/js/tagcanvas.js')}}"></script>
     <script>
 <?php if (isset($denomination->location)) {
     ?>
@@ -98,7 +97,7 @@ if (isset($markers)) {
                          'distance': mypos.distanceTo(L.latLng({$lat},{$lng})) / 1000
                     });}";
         } ?>
-        var fin = '<h4>Churches within 20km of your location</h4>';
+        var fin = '<div class="col-12"><h5>Churches within 20km of your location</h5></div>';
         function compare(a,b) {
             if (a.distance < b.distance)
                 return -1;
