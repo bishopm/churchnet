@@ -200,6 +200,12 @@ class PlansController extends Controller
         return $data;
     }
 
+    public function guestpreachers($circuit, $slug)
+    {
+        $person = Person::denomination($slug)->with('individual')->where('status', 'minister')->where('circuit_id', '<>', $circuit)->get();
+        return $person;
+    }
+
     /**
      * Display the specified resource.
      *

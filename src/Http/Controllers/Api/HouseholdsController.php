@@ -134,7 +134,7 @@ class HouseholdsController extends Controller
 
     public function show($id)
     {
-        $household = Household::with('individuals','individuals.groups', 'individuals.tags', 'pastorals.individual', 'specialdays', 'location', 'society.location')->where('id', $id)->first();
+        $household = Household::with('individuals', 'individuals.groups', 'individuals.tags', 'pastorals.individual', 'specialdays', 'location', 'society.location')->where('id', $id)->first();
         $household->alltags = Tag::where('type', 'leader')->get();
         if (in_array($household->society->id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $household;
@@ -145,7 +145,10 @@ class HouseholdsController extends Controller
 
     public function store(Request $request)
     {
-        return $this->household->create($request->all());
+        $household = Household::create($request->except('longitude', 'latitude'));
+        $household->location()->create(['latitude'=>$request->latitude, 'longitude'=>$request->longitude]);
+        $household->save();
+        return $household;
     }
     
     public function update($id, Request $request)

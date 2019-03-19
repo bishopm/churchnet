@@ -27,4 +27,13 @@ class Person extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Individual');
     }
+
+    public function scopeDenomination($query, $slug)
+    {
+        return $query->join('circuits', 'circuits.id', '=', 'circuit_id')
+                    ->join('districts', 'districts.id', '=', 'district_id')
+                    ->join('denominations', 'denominations.id', '=', 'denomination_id')
+                    ->where('denominations.slug', $slug)
+                    ->where('status', 'minister')->select('people.*');
+    }
 }
