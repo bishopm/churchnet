@@ -8,6 +8,8 @@ use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Preacher;
+use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\District;
 use Bishopm\Churchnet\Models\Payment;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Chat;
@@ -260,6 +262,22 @@ class IndividualsController extends Controller
         }
     }
 
+    public function searchguestpreachers(Request $request)
+    {
+        $this->search = $request->search;
+        $circuits = District::find(Circuit::find($request->circuit)->district_id)->circuits;
+        $soc=array();
+        foreach ($circuits as $circuit) {
+            if ($circuit->id !== $request->circuit) {
+                foreach ($circuit->societies as $soc) {
+                    $socs[]=$soc->id;
+                }
+            }
+        }
+        return Individual::societymember($socs)->with('household.society')->where(function ($query) {
+            $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
+        })->get();
+    }
 
     public function query($individual, Request $request)
     {

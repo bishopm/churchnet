@@ -13,6 +13,7 @@ use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Label;
 use Bishopm\Churchnet\Models\Weekday;
+use Bishopm\Churchnet\Models\Guest;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Repositories\PreachersRepository;
@@ -179,6 +180,7 @@ class PlansController extends Controller
         })->whereHas('person', function ($q1) {
             $q1->where('active', 'yes');
         })->orderBy('surname')->orderBy('firstname')->get();
+        $data['guests'] = Guest::with('person.individual')->where('circuit_id',$circuit)->where('active','yes')->get();
         $plans = Plan::with('service.society', 'person.individual')->where('planyear', $yy)->where('planmonth', $mm)->whereIn('society_id', $societies)->get();
         $labels = Label::where('circuit_id', $circuit)->orderBy('label')->get();
         $allplans=$this->populate_array($dates, $circuit);
@@ -198,12 +200,6 @@ class PlansController extends Controller
         $data['preachers']=$preachers;
         $data['labels']=$labels;
         return $data;
-    }
-
-    public function guestpreachers($circuit, $slug)
-    {
-        $person = Person::denomination($slug)->with('individual')->where('status', 'minister')->where('circuit_id', '<>', $circuit)->get();
-        return $person;
     }
 
     /**

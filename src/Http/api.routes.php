@@ -79,6 +79,10 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/groups/{group}/add', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@add','as'=>'api.groups.add']);
         Route::delete('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@destroy','as'=>'api.groups.destroy']);
 
+        // Guests
+        Route::post('api/guests', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GuestsController@index','as'=>'api.guests.index']);
+        Route::post('api/guests/add', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GuestsController@store','as'=>'api.guests.store']);
+
         // Households
         Route::get('api/households', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@index','as'=>'api.households.index']);
         Route::get('api/households/create', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@create','as'=>'api.households.create']);
@@ -97,6 +101,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/updategiving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@updategiving','as'=>'api.individuals.updategiving']);
         Route::post('api/individuals/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@search','as'=>'api.individuals.search']);
         Route::post('api/individuals/searchnp', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@searchnonpreachers','as'=>'api.individuals.searchnp']);
+        Route::post('api/individuals/searchgp', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@searchguestpreachers','as'=>'api.individuals.searchgp']);
         Route::post('api/individuals', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@store','as'=>'api.individuals.store']);
         Route::post('api/individuals/delete/{individual}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@destroy','as'=>'api.individuals.destroy']);
         Route::post('api/individuals/{individual}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@update','as'=>'api.individuals.update']);
@@ -128,6 +133,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::delete('api/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@destroy','as'=>'api.people.destroy']);
 
         // People
+        Route::post('api/guests/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@guestsearch','as'=>'api.people.guestsearch']);
         Route::post('api/people/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@search','as'=>'api.people.search']);
         Route::get('/api/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@appshow','as'=>'api.people.appshow']);
         Route::post('/api/circuits/{circuit}/people/{id}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@update','as'=>'api.people.update']);

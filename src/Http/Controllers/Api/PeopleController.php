@@ -6,6 +6,7 @@ use Bishopm\Churchnet\Repositories\PeopleRepository;
 use Bishopm\Churchnet\Repositories\TagsRepository;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Individual;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -42,6 +43,19 @@ class PeopleController extends Controller
         $circs=array();
         foreach ($request->circuits as $circ) {
             $circs[]=intval($circ);
+        }
+        $societies = Society::whereIn('circuit_id', $circs)->pluck('id')->toArray();
+        $data['people'] = Individual::societymember($societies)->whereHas('person')->with('person.tags')->where('surname', 'like', '%' . $request->search . '%')->orderBy('surname')->orderBy('firstname')->get();
+        return $data;
+    }
+
+    public function guestsearch(Request $request)
+    {
+        $mycircuit=Circuit::where('id',$request->circuit)->first();
+        $circuits=Circuit::where('district_id',$mycircuit->district_id)->where('id','<>',$request->circuit)->get();
+        $circs=array();
+        foreach ($circuits as $circ) {
+            $circs[]=intval($circ->id);
         }
         $societies = Society::whereIn('circuit_id', $circs)->pluck('id')->toArray();
         $data['people'] = Individual::societymember($societies)->whereHas('person')->with('person.tags')->where('surname', 'like', '%' . $request->search . '%')->orderBy('surname')->orderBy('firstname')->get();
