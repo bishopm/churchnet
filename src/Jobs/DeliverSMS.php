@@ -18,11 +18,12 @@ class DeliverSMS implements ShouldQueue
      * @return void
      */
 
-    protected $sms;
+    protected $messages, $smsservice;
 
-    public function __construct()
+    public function __construct($messages, $smsservice)
     {
-        $this->sms = $sms;
+        $this->smsservice = $smsservice;
+        $this->messages = $messages;
     }
 
     /**
@@ -32,6 +33,6 @@ class DeliverSMS implements ShouldQueue
      */
     public function handle()
     {
-        //
+        $this->smsservice->send_message($this->messages);
     }
 }

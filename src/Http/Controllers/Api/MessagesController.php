@@ -201,7 +201,7 @@ class MessagesController extends Controller
                 }
             }
         }
-        $data['results']=DeliverSMS::dispatch$smss->send_message($messages);
+        $data['results']=DeliverSMS::dispatch($messages, $smss);
         $data['type']="SMS";
         return $data;
     }
