@@ -57,6 +57,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         config(['services.google.client_secret' => env('G_CLIENT_SECRET')]);
         config(['services.google.redirect' => env('G_REDIRECT')]);
         config(['taggable.model'=>'Bishopm\Churchnet\Models\Tagg']);
+        config(['queue.default'=>'database']);
     }
 
     /**

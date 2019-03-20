@@ -5,10 +5,10 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Mail\GenericMail;
 use Bishopm\Churchnet\Models\Group;
+use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Events\MessagePosted;
 use Illuminate\Support\Facades\Mail;
-use Pusher\Pusher;
 use Carbon\Carbon;
 use Swift_SmtpTransport;
 use Illuminate\Support\Facades\DB;
@@ -29,7 +29,7 @@ class MessagesController extends Controller
     public function send(Request $request)
     {
         $data = json_decode($request->message, true);
-        $recipients=$this->getrecipients($data['groups'], $data['individuals'], "", $data['messagetype']);
+        $recipients=$this->getrecipients($data['groups'], $data['individuals'], $data['society_id'], $data['messagetype']);
         if ($data['messagetype']=="email") {
             if ($request->hasFile('file')) {
                 $data['file'] = base64_encode($request->file('file'));
@@ -76,28 +76,31 @@ class MessagesController extends Controller
         $this->pusher->trigger('messages', 'new_message', $message);
     }
 
-    protected function getrecipients($groups, $individuals, $grouprec, $msgtype)
+    protected function getrecipients($groups, $individuals, $society, $msgtype)
     {
         $recipients=array();
-        if ($grouprec=="allchurchmembers") {
-            $indivs=$this->individuals->allchurchmembers();
-            foreach ($indivs as $indiv) {
-                if (((null !== $indiv->household->householdcell) and ($indiv->household->householdcell==$indiv->id)) or ($msgtype=="email")) {
-                    if ((($msgtype=="email") and ($indiv->email)) or (($msgtype=="sms") and ($indiv->cellphone))) {
-                        $recipients[$indiv->household_id][$indiv->id]['name']=$indiv->fullname;
-                        $recipients[$indiv->household_id][$indiv->id]['email']=$indiv->email;
-                        $recipients[$indiv->household_id][$indiv->id]['cellphone']=$indiv->cellphone;
-                    }
-                }
-            }
-        } elseif ($grouprec=="everyone") {
-            $indivs=$this->individuals->everyone();
-            foreach ($indivs as $indiv) {
-                if (((null !== $indiv->household->householdcell) and ($indiv->household->householdcell==$indiv->id)) or ($msgtype=="email")) {
-                    if ((($msgtype=="email") and ($indiv->email)) or (($msgtype=="sms") and ($indiv->cellphone))) {
-                        $recipients[$indiv->household_id][$indiv->id]['name']=$indiv->fullname;
-                        $recipients[$indiv->household_id][$indiv->id]['email']=$indiv->email;
-                        $recipients[$indiv->household_id][$indiv->id]['cellphone']=$indiv->cellphone;
+        if (in_array(0, $groups)) {
+            $households=Household::members($society);
+            foreach ($households as $household) {
+                foreach ($household->individuals as $indiv) {
+                    if ($msgtype==="sms") {
+                        if ((null !== $household->householdcell) and ($household->householdcell==$indiv->id)) {
+                            if ($indiv->cellphone) {
+                                $recipients[$indiv->household_id][$indiv->id]['name']=$indiv->fullname;
+                                if ($indiv->email) {
+                                    $recipients[$indiv->household_id][$indiv->id]['email']=$indiv->email;
+                                }
+                                $recipients[$indiv->household_id][$indiv->id]['cellphone']=$indiv->cellphone;
+                            }
+                        }
+                    } else {
+                        if ($indiv->email) {
+                            $recipients[$indiv->household_id][$indiv->id]['name']=$indiv->fullname;
+                            $recipients[$indiv->household_id][$indiv->id]['email']=$indiv->email;
+                            if ($indiv->cellphone) {
+                                $recipients[$indiv->household_id][$indiv->id]['cellphone']=$indiv->cellphone;
+                            }
+                        }
                     }
                 }
             }
@@ -145,7 +148,7 @@ class MessagesController extends Controller
                        ->setPassword($settings->email_pw)
                        ->setEncryption($settings->email_encryption);
                     Mail::setSwiftMailer(new \Swift_Mailer($transport));
-                    Mail::to($indiv['email'])->queue(new GenericMail($data));   
+                    Mail::to($indiv['email'])->queue(new GenericMail($data));
                     $dum['emailresult']="OK";
                 } else {
                     $dum['emailresult']="Invalid";
@@ -189,7 +192,6 @@ class MessagesController extends Controller
         foreach ($recipients as $household) {
             foreach ($household as $sms) {
                 $msisdn = "+27" . substr($sms['cellphone'], 1);
-                $dum2['name']=$sms['name'];
                 if ($this->checkcell($sms['cellphone'])) {
                     if ($society['sms_service']=='bulksms') {
                         $messages[]=array('to'=>$msisdn, 'body'=>$message);
@@ -199,7 +201,7 @@ class MessagesController extends Controller
                 }
             }
         }
-        $data['results']=$smss->send_message($messages);
+        $data['results']=DeliverSMS::dispatch$smss->send_message($messages);
         $data['type']="SMS";
         return $data;
     }
