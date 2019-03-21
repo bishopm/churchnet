@@ -107,6 +107,8 @@
     if (isset($markers)) {
     ?>    
         var tilelayer = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 });
+        var allMaps = { "Street map": tilelayer, "Satellite image": satellite };
         var featureGroup = L.featureGroup([
         <?php
         $i=0;
@@ -123,6 +125,7 @@
             }
         } ?>
         var mymap = new L.Map('map', { 'center': [0, 0], 'zoom': 0, 'layers': [tilelayer, featureGroup] });  
+        L.control.layers(allMaps).addTo(mymap);
         mymap.fitBounds(featureGroup.getBounds(), {padding: [25,25]});
         <?php
     }

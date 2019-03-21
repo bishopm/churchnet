@@ -21,6 +21,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('churches', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DenominationsController@index','as'=>'denominations.index']);
     Route::get('churches/{slug}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DenominationsController@show','as'=>'denominations.show']);
     Route::get('districts/{district}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@show','as'=>'districts.show']);
+    Route::get('districts/{district}/ministers', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\DistrictsController@ministers','as'=>'districts.ministers']);
     Route::get('circuits/{circuit}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@show','as'=>'circuits.show']);
     Route::get('circuits/{circuit}/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\SocietiesController@show','as'=>'societies.show']);
     Route::get('pages/{page}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Web\PagesController@show','as'=>'pages.show']);

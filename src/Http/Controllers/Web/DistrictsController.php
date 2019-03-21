@@ -5,6 +5,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\District;
+use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Denomination;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateDistrictRequest;
@@ -54,6 +55,21 @@ class DistrictsController extends Controller
         $data['district']=$district;
         $data['title']=$district->district . " " . $district->denomination->provincial;
         return view('churchnet::districts.show', $data);
+    }
+
+    public function ministers($districtnum)
+    {
+        $data['district']=District::with('denomination')->where('id',$districtnum)->first();
+        $ministers=Person::district($districtnum)->with('circuit','individual')->where('status','minister')->get();
+        $data['ministers']=array();
+        foreach ($ministers as $minister) {
+            if (isset($minister->individual)){
+                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]=$minister;
+            }
+        }
+        ksort($data['ministers']);
+        $data['title']=$data['district']->district . " " . $data['district']->denomination->provincial . " Ministers";
+        return view('churchnet::districts.ministers', $data);
     }
 
     public function store(CreateDistrictRequest $request)

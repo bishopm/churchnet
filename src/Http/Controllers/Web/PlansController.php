@@ -326,7 +326,9 @@ class PlansController extends Controller
                             $wd=$this->weekdays->findfordate($dat['circuit']['id'], $sun['dt']);
                             $pdf->setxy($x, $header+4);
                             $pdf->SetFont('Arial', '', 7);
-                            $pdf->cell($x_add, $y_add-6, $wd->description, 0, 0, 'C');
+                            if (isset($wd->description)) {
+                                $pdf->cell($x_add, $y_add-6, $wd->description, 0, 0, 'C');
+                            }
                             $pdf->SetFont('Arial', 'B', 8);
                             $pdf->setxy($x, $header);
                             $pdf->cell($x_add, $y_add-6, date("j M", $sun['dt']), 0, 0, 'C');
@@ -372,7 +374,11 @@ class PlansController extends Controller
             } else {
                 $pdf->setxy(27, 25);
                 $pdf->SetFont('Arial', '', 10);
-                $pdf->multicell(180, 5, 'The following societies are listed in this circuit: ' . substr($allsocieties,0,-2) . '. To set up the preaching plan, service times still need to be added for each service at each society.');
+                if (strlen($allsocieties)) {
+                    $pdf->multicell(180, 5, 'The following societies are listed in this circuit: ' . substr($allsocieties,0,-2) . '. To set up the preaching plan, service times still need to be added for each service at each society.');
+                } else {
+                    $pdf->multicell(180, 5, 'No societies are listed in this circuit. To set up the preaching plan, societies and service times still need to be added to the system.');
+                }
             }
         }
         $pdf->AddPage('L');
@@ -427,7 +433,13 @@ class PlansController extends Controller
         $pdf->text($left_side+$spacer, $y, "Circuit Ministers");
         $y=$y+4;
         $pdf->SetFont('Arial', '', 8);
-        foreach ($dat['ministers'] as $min) {
+        $sortedministers=array();
+        foreach ($dat['ministers'] as $dm) {
+            $ndx = $dm->individual->surname . $dm->individual->firstname;
+            $sortedministers[$ndx]=$dm;
+        }
+        ksort($sortedministers);
+        foreach ($sortedministers as $min) {
             if ($this->tag->checktag($min, 'Superintendent')) {
                 $super = " [Supt]";
             } else {

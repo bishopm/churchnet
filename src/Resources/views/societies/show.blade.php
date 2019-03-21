@@ -62,9 +62,12 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script>
         var mymap = L.map('map1').setView([{{$society->location->latitude}}, {{$society->location->longitude}}], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+        var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 });
+        var allMaps = { "Street map": streets, "Satellite image": satellite };
+        L.control.layers(allMaps).addTo(mymap);
         L.marker([{{$society->location->latitude}}, {{$society->location->longitude}}]).addTo(mymap);
-    </script> 
+    </script>
     <?php
 } ?>
 @stop

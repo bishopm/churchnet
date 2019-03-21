@@ -35,6 +35,7 @@ class DenominationsController extends Controller
             }
         }
         $data['denomination']=$denomination;
+        $data['districts']=$denomination->districts->sortBy('district');
         $data['title']=$denomination->denomination . " - " . str_plural($denomination->provincial);
         return view('churchnet::denominations.show', $data);
     }

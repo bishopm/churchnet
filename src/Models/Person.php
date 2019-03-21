@@ -36,4 +36,11 @@ class Person extends Model
                     ->where('denominations.slug', $slug)
                     ->where('status', 'minister')->select('people.*');
     }
+
+    public function scopeDistrict($query, $id)
+    {
+        return $query->join('circuits', 'circuits.id', '=', 'circuit_id')
+                    ->join('districts', 'districts.id', '=', 'district_id')
+                    ->where('districts.id', $id);
+    }
 }

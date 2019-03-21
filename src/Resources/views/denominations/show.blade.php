@@ -41,8 +41,8 @@
         <div class="col-sm-6">
             <ul class="list-unstyled">
             <h5>{{str_plural($denomination->provincial)}}</h5>
-            @foreach ($denomination->districts as $district)
-                <li><a href="{{url('/')}}/districts/{{$district->id}}">{{$district->id}} {{$district->district}}</a></li>
+            @foreach ($districts as $district)
+                <li><a href="{{url('/')}}/districts/{{$district->id}}">{{$district->district}}</a></li>
             @endforeach
             </ul>
         </div>
@@ -64,11 +64,14 @@
 <?php if (isset($denomination->location)) {
     ?>
         var mymap = L.map('map1').setView([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+        var streets = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 });
+        var allMaps = { "Street map": streets, "Satellite image": satellite };
+        L.control.layers(allMaps).addTo(mymap);
         L.marker([{{$denomination->location->latitude}}, {{$denomination->location->longitude}}]).addTo(mymap);
         <?php
 }
-if (isset($markers)) {
+if ((isset($markers)) and (isset($denomination->location))){
     ?>     
     var mymap2 = new L.Map('map2', { 'center': [{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 'zoom': 4 });  
     new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap2);

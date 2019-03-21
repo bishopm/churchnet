@@ -67,6 +67,9 @@ class CircuitsController extends Controller
     public function show($circuitnum)
     {
         $data['circuit']=Circuit::with('societies.location', 'people.tags', 'district.denomination')->where('slug', $circuitnum)->first();
+        if (!isset($data['circuit'])){
+            $data['circuit']=Circuit::with('societies.location', 'people.tags', 'district.denomination')->where('id', $circuitnum)->first();
+        }
         $first=true;
         $socs=array();
         foreach ($data['circuit']->societies as $society) {

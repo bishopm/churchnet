@@ -23,6 +23,7 @@
                     @endif
                 @endif
             @endif
+            <a href="{{url('/')}}/districts/{{$district->id}}/ministers">{{$district->denomination->provincial}} Clergy</a>
         </div>
         <div class="col-sm-6">
             @if ($district->location) 
@@ -55,16 +56,19 @@
     <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js" integrity="sha512-QVftwZFqvtRNi0ZyCtsznlKSWOStnDORoefr1enyq5mVL4tmKB3S/EnC3rRJcxCPavG10IcrVGSmPh6Qw5lwrg==" crossorigin=""></script>
     <script>
         <?php if (isset($district->location)) {
-    ?>
-        var mymap = L.map('map1').setView([{{$district->location->latitude}}, {{$district->location->longitude}}], 13);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+    ?>  var mymap = L.map('map1').setView([{{$district->location->latitude}}, {{$district->location->longitude}}], 13);
+        var streets1 = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap);
+        var satellite1 = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 });
+        var allMaps1 = { "Street map": streets1, "Satellite image": satellite1 };
+        L.control.layers(allMaps1).addTo(mymap);
         L.marker([{{$district->location->latitude}}, {{$district->location->longitude}}]).addTo(mymap);
         <?php
 }
 if (isset($markers)) {
-    ?>
-        
+    ?>        
         var tilelayer = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 });
+        var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 });
+        var allMaps = { "Street map": tilelayer, "Satellite image": satellite };
         var featureGroup = L.featureGroup([
         <?php
         $i=0;
@@ -81,6 +85,7 @@ if (isset($markers)) {
         }
     } ?>
         var mymap2 = new L.Map('map2', { 'center': [0, 0], 'zoom': 0, 'layers': [tilelayer, featureGroup] });  
+        L.control.layers(allMaps).addTo(mymap2);
         mymap2.fitBounds(featureGroup.getBounds(), {padding: [25,25]});
         <?php
 }
