@@ -85,10 +85,12 @@ class CircuitsController extends Controller
         $ministers = $data['circuit']->tagged('circuit minister')->get();
         $data['ministers'] = array();
         foreach ($ministers as $min) {
-            if ($min->id == $super->id) {
-                $min->supt = " (supt)";
-            } else {
-                $min->supt = "";
+            if (isset($super)){
+                if ($min->id == $super->id) {
+                    $min->supt = " (supt)";
+                } else {
+                    $min->supt = "";
+                }
             }
             $data['ministers'][$min->individual->surname . $min->individual->firstname]=$min;
         }

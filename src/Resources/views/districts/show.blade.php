@@ -19,7 +19,7 @@
                 @if ($district->location->description)
                     <b>{{$district->location->description}}:</b> {{$district->location->address}}<br>
                     @if ($district->location->phone)
-                        <b>Phone:</b> {{$district->location->phone}}
+                        <b>Phone:</b> {{$district->location->phone}}<br>
                     @endif
                 @endif
             @endif

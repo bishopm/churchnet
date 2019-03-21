@@ -13,8 +13,10 @@
         <table>
         @forelse ($ministers as $minister)
             <tr>
-                <td>{{$minister->individual->title}} {{$minister->individual->firstname}} <b>{{$minister->individual->surname}}</b></td>
-                <td><a href="{{url('/')}}/circuits/{{$minister->circuit_id}}">{{$minister->circuit}}</a></td>
+                <td>{!!$minister['name']!!}</b></td>
+                <td>{{json_encode($minister)}}
+                </td>
+                <td><a href="{{url('/')}}/circuits/{{$minister['circuit']['id']}}">{{$minister['circuit']['name']}}</a></td>
             </tr>
         @empty
             No ministers have been added yet.

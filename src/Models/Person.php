@@ -43,4 +43,6 @@ class Person extends Model
                     ->join('districts', 'districts.id', '=', 'district_id')
                     ->where('districts.id', $id);
     }
+
+
 }

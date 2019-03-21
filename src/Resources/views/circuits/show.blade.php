@@ -39,10 +39,10 @@
                     {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}, 
                 @endif
             @empty
-                No ministers have been added to this circuit yet <br>
+                No ministers have been added to this circuit yet
             @endforelse
             @if (count($supernumeraries))
-                <b>Supernumerary ministers: </b>
+                <br><b>Supernumerary ministers: </b>
                 @foreach ($supernumeraries as $sup)
                     @if ($loop->last)
                         {{$sup->individual->title}} {{$sup->individual->firstname}} {{$sup->individual->surname}}.

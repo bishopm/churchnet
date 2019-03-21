@@ -74,7 +74,10 @@
 if ((isset($markers)) and (isset($denomination->location))){
     ?>     
     var mymap2 = new L.Map('map2', { 'center': [{{$denomination->location->latitude}}, {{$denomination->location->longitude}}], 'zoom': 4 });  
-    new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap2);
+    var tilelayer = new L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 18 }).addTo(mymap2);
+    var satellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 18 });
+    var allMaps = { "Street map": tilelayer, "Satellite image": satellite };
+    L.control.layers(allMaps).addTo(mymap2);
     var markerClusters = L.markerClusterGroup();
     <?php
     foreach ($markers as $marker) {
