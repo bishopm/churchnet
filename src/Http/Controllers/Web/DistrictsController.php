@@ -60,17 +60,19 @@ class DistrictsController extends Controller
     public function ministers($districtnum)
     {
         $data['district']=District::with('denomination')->where('id',$districtnum)->first();
-        $ministers=Person::district($districtnum)->with('circuit','individual')->where('status','minister')->get();
+        $ministers=Person::districtministers($districtnum)->with('tags','circuit','individual')->get();
         $data['ministers']=array();
         foreach ($ministers as $minister) {
             if (isset($minister->individual)){
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['name']=$minister->individual->title . ' ' . $minister->individual->firstname . ' <b>' . $minister->individual->surname . '</b>';
-                if ($minister::withAllTags('supernumerary')->count()) {
-                    $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['name'].='*';
-                }
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['name']=$minister->circuit;
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['id']=$minister->circuit_id;
-                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['super']=$minister->hasTag('supernumerary');
+                foreach ($minister->tags as $tag){
+                    $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['tags'][]=$tag->name;
+                }
+                if (isset($data['ministers'][$minister->individual->surname . $minister->individual->firstname]['tags'])){
+                    asort($data['ministers'][$minister->individual->surname . $minister->individual->firstname]['tags']);
+                }
             }
         }
         ksort($data['ministers']);

@@ -14,9 +14,12 @@
         @forelse ($ministers as $minister)
             <tr>
                 <td>{!!$minister['name']!!}</b></td>
-                <td>{{json_encode($minister)}}
+                <td>
+                    @if (isset($minister['tags']))
+                        {{implode(', ',$minister['tags'])}}
+                    @endif
                 </td>
-                <td><a href="{{url('/')}}/circuits/{{$minister['circuit']['id']}}">{{$minister['circuit']['name']}}</a></td>
+                <td><a href="{{url('/')}}/circuits/{{$minister['circuit']['name']['slug']}}">{{$minister['circuit']['name']['circuit']}}</a></td>
             </tr>
         @empty
             No ministers have been added yet.

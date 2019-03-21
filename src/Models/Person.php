@@ -37,10 +37,11 @@ class Person extends Model
                     ->where('status', 'minister')->select('people.*');
     }
 
-    public function scopeDistrict($query, $id)
+    public function scopeDistrictministers($query, $id)
     {
         return $query->join('circuits', 'circuits.id', '=', 'circuit_id')
                     ->join('districts', 'districts.id', '=', 'district_id')
+                    ->where('status', 'minister')->select('people.*')
                     ->where('districts.id', $id);
     }
 
