@@ -22,4 +22,9 @@ class Meeting extends Model
     {
         return $this->morphTo();
     }
+
+    public function scopeCircuitmeeting($query, $circuit)
+    {
+        return $query->where('meetable_type','Bishopm\\Churchnet\\Models\\Circuit')->where('meetable_id',$circuit);
+    }
 }

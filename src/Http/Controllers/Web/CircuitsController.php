@@ -77,7 +77,6 @@ class CircuitsController extends Controller
                 $socs[]=$society->id;
             }
         }
-        $data['plan']=count($this->plans->latestplan($data['circuit']->id));
         $data['preachers'] = $this->circuit->preachers($data['circuit']->id);
         $super = $data['circuit']->tagged('superintendent')->first();
         $ministers = $data['circuit']->tagged('circuit minister')->get();

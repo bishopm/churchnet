@@ -125,9 +125,9 @@ class PlansController extends Controller
         $previouslastDay=strtotime("+3 months", $previousDateTime) - 60*60*24;
         $nextlastDay=strtotime("+3 months", $nextDateTime) - 60*60*24;
         $extras=$this->weekdays->valueBetween('servicedate', $firstDateTime, $lastDay);
-        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')
-            ->orWhere('meetingdatetime', '>=', $previousDateTime)->where('meetingdatetime', '<=', $previouslastDay)->where('preachingplan', 'next')
-            ->orWhere('meetingdatetime', '>=', $nextDateTime)->where('meetingdatetime', '<=', $nextlastDay)->where('preachingplan', 'previous')
+        $data['meetings']=Meeting::where('meetingdatetime', '>=', $firstDateTime)->where('meetingdatetime', '<=', $lastDay)->where('preachingplan', 'yes')->where('meetable_type','Bishopm\\Churchnet\\Models\\Circuit')->where('meetable_id',$this->circuit->id)
+            ->orWhere('meetingdatetime', '>=', $previousDateTime)->where('meetingdatetime', '<=', $previouslastDay)->where('preachingplan', 'next')->where('meetable_type','Bishopm\\Churchnet\\Models\\Circuit')->where('meetable_id',$this->circuit->id)
+            ->orWhere('meetingdatetime', '>=', $nextDateTime)->where('meetingdatetime', '<=', $nextlastDay)->where('preachingplan', 'previous')->where('meetable_type','Bishopm\\Churchnet\\Models\\Circuit')->where('meetable_id',$this->circuit->id)
             ->orderBy('meetingdatetime', 'ASC')->get();
         $dum['dt']=$lastSunday;
         $dum['yy']=intval(date("Y", $lastSunday));
@@ -259,7 +259,11 @@ class PlansController extends Controller
         $pg_width=297;
         $y=$header;
         $x=$left_edge;
-        $y_add=($pg_height-$header-3*($num_ser-$num_soc))/$num_ser;
+        if ($num_ser) {
+            $y_add=($pg_height-$header-3*($num_ser-$num_soc))/$num_ser;
+        } else {
+            $y_add=16;
+        }
         if ($y_add>16) {
             $y_add=16;
         }
@@ -271,10 +275,14 @@ class PlansController extends Controller
         $pdf->text($left_side+$soc_width, 10, "THE METHODIST CHURCH OF SOUTHERN AFRICA: " . strtoupper($dat['circuit']['circuit']) . " " . $dat['circuit']['circuitnumber']);
         $pdf->text($left_side+$soc_width, 17, "PREACHING PLAN: " . strtoupper(date("F Y", $dat['sundays'][0]['dt'])) . " - " . strtoupper(date("F Y", $dat['sundays'][count($dat['sundays'])-1]['dt'])));
         $socids=array();
+        $allsocieties="";
+        $someservices = false;
         foreach ($dat['societies'] as $soc) {
             $socids[]=$soc->id;
+            $allsocieties = $allsocieties . $soc['society'] . ", ";
             $firstserv=true;
             foreach ($soc['services'] as $ser) {
+                $someservices = true;
                 if ($firstserv) {
                     $y=$y+$y_add;
                     $pdf->SetFont('Arial', 'B', 8);
@@ -358,8 +366,14 @@ class PlansController extends Controller
         }
         $x2=$x;
         foreach ($dat['sundays'] as $sun2) {
-            $pdf->line($x2, $header+$y_add-2, $x2, $y+$y_add-2);
-            $x2=$x2+$x_add;
+            if ($someservices) {
+                $pdf->line($x2, $header+$y_add-2, $x2, $y+$y_add-2);
+                $x2=$x2+$x_add;
+            } else {
+                $pdf->setxy(27, 25);
+                $pdf->SetFont('Arial', '', 10);
+                $pdf->multicell(180, 5, 'The following societies are listed in this circuit: ' . substr($allsocieties,0,-2) . '. To set up the preaching plan, service times still need to be added for each service at each society.');
+            }
         }
         $pdf->AddPage('L');
         $pdf->Image($logopath, 10, 5, 0, 21);
@@ -387,10 +401,12 @@ class PlansController extends Controller
                 $vdum[$preacher1->fullplan . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
             }
         }
-        ksort($vdum);
-        foreach ($vdum as $vd) {
-            $thissoc=$this->societies->find($vd['soc'])->society;
-            $pfin[$thissoc][]=$vd;
+        if (isset($vdum)){
+            ksort($vdum);
+            foreach ($vdum as $vd) {
+                $thissoc=$this->societies->find($vd['soc'])->society;
+                $pfin[$thissoc][]=$vd;
+            }
         }
         $cols=4;
         $spacer=5;
@@ -420,11 +436,17 @@ class PlansController extends Controller
             $pdf->text($left_side+$spacer, $y, $min->individual->title . " " . substr($min->individual->firstname, 0, 1) . " " . $min->individual->surname . " (" . $min->individual->cellphone . ")" . $super);
             $y=$y+4;
         }
-        if (isset($dat['supernumeraries'])) {
-            $y=$y+2;
-            $pdf->SetFont('Arial', 'B', 11);
-            $pdf->text($left_side+$spacer, $y, "Supernumerary Ministers");
+        if (!count($dat['ministers'])) {
+            $pdf->text($left_side+$spacer, $y, "No ministers have been added");
             $y=$y+4;
+        }
+        if (isset($dat['supernumeraries'])) {
+            if (count($dat['supernumeraries'])){
+                $y=$y+2;
+                $pdf->SetFont('Arial', 'B', 11);
+                $pdf->text($left_side+$spacer, $y, "Supernumerary Ministers");
+                $y=$y+4;
+            }
             $pdf->SetFont('Arial', '', 8);
             foreach ($dat['supernumeraries'] as $supm) {
                 $pdf->text($left_side+$spacer, $y, $supm->individual->title . " " . substr($supm->individual->firstname, 0, 1) . " " . $supm->individual->surname . " (" . $supm->individual->cellphone . ")");
@@ -527,8 +549,12 @@ class PlansController extends Controller
             }
         }
         $pdf->SetFont('Arial', '', 8);
-        $y=$y+4;
-        $pdf->text($x+2, $y, "* Emeritus");
+        if (count($pfin)){
+            $y=$y+4;
+            $pdf->text($x+2, $y, "* Emeritus");
+        } else {
+            $pdf->text($x, $y, "No preachers have been added yet");
+        }
         $pdf->Output();
         exit;
     }

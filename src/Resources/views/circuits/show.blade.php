@@ -14,9 +14,7 @@
             @if ($circuit->office_contact)
                 {{$circuit->office_contact}} 
             @endif
-            @if ($plan)
-                <a href="{{url('/')}}/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
-            @endif
+            <a href="{{url('/')}}/plan/{{$circuit->slug}}" target="_blank">Current preaching plan</a>
             <hr>
         </div>
     </div>
@@ -41,7 +39,7 @@
                     {{$min->individual->title}} {{$min->individual->firstname}} {{$min->individual->surname}}{{$min->supt}}, 
                 @endif
             @empty
-                No ministers have been added to this circuit yet
+                No ministers have been added to this circuit yet <br>
             @endforelse
             @if (count($supernumeraries))
                 <b>Supernumerary ministers: </b>
