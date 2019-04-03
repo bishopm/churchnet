@@ -52,7 +52,9 @@ class GroupsController extends Controller
     public function show($id)
     {
         $data['members'] = DB::select('SELECT individuals.id, individuals.email, individuals.firstname, individuals.surname, individuals.cellphone  FROM group_individual,individuals WHERE individuals.id = group_individual.individual_id AND group_individual.deleted_at IS NULL AND group_individual.group_id = ? ORDER BY individuals.surname, individuals.firstname', [$id]);
-        $data['group'] = Group::find($id);
+        $group = Group::find($id);
+        $group->datestr = date('Y-m-d H:i', $group->eventdatetime);
+        $data['group'] = $group;
         if (in_array($data['group']->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $data;
         } else {
@@ -62,6 +64,7 @@ class GroupsController extends Controller
 
     public function store(Request $request)
     {
+        $request->merge(array('eventdatetime' => strtotime(substr($request->eventdatetime, 0, 19))));
         $grp=$this->group->create(array_merge($request->all(), ['slug' => str_slug($request->groupname)]));
         return $grp->id;
     }
@@ -86,6 +89,7 @@ class GroupsController extends Controller
     public function update($id, Request $request)
     {
         $group = $this->group->find($id);
+        $request->merge(array('eventdatetime' => strtotime(substr($request->eventdatetime, 0, 19))));
         $data = $this->group->update($group, $request->all());
         return $data;
     }

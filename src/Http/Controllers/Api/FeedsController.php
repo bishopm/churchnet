@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Feedpost;
@@ -40,6 +41,7 @@ class FeedsController extends Controller
     {
         $society=$request->society;
         $data=array();
+        $data['events']=Group::where('society_id', $society)->where('eventdatetime', '>', time())->get();
         $this->soc = Society::with('circuit.district')->find($society);
         $this->cir = $this->soc->circuit;
         $this->dis = $this->cir->district;
