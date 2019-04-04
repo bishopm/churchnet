@@ -77,6 +77,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/groups', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@store','as'=>'api.groups.store']);
         Route::post('api/groups/{group}/remove', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@remove','as'=>'api.groups.remove']);
         Route::post('api/groups/{group}/add', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@add','as'=>'api.groups.add']);
+        Route::post('api/groups/{group}/sync', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@sync','as'=>'api.groups.sync']);
         Route::delete('api/groups/{group}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\GroupsController@destroy','as'=>'api.groups.destroy']);
 
         // Guests

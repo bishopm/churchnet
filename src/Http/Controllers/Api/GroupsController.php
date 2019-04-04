@@ -86,6 +86,12 @@ class GroupsController extends Controller
         return Individual::where('id', $request->id)->select('firstname', 'surname', 'id', 'cellphone', 'email')->first();
     }
 
+    public function sync($gid, Request $request)
+    {
+        $group = Group::find($gid);
+        $group->individuals()->sync($request->members);
+    }
+
     public function update($id, Request $request)
     {
         $group = $this->group->find($id);
