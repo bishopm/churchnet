@@ -8,6 +8,7 @@ use Bishopm\Churchnet\Models\Individual;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class GroupsController extends Controller
 {
@@ -54,6 +55,7 @@ class GroupsController extends Controller
         $data['members'] = DB::select('SELECT individuals.id, individuals.email, individuals.firstname, individuals.surname, individuals.cellphone  FROM group_individual,individuals WHERE individuals.id = group_individual.individual_id AND group_individual.deleted_at IS NULL AND group_individual.group_id = ? ORDER BY individuals.surname, individuals.firstname', [$id]);
         $group = Group::find($id);
         $group->datestr = date('Y-m-d H:i', $group->eventdatetime);
+        $group->till = Carbon::parse($group->eventdatetime)->diffForHumans();
         $data['group'] = $group;
         if (in_array($data['group']->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $data;

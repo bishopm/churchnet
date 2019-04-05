@@ -16,7 +16,13 @@
         </thead>
         @forelse ($ministers as $minister)
             <tr>
-                <td><img width="50px;" src="{{url('/')}}/vendor/bishopm/images/face.png"/></td>
+                <td>
+                    @if (file_exists(public_path('vendor/bishopm/images/profile/' . $minister['id'] . '.png')))
+                        <img width="60px" class="rounded-circle" src="{{ asset('vendor/bishopm/images/profile/' . $minister['id'] . '.png') }}">
+                    @else
+                        <img width="60px;" src="{{url('/')}}/vendor/bishopm/images/face.png"/>
+                    @endif
+                </td>
                 <td style="vertical-align:middle">{!!$minister['name']!!}</b></td>
                 <td style="vertical-align:middle"><a href="{{url('/')}}/circuits/{{$minister['circuit']['name']['slug']}}">{{$minister['circuit']['name']['circuit']}}</a></td>
                 <td style="vertical-align:middle">

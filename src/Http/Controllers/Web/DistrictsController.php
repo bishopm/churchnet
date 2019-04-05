@@ -65,6 +65,7 @@ class DistrictsController extends Controller
         foreach ($ministers as $minister) {
             if (isset($minister->individual)){
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['name']=$minister->individual->title . ' ' . $minister->individual->firstname . ' <b>' . $minister->individual->surname . '</b>';
+                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['id']=$minister->individual->id;
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['name']=$minister->circuit;
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['id']=$minister->circuit_id;
                 foreach ($minister->tags as $tag){
