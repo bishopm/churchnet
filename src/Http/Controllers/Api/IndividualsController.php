@@ -99,6 +99,16 @@ class IndividualsController extends Controller
         $data['tags'] = Tag::where('type', 'leader')->orderBy('name')->get();
         return $data;
     }
+    
+    public function image ($id, Request $request) {
+        $file = $request->file('file');
+        $image_name = time()."_".$id.'.jpg';
+        $file->move(public_path() . '/vendor/bishopm/images/profile', $image_name);
+        $indiv=Individual::find($id);
+        $indiv->image=$image_name;
+        $indiv->save();
+        return $image_name;
+    }
 
     public function editleaders(Request $request)
     {
