@@ -68,6 +68,7 @@ class DistrictsController extends Controller
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['id']=$minister->individual->id;
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['name']=$minister->circuit;
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['id']=$minister->circuit_id;
+                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['image']=$minister->individual->image;
                 foreach ($minister->tags as $tag){
                     $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['tags'][]=$tag->name;
                 }

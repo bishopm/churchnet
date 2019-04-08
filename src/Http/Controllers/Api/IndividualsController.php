@@ -105,9 +105,15 @@ class IndividualsController extends Controller
         $image_name = time()."_".$id.'.jpg';
         $file->move(public_path() . '/vendor/bishopm/images/profile', $image_name);
         $indiv=Individual::find($id);
+        if ($indiv->image) {
+            $fname = public_path() . '/vendor/bishopm/images/profile/' . $indiv->image;
+            if (file_exists($fname)) {
+                unlink($fname);
+            }
+        }
         $indiv->image=$image_name;
         $indiv->save();
-        return $image_name;
+        return Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('id', $id)->first();
     }
 
     public function editleaders(Request $request)
@@ -254,6 +260,12 @@ class IndividualsController extends Controller
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
             })->get();
         }
+    }
+
+    public function church($society)
+    {
+        $soc=array($society);
+        return Individual::societymember($soc)->where('memberstatus', 'Member')->where('image','<>','')->orderBy('surname')->orderBy('firstname')->get();
     }
 
     public function searchnonpreachers(Request $request)

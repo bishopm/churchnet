@@ -17,8 +17,8 @@
         @forelse ($ministers as $minister)
             <tr>
                 <td>
-                    @if (file_exists(public_path('vendor/bishopm/images/profile/' . $minister['id'] . '.png')))
-                        <img width="60px" class="rounded-circle" src="{{ asset('vendor/bishopm/images/profile/' . $minister['id'] . '.png') }}">
+                    @if (($minister['image']) and (file_exists(public_path('vendor/bishopm/images/profile/' . $minister['image']))))
+                        <img width="60px" class="rounded-circle" src="{{ asset('vendor/bishopm/images/profile/' . $minister['image']) }}">
                     @else
                         <img width="60px;" src="{{url('/')}}/vendor/bishopm/images/face.png"/>
                     @endif

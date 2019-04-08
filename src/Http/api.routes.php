@@ -100,6 +100,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/leaders', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@editleaders','as'=>'api.individuals.editleaders']);
         Route::post('api/giving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@giving','as'=>'api.individuals.giving']);
         Route::post('api/updategiving', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@updategiving','as'=>'api.individuals.updategiving']);
+        Route::get('api/individuals/church/{society}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@church','as'=>'api.individuals.church']);
         Route::post('api/individuals/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@search','as'=>'api.individuals.search']);
         Route::post('api/individuals/searchnp', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@searchnonpreachers','as'=>'api.individuals.searchnp']);
         Route::post('api/individuals/searchgp', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@searchguestpreachers','as'=>'api.individuals.searchgp']);
