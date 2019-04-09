@@ -41,7 +41,7 @@ class DistrictsController extends Controller
 
     public function show($districtnum)
     {
-        $district=District::with('circuits.societies.location', 'individuals', 'location')->find($districtnum);
+        $district=District::with('circuits.societies.location', 'people.individual', 'location')->find($districtnum);
         $first=true;
         foreach ($district->circuits as $circuit) {
             foreach ($circuit->societies as $society) {
@@ -59,15 +59,29 @@ class DistrictsController extends Controller
 
     public function ministers($districtnum)
     {
-        $data['district']=District::with('denomination')->where('id',$districtnum)->first();
+        $data['district']=District::with('denomination','people.individual')->where('id',$districtnum)->first();
         $ministers=Person::districtministers($districtnum)->with('tags','circuit','individual')->get();
         $data['ministers']=array();
+        foreach ($data['district']->people as $dminister) {
+            if (isset($dminister->individual)){
+                $data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['name']=$dminister->individual->title . ' ' . $dminister->individual->firstname . ' <b>' . $dminister->individual->surname . '</b>';
+                $data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['id']=$dminister->individual->id;
+                $data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['district']=$data['district'];
+                $data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['image']=$dminister->individual->image;
+                foreach ($dminister->tags as $tag){
+                    $data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['tags'][]=$tag->name;
+                }
+                if (isset($data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['tags'])){
+                    asort($data['ministers'][$dminister->individual->surname . $dminister->individual->firstname]['tags']);
+                }
+            }
+        }
         foreach ($ministers as $minister) {
             if (isset($minister->individual)){
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['name']=$minister->individual->title . ' ' . $minister->individual->firstname . ' <b>' . $minister->individual->surname . '</b>';
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['id']=$minister->individual->id;
-                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['name']=$minister->circuit;
-                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['id']=$minister->circuit_id;
+                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['name']=$minister->individual->household->society->circuit;
+                $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['circuit']['id']=$minister->individual->household->society->circuit_id;
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['image']=$minister->individual->image;
                 foreach ($minister->tags as $tag){
                     $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['tags'][]=$tag->name;

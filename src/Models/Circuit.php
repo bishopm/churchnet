@@ -25,17 +25,18 @@ class Circuit extends Model
 
     public function people()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Person');
+        return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable');
     }
 
     public function leaders()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Person')->where('active', 'yes')->with('individual')->whereHas('individual');
+        return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable')->where('active', 'yes')->with('individual')->whereHas('individual');
     }
 
     public function preachers()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Person')->where('active', 'yes')->where('status', 'preacher')->with('individual')->whereHas('individual');
+        return $this->hasMany('Bishopm\Churchnet\Models\Person')->where('active', 'yes')->where('status', 'preacher')->with('individual')->
+        whereHas('individual');
     }
 
     public function ministers()
@@ -46,7 +47,7 @@ class Circuit extends Model
 
     public function tagged($tag)
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Person')->withAnyTags($tag);
+        return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable')->withAnyTags($tag);
     }
 
     public function meetings()

@@ -137,7 +137,7 @@ class PlansController extends Controller
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
         $district=District::with('individuals', 'denomination.individuals')->find($data['circuit']->district_id);
-        $data['preachers']=$this->circuit->preachers;
+        $data['preachers']=$this->circuit->tagged('local preacher')->get();
         $data['ministers']=$this->circuit->tagged('Circuit minister')->get();
         $data['supernumeraries']=$this->circuit->tagged('Supernumerary minister')->get();
         $data['guests']=array();

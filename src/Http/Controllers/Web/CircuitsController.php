@@ -11,7 +11,6 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Http\Requests\CreateCircuitRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
 use Auth;
-use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
 
 class CircuitsController extends Controller
@@ -25,14 +24,12 @@ class CircuitsController extends Controller
 
     private $circuit;
     private $plans;
-    private $preachers;
     private $districts;
 
-    public function __construct(CircuitsRepository $circuit, PlansRepository $plans, PreachersRepository $preachers, DistrictsRepository $districts)
+    public function __construct(CircuitsRepository $circuit, PlansRepository $plans, DistrictsRepository $districts)
     {
         $this->circuit = $circuit;
         $this->plans = $plans;
-        $this->preachers = $preachers;
         $this->districts = $districts;
     }
 
@@ -80,9 +77,9 @@ class CircuitsController extends Controller
                 $socs[]=$society->id;
             }
         }
-        $data['preachers'] = $this->circuit->preachers($data['circuit']->id);
         $super = $data['circuit']->tagged('superintendent')->first();
         $ministers = $data['circuit']->tagged('circuit minister')->get();
+        $preachers = $data['circuit']->tagged('local preacher')->get();
         $data['ministers'] = array();
         foreach ($ministers as $min) {
             if (isset($super)){
@@ -96,6 +93,12 @@ class CircuitsController extends Controller
         }
         if (isset($data['ministers'])) {
             ksort($data['ministers']);
+        }
+        foreach ($preachers as $pre) {
+            $data['preachers'][$pre->individual->surname . $pre->individual->firstname]=$pre;
+        }
+        if (isset($data['preachers'])) {
+            ksort($data['preachers']);
         }
         $data['supernumeraries'] = $data['circuit']->tagged('supernumerary minister')->get();
         $data['stewards'] = Individual::societymember($socs)->withAnyTags('circuit steward')->get();

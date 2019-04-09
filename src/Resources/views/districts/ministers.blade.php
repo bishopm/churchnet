@@ -24,7 +24,13 @@
                     @endif
                 </td>
                 <td style="vertical-align:middle">{!!$minister['name']!!}</b></td>
-                <td style="vertical-align:middle"><a href="{{url('/')}}/circuits/{{$minister['circuit']['name']['slug']}}">{{$minister['circuit']['name']['circuit']}}</a></td>
+                <td style="vertical-align:middle">
+                    @if (isset($minister['circuit']['name']))
+                        <a href="{{url('/')}}/circuits/{{$minister['circuit']['name']['slug']}}">{{$minister['circuit']['name']['circuit']}}</a>
+                    @elseif (isset($minister['district']))
+                        <a href="{{url('/')}}/districts/{{$minister['district']['id']}}">{{strtoupper($minister['district']['district'])}} {{strtoupper($minister['district']['denomination']['provincial'])}}</a>
+                    @endif
+                </td>
                 <td style="vertical-align:middle">
                     @if (isset($minister['tags']))
                         {{implode(', ',$minister['tags'])}}

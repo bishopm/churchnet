@@ -52,4 +52,9 @@ class District extends Model
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Meeting', 'meetable');
     }
+
+    public function people()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable');
+    }
 }

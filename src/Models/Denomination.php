@@ -28,4 +28,9 @@ class Denomination extends Model
         return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');
     }
 
+    public function people()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable');
+    }
+
 }

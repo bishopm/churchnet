@@ -12,8 +12,8 @@
     <div class="row">
         <div class="col-sm-6">
             <h1 class="title">{{$title}} <small><a href="{{route('denominations.show', $district->denomination->slug)}}">{{$district->denomination->abbreviation}}</a></small></h1>
-            @foreach ($district->individuals as $indiv)
-                <b>{{$indiv->pivot->description}}:</b> {{$indiv->title}} {{$indiv->firstname}} {{$indiv->surname}}<br>
+            @foreach ($district->people as $person)
+                <b>{{$person->tags[0]->name}}:</b> {{$person->individual->title}} {{$person->individual->firstname}} {{$person->individual->surname}}<br>
             @endforeach
             @if ($district->location) 
                 @if ($district->location->description)

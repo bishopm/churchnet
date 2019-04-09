@@ -13,6 +13,11 @@ class Person extends Model
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');
 
+    public function personable()
+    {
+        return $this->morphTo();
+    }
+
     public function circuit()
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
@@ -39,11 +44,11 @@ class Person extends Model
 
     public function scopeDistrictministers($query, $id)
     {
-        return $query->join('circuits', 'circuits.id', '=', 'circuit_id')
+        return $query->join('circuits', 'circuits.id', '=', 'personable_id')
                     ->join('districts', 'districts.id', '=', 'district_id')
                     ->where('status', 'minister')->select('people.*')
+                    ->where('personable_type', 'Bishopm\Churchnet\Models\Circuit')->select('people.*')
                     ->where('districts.id', $id);
     }
-
 
 }

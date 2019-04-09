@@ -16,7 +16,6 @@ use Bishopm\Churchnet\Models\Weekday;
 use Bishopm\Churchnet\Models\Guest;
 use Bishopm\Churchnet\Repositories\MeetingsRepository;
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
-use Bishopm\Churchnet\Repositories\PreachersRepository;
 use Bishopm\Churchnet\Repositories\ServicesRepository;
 use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Repositories\PlansRepository;
@@ -26,7 +25,6 @@ class PlansController extends Controller
 {
     private $meetings;
     private $societies;
-    private $preachers;
     private $services;
     private $circuit;
     private $plans;
@@ -35,7 +33,6 @@ class PlansController extends Controller
     public function __construct(
         MeetingsRepository $meetings,
         SocietiesRepository $societies,
-        PreachersRepository $preachers,
         ServicesRepository $services,
         CircuitsRepository $circuit,
         PlansRepository $plans,
@@ -43,7 +40,6 @@ class PlansController extends Controller
     ) {
         $this->meetings=$meetings;
         $this->societies=$societies;
-        $this->preachers=$preachers;
         $this->services=$services;
         $this->circuit=$circuit;
         $this->plans=$plans;

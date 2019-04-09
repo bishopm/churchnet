@@ -7,7 +7,6 @@ use Bishopm\Churchnet\Repositories\TagsRepository;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
-use Bishopm\Churchnet\Models\Preacher;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\District;
 use Bishopm\Churchnet\Models\Payment;
