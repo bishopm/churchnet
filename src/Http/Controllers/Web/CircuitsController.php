@@ -47,14 +47,14 @@ class CircuitsController extends Controller
         $user = Auth::user();
         $circuit = Circuit::find($user->circuit_id);
         $districts=$this->districts->all();
-        $leaders = $circuit->people;
+        $leaders = $circuit->leaders;
         return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders', 'positions'));
     }
 
     public function edit(Circuit $circuit)
     {
         $districts=$this->districts->all();
-        $leaders = $circuit->people;
+        $leaders = $circuit->leaders;
         return view('churchnet::circuits.edit', compact('circuit', 'districts', 'leaders', 'positions'));
     }
 

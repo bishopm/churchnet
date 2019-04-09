@@ -1,7 +1,7 @@
-{{ Form::bsText('title','Title','Title',$person->title) }}
-{{ Form::bsText('firstname','First name / Initials','First name / Initials',$person->firstname) }}
-{{ Form::bsText('surname','Surname','Surname',$person->surname) }}
-{{ Form::bsText('phone','Cellphone','Cellphone',$person->phone) }}
+{{ Form::bsText('title','Title','Title',$person->individual->title) }}
+{{ Form::bsText('firstname','First name / Initials','First name / Initials',$person->individual->firstname) }}
+{{ Form::bsText('surname','Surname','Surname',$person->individual->surname) }}
+{{ Form::bsText('phone','Cellphone','Cellphone',$person->individual->cellphone) }}
 <div class="form-group">
   <label for="status">Role</label>
   <select onchange="setStatus()" id="status" name="status" class="selectize">

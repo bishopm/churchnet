@@ -40,7 +40,7 @@
                                         <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">{{$leader->individual->surname}}, {{$leader->individual->title}} {{$leader->individual->firstname}}</a></td>
                                         <td><a href="{{route('admin.people.edit',array($circuit->id,$leader->id))}}">
                                             @foreach ($leader->tags as $pos)
-                                                {{$pos->tag}}
+                                                {{$pos['name']}}
                                                 @if (!$loop->last)
                                                     , 
                                                 @endif
@@ -49,7 +49,7 @@
                                         </td>
                                     </tr>
                                 @empty
-                                    <tr><td>No leaders or preachers have been added yet</td></tr>
+                                    <tr><td>No ministers or preachers have been added yet</td></tr>
                                 @endforelse
                             </tbody>
                         </table>

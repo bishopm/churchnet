@@ -72,12 +72,14 @@
           </div>
         </form>
         @if(Auth::user())
-          @if(Auth::user()->level<>'user')
+          @if(Auth::user()->level < 5)
             <li class="nav-item dropdown">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{ucfirst(Auth::user()->name)}}</a>
               <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                @if (Auth::user()->level=="admin")
+                @if (Auth::user()->level==1)
                   <a class="dropdown-item" href="{{url('/')}}/admin/pages/create">Add new page</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
                 @endif
                 <div class="dropdown-divider"></div>
