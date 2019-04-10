@@ -15,14 +15,12 @@ class CreatePeopleTable extends Migration
         Schema::create('people', function (Blueprint $table) {
             $table->engine = 'InnoDB';
             $table->increments('id');
-            $table->string('firstname');
-            $table->string('surname');
-            $table->string('title');
-            $table->string('phone')->nullable();
-            $table->string('slug');
+            $table->integer('personable_id')->nullable();
+            $table->string('personable_type')->nullable();
+            $table->string('status');
             $table->integer('individual_id')->nullable();
-            $table->integer('society_id')->default(0);
-            $table->integer('circuit_id');
+            $table->string('inducted');
+            $table->string('active');
             $table->softDeletes();
             $table->timestamps();
         });

@@ -133,9 +133,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('/api/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@show','as'=>'api.people.show']);
         Route::post('api/circuits/{circuit}/people', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@store','as'=>'api.people.store']);
         Route::put('/api/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@update','as'=>'api.people.update']);
-        Route::delete('api/circuits/{circuit}/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@destroy','as'=>'api.people.destroy']);
-
-        // People
+        Route::delete('api/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@destroy','as'=>'api.people.destroy']);
         Route::post('api/guests/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@guestsearch','as'=>'api.people.guestsearch']);
         Route::post('api/people/search', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@search','as'=>'api.people.search']);
         Route::get('/api/people/{person}', ['uses'=>'Bishopm\Churchnet\Http\Controllers\Api\PeopleController@appshow','as'=>'api.people.appshow']);

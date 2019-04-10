@@ -36,7 +36,7 @@
       @endforeach
     </select>
   </div>
-  {{ Form::bsText('fullplan','Full plan (or trial)','Full plan (or trial)') }}
+  {{ Form::bsText('inducted','Full plan (or trial)','Full plan (or trial)') }}
 </div>
 
 <div id="leaderdiv" style="display:none">

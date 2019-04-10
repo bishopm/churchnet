@@ -134,8 +134,11 @@ class PeopleController extends Controller
         return $person;
     }
 
-    public function destroy($circuit, Person $person)
+    public function destroy($id)
     {
-        $this->person->destroy($person);
+        $person=Person::find($id);
+        $person->detag();
+        $person->delete();
+        return "Person has been deleted";
     }
 }

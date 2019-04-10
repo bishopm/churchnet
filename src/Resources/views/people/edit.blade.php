@@ -6,7 +6,7 @@
 @stop
 
 @section('content_header')
-{{ Form::pgHeader('Edit person','people',route('admin.circuits.edit', $person->circuit_id)) }}
+{{ Form::pgHeader('Edit person','people',route('admin.people.update', ['circuit'=>$person->circuit_id, 'person'=>$person->id])) }}
 @stop
 
 @section('content')
@@ -20,7 +20,7 @@
                     @include('churchnet::people.partials.edit-fields')
                 </div>
                 <div class="box-footer">
-                    {{Form::pgButtons('Update',route('admin.circuits.edit', $person->circuit_id)) }}
+                    {{Form::pgButtons('Update',route('admin.people.update', ['circuit'=>$person->circuit_id, 'person'=>$person->id])) }}
                 </div>
             </div>
         </div>

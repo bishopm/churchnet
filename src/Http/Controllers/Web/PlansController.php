@@ -397,14 +397,14 @@ class PlansController extends Controller
             }
             $dum['soc']=$preacher1->individual->household->society_id;
             $dum['cellphone']=$preacher1->individual->cellphone;
-            $dum['fullplan']=$preacher1->fullplan;
+            $dum['inducted']=$preacher1->inducted;
             if ($this->tag->checktag($preacher1, 'Local preacher on trial')) {
-                $dum['fullplan']="Trial";
+                $dum['inducted']="Trial";
             }
-            if (!$dum['fullplan']) {
+            if (!$dum['inducted']) {
                 $vdum['9999' . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
             } else {
-                $vdum[$preacher1->fullplan . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
+                $vdum[$preacher1->inducted . $preacher1->individual->surname . $preacher1->individual->firstname]=$dum;
             }
         }
         if (isset($vdum)){
@@ -554,7 +554,7 @@ class PlansController extends Controller
                 }
                 $pre['name']=utf8_decode($pre['name']);
                 //if (($pre['position']=="Local preacher") or ($pre['position']=="On trial preacher") or ($pre['position']=="Emeritus preacher")) {
-                $pdf->text($x+2, $y, $pre['fullplan']);
+                $pdf->text($x+2, $y, $pre['inducted']);
                 $pdf->text($x+10, $y, $pre['name'] . " (" . $pre['cellphone'] . ")");
                 $y=$y+4;
                 //}
