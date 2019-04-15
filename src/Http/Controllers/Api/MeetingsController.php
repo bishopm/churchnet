@@ -35,7 +35,8 @@ class MeetingsController extends Controller
     {
         $mtype = "Bishopm\\Churchnet\\Models\\" . ucfirst($request->scope);
         $data = array();
-        $data['meetings']=Meeting::with('society')->where('meetable_id', $request->id)->where('meetable_type', $mtype)->orderBy('meetingdatetime', 'DESC')->get();
+        $now=time();
+        $data['meetings']=Meeting::with('society')->where('meetingdatetime','>',$now)->where('meetable_id', $request->id)->where('meetable_type', $mtype)->orderBy('meetingdatetime', 'ASC')->get();
         if ($request->scope == 'society') {
             $data['entity']=Society::find($request->id);
         } elseif ($request->scope == 'circuit') {

@@ -41,7 +41,7 @@ class Circuit extends Model
 
     public function ministers()
     {
-        return $this->hasMany('Bishopm\Churchnet\Models\Person')->where('status', 'minister')->with('individual', 'tags')
+        return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable')->where('status', 'minister')->with('individual', 'tags')
         ->whereHas('individual');
     }
 

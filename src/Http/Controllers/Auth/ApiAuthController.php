@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Bishopm\Churchnet\Models\User;
+use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Circuit;
 
@@ -59,6 +60,29 @@ class ApiAuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
         return response()->json(compact('token'));
+    }
+
+    public function synodlogin(Request $request)
+    {
+        $user=User::where('phone', $request->phone)->where('phonetoken', $request->phonetoken)->first();
+        if (!$user) {
+            $indiv=Individual::where('cellphone', $request->phone)->first();
+            if ($indiv) {
+                $user = User::create(['name'=>$indiv->firstname . ' ' . $indiv->surname, 'email'=>$indiv->email, 'phone'=>$request->phone, 'phonetoken'=>$request->phonetoken, 'individual_id'=>$indiv->id, 'level'=>'user']);
+            } else {
+                $user = User::create(['name'=>$request->phone, 'phone'=>$request->phone, 'phonetoken'=>$request->phonetoken, 'level'=>'user']);
+            }
+        }
+        try {
+            if (!$token=JWTAuth::fromUser($user)) {
+                return response()->json(['error' => 'invalid_credentials'], 401);
+            }
+        } catch (JWTException $e) {
+            return response()->json(['error' => 'could_not_create_token'], 500);
+        }
+        $data['user'] = $user;
+        $data['person'] = Person::where('individual_id',$user->individual_id)->first();
+        return $data;
     }
 
     public function register(Request $request)
