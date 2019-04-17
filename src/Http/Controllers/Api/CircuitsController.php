@@ -41,7 +41,7 @@ class CircuitsController extends Controller
         return view('connexion::circuits.create');
     }
 
-    public function show($id)
+    public function showwithmap($id)
     {
         $data['circuit'] = Circuit::with('users', 'societies', 'ministers')->where('id', $id)->first();
         $first = true;
@@ -80,6 +80,11 @@ class CircuitsController extends Controller
         }
         ksort($data['ministers']);
         return $data;
+    }
+
+    public function show($id)
+    {
+        return Circuit::with('users', 'societies')->where('id', $id)->first();
     }
 
     public function withsocieties($id)
