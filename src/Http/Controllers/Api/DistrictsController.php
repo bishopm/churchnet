@@ -84,6 +84,7 @@ class DistrictsController extends Controller
         foreach ($data['district']['people'] as $person) {
             $ministers[] = $person;
         }
+        $data['ministers'] = array();
         foreach ($ministers as $minister) {
             if (isset($minister->individual)) {
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['individual'] = $minister->individual;

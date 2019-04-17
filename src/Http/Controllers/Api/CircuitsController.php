@@ -71,6 +71,7 @@ class CircuitsController extends Controller
                 }
             }
         }
+        $data['ministers'] = array();
         foreach ($data['circuit']->ministers as $minister) {
             $dumtags = array();
             foreach ($minister->tags as $tag) {
