@@ -30,7 +30,7 @@ class CircuitsController extends Controller
     {
         return Circuit::orderBy('circuitnumber')->get();
     }
-    
+
     public function query($circuit, Request $request)
     {
         return DB::select(DB::raw($request->sql))->toArray();
@@ -48,29 +48,37 @@ class CircuitsController extends Controller
         foreach ($data['circuit']->societies as $society) {
             if ($society->location) {
                 if ($first) {
-                    $data['bounds']['minlat']=floatval($society->location->latitude);
-                    $data['bounds']['maxlat']=floatval($society->location->latitude);
-                    $data['bounds']['minlng']=floatval($society->location->longitude);
-                    $data['bounds']['maxlng']=floatval($society->location->longitude);
+                    $data['bounds']['minlat'] = floatval($society->location->latitude);
+                    $data['bounds']['maxlat'] = floatval($society->location->latitude);
+                    $data['bounds']['minlng'] = floatval($society->location->longitude);
+                    $data['bounds']['maxlng'] = floatval($society->location->longitude);
                 }
                 $first = false;
-                $title['society']=$society;
-                $title['circuit']=$society->circuit;
-                $data['markers'][]=['title'=>$title, 'lat'=>$society->location->latitude, 'lng'=>$society->location->longitude];
+                $title['society'] = $society;
+                $title['circuit'] = $society->circuit;
+                $data['markers'][] = ['title' => $title, 'lat' => $society->location->latitude, 'lng' => $society->location->longitude];
                 if (floatval($society->location->latitude) < $data['bounds']['minlat']) {
-                    $data['bounds']['minlat']=floatval($society->location->latitude);
+                    $data['bounds']['minlat'] = floatval($society->location->latitude);
                 }
                 if (floatval($society->location->latitude) > $data['bounds']['maxlat']) {
-                    $data['bounds']['maxlat']=floatval($society->location->latitude);
+                    $data['bounds']['maxlat'] = floatval($society->location->latitude);
                 }
                 if (floatval($society->location->longitude) < $data['bounds']['minlng']) {
-                    $data['bounds']['minlng']=floatval($society->location->longitude);
+                    $data['bounds']['minlng'] = floatval($society->location->longitude);
                 }
                 if (floatval($society->location->longitude) > $data['bounds']['maxlng']) {
-                    $data['bounds']['maxlng']=floatval($society->location->longitude);
+                    $data['bounds']['maxlng'] = floatval($society->location->longitude);
                 }
             }
         }
+        foreach ($data['circuit']->ministers as $minister) {
+            $dumtags = array();
+            foreach ($minister->tags as $tag) {
+                $dumtags[] = $tag->name;
+            }
+            $data['ministers'][$minister->individual->surname . $minister->individual->firstname] = $minister->individual->title . " " . $minister->individual->firstname . " " . $minister->individual->surname . " (" . implode(", ", $dumtags) . ")";
+        }
+        ksort($data['ministers']);
         return $data;
     }
 
@@ -81,12 +89,12 @@ class CircuitsController extends Controller
 
     public function store(CreateCircuitRequest $request)
     {
-        $soc=$this->circuit->create($request->all());
+        $soc = $this->circuit->create($request->all());
 
         return redirect()->route('admin.circuits.show', $soc->id)
             ->withSuccess('New circuit added');
     }
-    
+
     public function update($circuit, Request $request)
     {
         $cir = $this->circuit->find($circuit);
