@@ -13,4 +13,13 @@ class Synod extends Model
         return $this->belongsTo('Bishopm\Churchnet\Models\Circuit');
     }
 
+    public function documents()
+    {
+        return $this->hasMany('Bishopm\Churchnet\Models\Document');
+    }
+
+    public function agendaitems()
+    {
+        return $this->morphMany('Bishopm\Churchnet\Models\Meeting', 'meetable');
+    }
 }

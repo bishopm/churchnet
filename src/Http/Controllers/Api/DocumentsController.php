@@ -6,7 +6,7 @@ use Bishopm\Churchnet\Models\Synod;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class SynodsController extends Controller
+class DocumentsController extends Controller
 {
 
     /**
@@ -17,7 +17,7 @@ class SynodsController extends Controller
 
     public function index(Request $request)
     {
-        Return Synod::with('circuit','documents', 'agendaitems.society')->where('district_id',$request->district)->where('synodyear',$request->synodyear)->first();
+        Return Document::with('synod')->where('synod_id',$request->synod)->get();
     }
 
 
