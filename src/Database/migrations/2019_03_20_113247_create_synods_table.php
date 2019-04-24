@@ -16,6 +16,7 @@ class CreateSynodsTable extends Migration
         Schema::create('synods', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('district_id');
+            $table->integer('synodyear');
             $table->integer('circuit_id');
             $table->timestamps();
         });
