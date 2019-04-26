@@ -13,4 +13,9 @@ class Bulletintemplateitem extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Bulletintemplate');
     }
+
+    public function bulletinwidget()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Bulletinwidget');
+    }
 }
