@@ -23,6 +23,11 @@ class Society extends Model
         return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');
     }
 
+    public function feeds()
+    {
+        return $this->morphToMany('Bishopm\Churchnet\Models\Feed', 'feedable');
+    }
+
     public function rosters()
     {
         return $this->hasMany('Bishopm\Churchnet\Models\Roster');

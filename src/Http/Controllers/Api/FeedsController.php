@@ -8,10 +8,11 @@ use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Feedpost;
+use Bishopm\Churchnet\Models\Feed;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Reminder;
 use Illuminate\Http\Request;
-use SimplePie;
+use Feeds;
 
 class FeedsController extends Controller
 {
@@ -22,6 +23,34 @@ class FeedsController extends Controller
      * @return Response
      */
 
+    public function userfeed($id)
+    {
+        $feeds = Feed::select('feedurl')->get()->toArray();
+        $sf=array();
+        foreach ($feeds as $ff) {
+            $sf[]=$ff['feedurl'];
+        }
+        $feed = Feeds::make($sf);
+        $data = array(
+          'title'     => $feed->get_title(),
+          'permalink' => $feed->get_permalink(),
+          'items'     => $feed->get_items(),
+        );
+        return $data;
+
+        /*$feed = new SimplePie();
+        $feed->set_cache_location(storage_path() . '/simplepie_cache');
+        $feed->handle_content_type();
+        $feed->set_feed_url($sf);
+        $feed->init();
+        $data = array(
+          'title'     => $feed->get_title(),
+          'permalink' => $feed->get_permalink(),
+          'items'     => $feed->get_items(),
+        );*/
+        //$devotion=$feed->get_items()[2];
+        return $data;
+    }
 
     public function ffdl()
     {

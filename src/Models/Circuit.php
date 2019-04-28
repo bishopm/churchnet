@@ -13,6 +13,11 @@ class Circuit extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Society');
     }
 
+    public function feeds()
+    {
+        return $this->morphToMany('Bishopm\Churchnet\Models\Feed', 'feedable');
+    }
+
     public function location()
     {
         return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');

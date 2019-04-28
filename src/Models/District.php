@@ -13,6 +13,11 @@ class District extends Model
         return $this->hasMany('Bishopm\Churchnet\Models\Circuit');
     }
 
+    public function feeds()
+    {
+        return $this->morphToMany('Bishopm\Churchnet\Models\Feed', 'feedable');
+    }
+
     public function location()
     {
         return $this->morphOne('Bishopm\Churchnet\Models\Location', 'locatable');

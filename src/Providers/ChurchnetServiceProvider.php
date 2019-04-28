@@ -73,6 +73,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         AliasLoader::getInstance()->alias("JWTAuth", 'Tymon\JWTAuth\Facades\JWTAuth');
         AliasLoader::getInstance()->alias("Form", 'Collective\Html\FormFacade');
         AliasLoader::getInstance()->alias("HTML", 'Collective\Html\HtmlFacade');
+        AliasLoader::getInstance()->alias("Feeds", 'willvincent\Feeds\Facades\FeedsFacade');
         AliasLoader::getInstance()->alias("Socialite", 'Laravel\Socialite\Facades\Socialite');
         $this->app['router']->aliasMiddleware('handlecors', 'Barryvdh\Cors\HandleCors');
         $this->app['router']->aliasMiddleware('jwt.auth', 'Tymon\JWTAuth\Middleware\GetUserFromToken');
