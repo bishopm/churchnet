@@ -156,24 +156,31 @@ class IndividualsController extends Controller
     
     public function phone(Request $request)
     {
-        $monday = date("Y-m-d", strtotime('Monday this week'));
-        $individual = Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('cellphone', $request->phone)->first();
-        if (!$individual) {
+        $data['individual'] = Individual::select('firstname','household_id','surname','cellphone','title','id')
+            ->with('household.individuals:household_id,firstname,surname,cellphone,birthdate,sex,title,id,image,memberstatus,email', 'groups:groupname')
+            ->where('cellphone', $request->phone)->first();
+        if (!$data['individual']) {
             return "No individual";
-        } elseif ($individual->household->society_id <> $request->society_id) {
+        } elseif ($data['individual']->household->society_id <> $request->society_id) {
             return "Wrong society";
         }
+        $data['society'] = $data['individual']->household->society;
+        unset($data['society']['email_pw']);
+        unset($data['society']['sms_pw']);
+        unset($data['society']['sms_user']);
+        unset($data['society']['giving_user']);
+        unset($data['society']['giving_lag']);
+        unset($data['society']['giving_reports']);
+        unset($data['society']['email_user']);
+        unset($data['society']['email_encryption']);
+        unset($data['society']['birthday_group']);
+        unset($data['society']['email_host']);
+        unset($data['society']['email_port']);
         $gids=array();
-        foreach ($individual->groups as $group) {
+        foreach ($data['individual']->groups as $group) {
             $gids[]=$group->id;
         }
-        $chats = Chat::with('messages', 'chatable')
-        ->where('chatable_type', 'Bishopm\Churchnet\Models\Society')->where('chatable_id', $individual->household->society_id)->where('created_at', '>=', $monday)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Circuit')->where('chatable_id', $individual->household->society->circuit_id)->where('created_at', '>=', $monday)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\District')->where('chatable_id', $individual->household->society->circuit->district_id)->where('created_at', '>=', $monday)
-        ->orWhere('chatable_type', 'Bishopm\Churchnet\Models\Group')->whereIn('chatable_id', $gids)->where('created_at', '>=', $monday)->get();
-        $individual->chats=$chats;
-        return $individual;
+        return $data;
     }
 
     public function message($id)
