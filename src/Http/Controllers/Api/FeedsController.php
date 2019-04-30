@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
+use Bishopm\Churchnet\Models\Feed;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Feedpost;
 use Bishopm\Churchnet\Models\Feedable;
@@ -26,18 +27,21 @@ class FeedsController extends Controller
     public function userfeed(Request $request)
     {
         if ($request->individual) {
-            $user = User::where('individual_id',$request->individual)->first();
+            $user = User::where('individual_id', $request->individual)->first();
             $userid = $user->id;
         } else {
             $userid = '';
         }
         $society = Society::with('circuit.district')->find($request->society);
-        $allfeeds = Feedable::with('feed')->where('feedable_id',$society->id)->where('feedable_type','Bishopm\Churchnet\Models\Society')
-            ->orWhere('feedable_id',$society->circuit_id)->where('feedable_type','Bishopm\Churchnet\Models\Circuit')
-            ->orWhere('feedable_id',$society->circuit->district_id)->where('feedable_type','Bishopm\Churchnet\Models\District')
-            ->orWhere('feedable_id',$userid)->where('feedable_type','Bishopm\Churchnet\Models\User')
+        $feeds = Feed::orderBy('title')->get();
+        $allfeeds = Feedable::with('feed')->where('feedable_id', $society->id)->where('feedable_type', 'Bishopm\Churchnet\Models\Society')
+            ->orWhere('feedable_id', $society->circuit_id)->where('feedable_type', 'Bishopm\Churchnet\Models\Circuit')
+            ->orWhere('feedable_id', $society->circuit->district_id)->where('feedable_type', 'Bishopm\Churchnet\Models\District')
+            ->orWhere('feedable_id', $userid)->where('feedable_type', 'Bishopm\Churchnet\Models\User')
             ->get();
+        $myfeeds = array();
         foreach ($allfeeds->sortBy('feed.title') as $ff) {
+            $myfeeds[$ff['feed']['id']] = $ff['feedable_type'];
             $feed = Feeds::make($ff['feed']['feedurl']);
             $thisfeed = array();
             $thisfeed['title'] = $ff['feed']['title'];
@@ -45,9 +49,9 @@ class FeedsController extends Controller
             $thisfeed['items'] = array();
             foreach ($feed->get_items() as $item) {
                 if ($ff['feed']['frequency'] == "daily") {
-                    $timeago = time() - (24*60*60);
+                    $timeago = time() - (24 * 60 * 60);
                 } else {
-                    $timeago = time() - (24*60*60*7);
+                    $timeago = time() - (24 * 60 * 60 * 7);
                 }
                 $thisitem = array();
                 if ($item->get_date('U') > $timeago) {
@@ -62,61 +66,68 @@ class FeedsController extends Controller
                 }
             }
             if (count($thisfeed['items'])) {
-                $data[$ff['feed']['category']][]=$thisfeed;
+                $data[$ff['feed']['category']][] = $thisfeed;
             }
         }
-        $data['events']=Group::where('society_id', $society->id)->where('eventdatetime', '>', time())->get();
-        $data['diary'] = Meeting::with('society:society,id')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $society->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)
-            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $society->circuit->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)
-            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $society->circuit->district->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24*60*60*10)
+        foreach ($feeds as $feed) {
+            if (array_key_exists($feed->id, $myfeeds)) {
+                $feed->subs = $myfeeds[$feed->id];
+            }
+            $data['feeds'][] = $feed;
+        }
+        $data['feeds'] = $feeds;
+        $data['events'] = Group::where('society_id', $society->id)->where('eventdatetime', '>', time())->get();
+        $data['diary'] = Meeting::with('society:society,id')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $society->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
+            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $society->circuit->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
+            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $society->circuit->district->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
             ->orderBy('meetingdatetime', 'ASC')->get();
-        $data['diarycount']=count($data['diary']);
+        $data['diarycount'] = count($data['diary']);
         $this->monday = date("Y-m-d", strtotime('Monday this week'));
         $feeditems = Feeditem::monday($this->monday)->with('feedpost')
-        ->where(function ($query) use ($society) {
-            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $society->id)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $society->circuit->id)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $society->circuit->district->id);
-        })->get();
+            ->where(function ($query) use ($society) {
+                $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $society->id)
+                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $society->circuit->id)
+                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $society->circuit->district->id);
+            })->get();
         foreach ($feeditems as $item) {
-            if ($item->distributable_type=="Bishopm\Churchnet\Models\District") {
-                $item->source=$society->circuit->district->district . " District";
-            } elseif ($item->distributable_type=="Bishopm\Churchnet\Models\Circuit") {
-                $item->source=$society->circuit->circuit;
+            if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
+                $item->source = $society->circuit->district->district . " District";
+            } elseif ($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") {
+                $item->source = $society->circuit->circuit;
             } else {
-                $item->source=$society->society;
+                $item->source = $society->society;
             }
-            $data[$item->feedpost->category][]=$item;
+            $data[$item->feedpost->category][] = $item;
         }
         $data['userid'] = $userid;
         $data['reminders'] = Reminder::where('user_id', $userid)->orderBy('created_at', 'DESC')->get();
-        $data['remindercount']=count($data['reminders']);
+        $data['remindercount'] = count($data['reminders']);
         return $data;
     }
 
     public function feedlibrary($society)
     {
-        $data=array();
+        $data = array();
         $this->soc = Society::with('circuit.district')->find($society);
         $this->cir = $this->soc->circuit;
         $this->dis = $this->cir->district;
         $feeditems = Feeditem::where('library', 'yes')->with('feedpost')
-        ->where(function ($query) {
-            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
-        })->get();
+            ->where(function ($query) {
+                $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
+                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
+                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
+            })->get();
         foreach ($feeditems as $item) {
-            if ($item->distributable_type=="Bishopm\Churchnet\Models\District") {
-                $item->source=$this->dis->district . " District";
-            } elseif ($item->distributable_type=="Bishopm\Churchnet\Models\Circuit") {
-                $item->source=$this->cir->circuit;
+            if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
+                $item->source = $this->dis->district . " District";
+            } elseif ($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") {
+                $item->source = $this->cir->circuit;
             } else {
-                $item->source=$this->soc->society;
+                $item->source = $this->soc->society;
             }
-            $data[$item->feedpost->category][]=$item;
+            $data[$item->feedpost->category][] = $item;
         }
-        $tot=0;
+        $tot = 0;
         if (isset($data['song'])) {
             $tot = $tot + count($data['song']);
             unset($data['song']);
@@ -125,13 +136,13 @@ class FeedsController extends Controller
             $tot = $tot + count($data['liturgy']);
             unset($data['liturgy']);
         }
-        $data['songs']=$tot;
+        $data['songs'] = $tot;
         return $data;
     }
 
     public function hymns($society)
     {
-        $data=array();
+        $data = array();
         $this->soc = Society::with('circuit.district')->find($society);
         $this->cir = $this->soc->circuit;
         $this->dis = $this->cir->district;
@@ -139,11 +150,11 @@ class FeedsController extends Controller
             $q->where('category', '=', 'song')->orWhere('category', '=', 'liturgy');
         })->where(function ($query) {
             $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
+                ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
+                ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
         })->get();
         foreach ($feeditems as $item) {
-            $data[$item->feedpost->category][$item->feedpost->title] = ['title'=>$item->feedpost->title, 'id'=>$item->feedpost_id];
+            $data[$item->feedpost->category][$item->feedpost->title] = ['title' => $item->feedpost->title, 'id' => $item->feedpost_id];
         }
         if (isset($data['song'])) {
             asort($data['song']);
@@ -157,11 +168,11 @@ class FeedsController extends Controller
     public function myfeeds(Request $request)
     {
         $feeds = Feeditem::with('feedpost', 'distributable')
-        ->where(function ($query) use ($request) {
-            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->whereIn('distributable_id', $request->societies)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->whereIn('distributable_id', $request->circuits)
-                  ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $request->districts);
-        })->has('feedpost')->get();
+            ->where(function ($query) use ($request) {
+                $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->whereIn('distributable_id', $request->societies)
+                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->whereIn('distributable_id', $request->circuits)
+                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $request->districts);
+            })->has('feedpost')->get();
         foreach ($feeds as $feed) {
             if ($feed->distributable_type == 'Bishopm\Churchnet\Models\Society') {
                 $feed->entity = $feed->distributable->society;
@@ -171,9 +182,9 @@ class FeedsController extends Controller
                 $feed->entity = $feed->distributable->district;
             }
         }
-        $data=array();
+        $data = array();
         foreach ($feeds as $feed) {
-            $data[strtotime($feed->feedpost->publicationdate)][]=$feed;
+            $data[strtotime($feed->feedpost->publicationdate)][] = $feed;
         }
         return array_reverse($data);
     }
@@ -181,9 +192,9 @@ class FeedsController extends Controller
     public function feedpost($id)
     {
         $post = Feedpost::with('feeditems')->find($id);
-        $sss=array();
-        $ccc=array();
-        $ddd=array();
+        $sss = array();
+        $ccc = array();
+        $ddd = array();
         foreach ($post->feeditems as $feeditem) {
             if ($feeditem->distributable_type == 'Bishopm\Churchnet\Models\Society') {
                 $sss[] = (string)$feeditem->distributable_id;
@@ -207,7 +218,7 @@ class FeedsController extends Controller
 
     public function store(Request $request)
     {
-        $feedpost=Feedpost::create(
+        $feedpost = Feedpost::create(
             [
                 'category' => $request->post['category'],
                 'title' => $request->post['title'],
@@ -219,7 +230,7 @@ class FeedsController extends Controller
             Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
         }
         foreach ($request->societies as $society) {
-            $testsoc=Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
+            $testsoc = Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
             if (!$testsoc) {
                 Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society, 'library' => $request->post['library']]);
             }
@@ -229,7 +240,7 @@ class FeedsController extends Controller
 
     public function update(Request $request)
     {
-        $feedpost=Feedpost::with('feeditems')->find($request->id);
+        $feedpost = Feedpost::with('feeditems')->find($request->id);
         $feedpost->publicationdate = $request->post['publicationdate'];
         $feedpost->body = $request->post['body'];
         $feedpost->title = $request->post['title'];
@@ -242,7 +253,7 @@ class FeedsController extends Controller
             Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
         }
         foreach ($request->societies as $society) {
-            $testsoc=Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
+            $testsoc = Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
             if (!$testsoc) {
                 Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society, 'library' => $request->post['library']]);
             }
