@@ -24,6 +24,16 @@ class FeedsController extends Controller
      * @return Response
      */
 
+    public function mysubscriptions(Request $request) {
+        if ($request->state == false) {
+            $feed = Feedable::where('feed_id',$request->feed_id)->where('feedable_id',$request->user_id)->where('feedable_type','Bishopm\Churchnet\Models\User')->first()->delete();
+            return "Subscription deleted";
+        } else {
+            $feed = Feedable::create(['feed_id' => $request->feed_id, 'feedable_id' => $request->user_id, 'feedable_type' => 'Bishopm\Churchnet\Models\User']);
+            return $feed;
+        }
+    }
+
     public function userfeed(Request $request)
     {
         if ($request->individual) {
@@ -46,6 +56,7 @@ class FeedsController extends Controller
             $thisfeed = array();
             $thisfeed['title'] = $ff['feed']['title'];
             $thisfeed['permalink'] = $feed->get_permalink();
+            $thisfeed['logo'] = array('url'=>$feed->get_image_url(), 'width'=>$feed->get_image_width(), 'height'=>$feed->get_image_height());
             $thisfeed['items'] = array();
             foreach ($feed->get_items() as $item) {
                 if ($ff['feed']['frequency'] == "daily") {
@@ -57,8 +68,10 @@ class FeedsController extends Controller
                 if ($item->get_date('U') > $timeago) {
                     $thisitem['body'] = $item->get_content();
                     $thisitem['title'] = $item->get_title();
+                    $thisitem['image'] = $item->get_link();
+                    $thisitem['description'] = $ff['feed']['description'];
                     $thisitem['author'] = $item->get_author()->name;
-                    $thisitem['pubdate'] = $item->get_date();
+                    $thisitem['pubdate'] = date('l j F Y', strtotime($item->get_date()));
                     if ($ff['feed']['category'] == 'sermon') {
                         $thisitem['enclosure'] = $item->get_enclosure();
                     }

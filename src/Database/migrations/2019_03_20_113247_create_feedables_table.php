@@ -14,6 +14,7 @@ class CreateFeedablesTable extends Migration
     public function up()
     {
         Schema::create('feedables', function (Blueprint $table) {
+            $table->increments('id');
             $table->integer('feed_id');
             $table->integer('feedable_id');
             $table->string('feedable_type');

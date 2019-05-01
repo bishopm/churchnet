@@ -52,6 +52,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('/api/combined', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@addcombined', 'as' => 'api.individuals.addcombined']);
         Route::post('/api/individual', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@journeyadd', 'as' => 'api.individuals.journeyadd']);
         Route::post('/api/household', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@journeyedit', 'as' => 'api.individuals.journeyedit']);
+        Route::post('/api/mysubscriptions', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@mysubscriptions', 'as' => 'api.feeds.mysubscriptions']);
 
         // Attendances
         Route::post('api/attendances', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\AttendancesController@store', 'as' => 'api.attendances.store']);
