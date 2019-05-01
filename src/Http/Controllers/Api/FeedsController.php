@@ -13,6 +13,7 @@ use Bishopm\Churchnet\Models\Feedable;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Reminder;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Feeds;
 
 class FeedsController extends Controller
@@ -71,7 +72,7 @@ class FeedsController extends Controller
                     $thisitem['image'] = $item->get_link();
                     $thisitem['description'] = $ff['feed']['description'];
                     $thisitem['author'] = $item->get_author()->name;
-                    $thisitem['pubdate'] = date('l j F Y', strtotime($item->get_date()));
+                    $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
                     if ($ff['feed']['category'] == 'sermon') {
                         $thisitem['enclosure'] = $item->get_enclosure();
                     }

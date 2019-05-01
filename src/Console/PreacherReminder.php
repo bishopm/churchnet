@@ -50,13 +50,15 @@ class PreacherReminder extends Command
             }
         }
         foreach ($data as $dat) {
-            $message = "This is a reminder that you are preaching this Sunday (" . $nextsunday . ")\n";
-            foreach ($dat['societies'] as $key=>$soc) {
-                $message = $message . "\n" . $key . ": " . implode(', ', $soc);
+            if ($dat['user_id'] == 1) {
+                $message = "This is a reminder that you are preaching this Sunday (" . $nextsunday . ") at:\n";
+                foreach ($dat['societies'] as $key=>$soc) {
+                    $message = $message . "\n" . $key . ": " . implode(', ', $soc);
+                }
+                $message = $message . "\n\nThe lectionary readings for Sunday are: " . implode(', ', $readings['readings']) . ".\n\nThank you so much for your willingness to be used by God as a preacher of the gospel!";
+                $reminder = Reminder::create(['user_id'=>$dat['user_id'], 'message'=>$message]);
+                Notification::send(User::find($dat['user_id']), new PushNotification($dat['name'], $message));
             }
-            $message = $message . "\n\nThe lectionary readings for Sunday are: " . implode(', ', $readings['readings']) . ".\n\nThank you so much for your willingness to be used by God as a preacher of the gospel!";
-            $reminder = Reminder::create(['user_id'=>$dat['user_id'], 'message'=>$message]);
-            Notification::send(User::find($dat['user_id']), new PushNotification($dat['name'], $message));
         }
     }
 }

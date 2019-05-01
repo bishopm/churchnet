@@ -140,4 +140,8 @@ class SocietiesController extends Controller
     {
         $this->society->destroy($society);
     }
+
+    public function journeysettings($id) {
+        return Society::with('circuit.district.denomination')->find($id);
+    }
 }
