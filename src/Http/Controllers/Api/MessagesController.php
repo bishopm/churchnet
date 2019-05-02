@@ -7,15 +7,14 @@ use Bishopm\Churchnet\Mail\GenericMail;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
-use Bishopm\Churchnet\Events\MessagePosted;
 use Illuminate\Support\Facades\Mail;
 use Carbon\Carbon;
-use Swift_SmtpTransport;
 use Illuminate\Support\Facades\DB;
 use Bishopm\Churchnet\Services\BulkSMSService;
 use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Jobs\DeliverSMS;
+use Bishopm\Churchnet\Jobs\UserMailerJob;
 
 class MessagesController extends Controller
 {
@@ -37,18 +36,7 @@ class MessagesController extends Controller
             return $this->sendemail($data, $recipients);
         } elseif ($data['messagetype'] == "sms") {
             return $this->sendsms($data['textmessage'], $recipients, $data['society_id']);
-        } elseif ($data['messagetype'] == "app") {
-            $sender = Auth::user()->id;
-            foreach ($recipients as $key => $rec) {
-                $msg = $this->sendmessage($sender, $key, $data['emailmessage']);
-            }
         }
-    }
-
-    public function sendmessage($sender, $receiver, $message)
-    {
-        $this->messages->create(['user_id' => $sender, 'receiver_id' => $receiver, 'message' => $message, 'viewed' => 0]);
-        $this->pusher->trigger('messages', 'new_message', $message);
     }
 
     public function api_usermessages($id)
@@ -142,13 +130,17 @@ class MessagesController extends Controller
                 if ($sender == $indiv['email']) {
                     $sendertold = true;
                 }
+                $configuration = [
+                    'smtp_host' => $settings->email_host,
+                    'smtp_port' => $settings->email_port,
+                    'smtp_username' => $settings->email_user,
+                    'smtp_password' => $settings->email_pw,
+                    'smtp_encryption' => $settings->email_encryption,
+                    'from_email' => $sender,
+                    'from_name' => $sender
+                ];
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
-                    $transport = (new Swift_SmtpTransport($settings->email_host, $settings->email_port))
-                        ->setUsername($settings->email_user)
-                        ->setPassword($settings->email_pw)
-                        ->setEncryption($settings->email_encryption);
-                    Mail::setSwiftMailer(new \Swift_Mailer($transport));
-                    Mail::to($indiv['email'])->queue(new GenericMail($data));
+                    UserMailerJob::dispatch($configuration, $indiv['email'], new GenericMail($data));
                     $dum['emailresult'] = "OK";
                 } else {
                     $dum['emailresult'] = "Invalid";

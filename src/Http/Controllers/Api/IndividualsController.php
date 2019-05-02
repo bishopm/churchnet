@@ -177,8 +177,10 @@ class IndividualsController extends Controller
         unset($data['society']['email_port']);
         $gids = array();
         $user = User::where('individual_id', $data['individual']->id)->first();
-        $user->last_access = date('Y-m-d H:i:s');
-        $user->save();
+        if ($user) {
+            $user->last_access = date('Y-m-d H:i:s');
+            $user->save();
+        }
         foreach ($data['individual']->groups as $group) {
             $gids[] = $group->id;
         }
