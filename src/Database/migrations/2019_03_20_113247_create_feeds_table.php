@@ -18,6 +18,7 @@ class CreateFeedsTable extends Migration
             $table->string('title')->nullable();
             $table->string('feedurl')->nullable();
             $table->string('category')->nullable();
+            $table->string('description')->nullable();
             $table->string('frequency')->nullable();
             $table->timestamps();
         });

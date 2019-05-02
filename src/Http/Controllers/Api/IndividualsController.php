@@ -16,8 +16,6 @@ use Bishopm\Churchnet\Models\Message;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Bishopm\Churchnet\Http\Requests\CreateIndividualRequest;
-use Bishopm\Churchnet\Http\Requests\UpdateIndividualRequest;
 use Carbon\Carbon;
 use Cviebrock\EloquentTaggable\Models\Tag;
 
@@ -51,17 +49,17 @@ class IndividualsController extends Controller
         } else {
             $addressee = $request->firstname . ' ' . $request->surname;
         }
-        $household = Household::create(['addressee'=>$addressee, 'society_id'=>$request->society_id, 'sortsurname'=>$request->surname]);
+        $household = Household::create(['addressee' => $addressee, 'society_id' => $request->society_id, 'sortsurname' => $request->surname]);
         if ($request->title) {
-            $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'title'=>$request->title, 'household_id'=>$household->id]);
+            $individual = Individual::create(['firstname' => $request->firstname, 'surname' => $request->surname, 'sex' => $request->sex, 'cellphone' => $request->phone, 'title' => $request->title, 'household_id' => $household->id]);
         } else {
-            $individual = Individual::create(['firstname'=>$request->firstname, 'surname'=>$request->surname, 'sex'=>$request->sex, 'cellphone'=>$request->phone, 'household_id'=>$household->id]);
+            $individual = Individual::create(['firstname' => $request->firstname, 'surname' => $request->surname, 'sex' => $request->sex, 'cellphone' => $request->phone, 'household_id' => $household->id]);
         }
         $household->householdcell = $individual->id;
         $household->save();
         if ($request->adduser == 'yes') {
             $user = User::where('phone', $request->phone)->first();
-            $user->individual_id=$individual->id;
+            $user->individual_id = $individual->id;
         } else {
             $soc = Society::find($request->society_id);
             $individual->society = $soc->society;
@@ -71,20 +69,20 @@ class IndividualsController extends Controller
 
     public function givers($id)
     {
-        $this->society=$id;
+        $this->society = $id;
         $givers = Individual::where('giving', '<>', '0')->where('giving', '<>', '')->whereHas('household', function ($q) {
             $q->where('society_id', $this->society);
         })->select('giving')->orderBy('giving')->get();
-        $data=array();
-        $dum=array();
+        $data = array();
+        $dum = array();
         foreach ($givers as $giver) {
             if (!in_array($giver->giving, $dum)) {
-                $dum[]=$giver->giving;
+                $dum[] = $giver->giving;
             }
         }
         sort($dum, SORT_NUMERIC);
-        $data['givers']=$dum;
-        $data['society']=Society::find($id)->society;
+        $data['givers'] = $dum;
+        $data['society'] = Society::find($id)->society;
         return $data;
     }
 
@@ -98,28 +96,29 @@ class IndividualsController extends Controller
         $data['tags'] = Tag::where('type', 'leader')->orderBy('name')->get();
         return $data;
     }
-    
-    public function image ($id, Request $request) {
+
+    public function image($id, Request $request)
+    {
         $file = $request->file('file');
-        $image_name = time()."_".$id.'.jpg';
+        $image_name = time() . "_" . $id . '.jpg';
         $file->move(public_path() . '/vendor/bishopm/images/profile', $image_name);
-        $indiv=Individual::find($id);
+        $indiv = Individual::find($id);
         if ($indiv->image) {
             $fname = public_path() . '/vendor/bishopm/images/profile/' . $indiv->image;
             if (file_exists($fname)) {
                 unlink($fname);
             }
         }
-        $indiv->image=$image_name;
+        $indiv->image = $image_name;
         $indiv->save();
         return Individual::with('household.individuals', 'groups', 'household.society.circuit')->where('id', $id)->first();
     }
 
     public function editleaders(Request $request)
     {
-        if ($request->leader['action'] =='Add') {
+        if ($request->leader['action'] == 'Add') {
             if ($request->addnew == false) {
-                $indiv = Individual::with('tags')->where('id',$request->leader['individual_id'])->first();
+                $indiv = Individual::with('tags')->where('id', $request->leader['individual_id'])->first();
             } else {
                 $indiv = $this->addcombined(new Request($request->individual));
             }
@@ -129,7 +128,7 @@ class IndividualsController extends Controller
             }
             return "Leader added";
         } else {
-            $indiv = Individual::with('tags')->where('id',$request->leader['individual_id'])->first();
+            $indiv = Individual::with('tags')->where('id', $request->leader['individual_id'])->first();
             foreach ($indiv->tags as $etag) {
                 if ($etag->type == 'leader') {
                     $indiv->untag($etag->name);
@@ -145,18 +144,18 @@ class IndividualsController extends Controller
 
     public function journeyadd(Request $request)
     {
-        if ($request->action=="add") {
+        if ($request->action == "add") {
             $individual = Individual::Create($request->except('action', 'id'));
         } else {
-            $individual=Individual::find($request->id);
+            $individual = Individual::find($request->id);
             $this->individual->update($individual, $request->except('action'));
         }
         return "Individual added / updated";
     }
-    
+
     public function phone(Request $request)
     {
-        $data['individual'] = Individual::select('firstname','household_id','surname','cellphone','title','id')
+        $data['individual'] = Individual::select('firstname', 'household_id', 'surname', 'cellphone', 'title', 'id')
             ->with('household.individuals:household_id,firstname,surname,cellphone,birthdate,sex,title,id,image,memberstatus,email', 'groups:groupname')
             ->where('cellphone', $request->phone)->first();
         if (!$data['individual']) {
@@ -176,16 +175,19 @@ class IndividualsController extends Controller
         unset($data['society']['birthday_group']);
         unset($data['society']['email_host']);
         unset($data['society']['email_port']);
-        $gids=array();
+        $gids = array();
+        $user = User::where('individual_id', $data['individual']->id)->first();
+        $user->last_access = date('Y-m-d H:i:s');
+        $user->save();
         foreach ($data['individual']->groups as $group) {
-            $gids[]=$group->id;
+            $gids[] = $group->id;
         }
         return $data;
     }
 
     public function message($id)
     {
-        $chat=Chat::with('messages.individual', 'chatable')->where('id', $id)->first();
+        $chat = Chat::with('messages.individual', 'chatable')->where('id', $id)->first();
         foreach ($chat->messages as $message) {
             $message->ago = Carbon::parse($message->created_at)->diffForHumans();
         }
@@ -195,18 +197,18 @@ class IndividualsController extends Controller
     public function giving(Request $request)
     {
         $indiv = Individual::with('household.individuals')->find($request->id);
-        $data=array();
+        $data = array();
         $data['name'] = $indiv->firstname . ' ' . $indiv->surname;
-        $dum=array();
+        $dum = array();
         $data['pg'] = intval($indiv->giving);
         if ($data['pg']) {
             $data['history'] = Payment::where('pgnumber', $data['pg'])->where('society_id', $request['society'])->get();
         }
         if ($indiv->giving !== 0) {
-            $taken=Individual::societymember(array($request->society))->where('giving', '>', 0)->orderBy('giving')->select('giving')->get();
+            $taken = Individual::societymember(array($request->society))->where('giving', '>', 0)->orderBy('giving')->select('giving')->get();
             foreach ($taken as $take) {
                 if (!in_array(intval($take->giving), $dum)) {
-                    $dum[]=intval($take->giving);
+                    $dum[] = intval($take->giving);
                 }
             }
             sort($dum);
@@ -214,7 +216,7 @@ class IndividualsController extends Controller
             $val = 1;
             while (count($data['available']) < 20) {
                 if (!in_array($val, $dum)) {
-                    $data['available'][]=$val;
+                    $data['available'][] = $val;
                 }
                 $val++;
             }
@@ -251,7 +253,7 @@ class IndividualsController extends Controller
         $newmsg->ago = Carbon::parse($newmsg->created_at)->diffForHumans();
         return $newmsg;
     }
-    
+
     public function search(Request $request)
     {
         $this->search = $request->search;
@@ -261,7 +263,7 @@ class IndividualsController extends Controller
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
             })->get();
         } else {
-            $socs=array($request->society);
+            $socs = array($request->society);
             return Individual::societymember($socs)->with('household.society')->where(function ($query) {
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
             })->get();
@@ -270,8 +272,8 @@ class IndividualsController extends Controller
 
     public function church($society)
     {
-        $soc=array($society);
-        return Individual::societymember($soc)->where('memberstatus', 'Member')->where('image','<>','')->orderBy('surname')->orderBy('firstname')->get();
+        $soc = array($society);
+        return Individual::societymember($soc)->where('memberstatus', 'Member')->where('image', '<>', '')->orderBy('surname')->orderBy('firstname')->get();
     }
 
     public function searchnonpreachers(Request $request)
@@ -283,7 +285,7 @@ class IndividualsController extends Controller
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
             })->get();
         } else {
-            $socs=array($request->society);
+            $socs = array($request->society);
             return Individual::societymember($socs)->with('household.society')->where(function ($query) {
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
             })->get();
@@ -294,11 +296,11 @@ class IndividualsController extends Controller
     {
         $this->search = $request->search;
         $circuits = District::find(Circuit::find($request->circuit)->district_id)->circuits;
-        $soc=array();
+        $soc = array();
         foreach ($circuits as $circuit) {
             if ($circuit->id !== $request->circuit) {
                 foreach ($circuit->societies as $soc) {
-                    $socs[]=$soc->id;
+                    $socs[] = $soc->id;
                 }
             }
         }
@@ -341,7 +343,7 @@ class IndividualsController extends Controller
         }
         return $indiv;
     }
-    
+
     public function update($id, Request $request)
     {
         $indiv = $this->individual->find($id);
@@ -364,7 +366,7 @@ class IndividualsController extends Controller
             $indiv->delete();
             return "Individual has been archived";
         } else {
-            if (isset($request->deathdate)){
+            if (isset($request->deathdate)) {
                 $indiv->household->specialdays()->create([
                     'household_id' => $indiv->household_id,
                     'anniversarytype' => 'Death',
