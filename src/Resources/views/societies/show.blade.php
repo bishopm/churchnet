@@ -30,6 +30,8 @@
                     @endif
                 </ul>
                 <hr>
+                <a target="_blank" href="https://journey.church.net.za/#/settings/{{$society->id}}">Install the Journey App and set it up for this society</a>
+                <hr>
                 <h1 class="subtitle">Service times</h1>
                 <ul class="list-unstyled">
                     @forelse ($society->services as $service)

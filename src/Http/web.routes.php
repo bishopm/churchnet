@@ -58,6 +58,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::put('admin/settings/{setting}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@update', 'as' => 'admin.settings.update']);
         Route::post('admin/settings', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@store', 'as' => 'admin.settings.store']);
         Route::delete('admin/settings/{setting}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\SettingsController@destroy', 'as' => 'admin.settings.destroy']);
+        Route::get('admin/statistics', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\UsersController@statistics', 'as' => 'admin.users.statistics']);
 
         // Circuits
         Route::get('admin/circuits/my', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\CircuitsController@my', 'as' => 'admin.circuits.my']);

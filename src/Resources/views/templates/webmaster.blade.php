@@ -81,6 +81,7 @@
                   <a class="dropdown-item" href="{{url('/')}}/admin/circuits">Circuits</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/readings">Lectionary</a>
                   <a class="dropdown-item" href="{{url('/')}}/admin/settings">Settings</a>
+                  <a class="dropdown-item" href="{{url('/')}}/admin/statistics">Statistics</a>
                 @endif
                 <div class="dropdown-divider"></div>
                 <a class="dropdown-item" href="#" onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
