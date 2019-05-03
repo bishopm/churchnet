@@ -39,7 +39,11 @@ class FeedsController extends Controller
     {
         if ($request->individual) {
             $user = User::where('individual_id', $request->individual)->first();
-            $userid = $user->id;
+            if ($user) {
+                $userid = $user->id;
+            } else {
+                $userid = '';    
+            }
         } else {
             $userid = '';
         }

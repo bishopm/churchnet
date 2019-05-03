@@ -60,6 +60,8 @@ class IndividualsController extends Controller
         if ($request->adduser == 'yes') {
             $user = User::where('phone', $request->phone)->first();
             $user->individual_id = $individual->id;
+            $user->name = $request->firstname . ' ' . $request->surname;
+            $user->save();
         } else {
             $soc = Society::find($request->society_id);
             $individual->society = $soc->society;
