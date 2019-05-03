@@ -3,15 +3,13 @@
 namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
 
 class GenericMail extends Mailable
 {
+    use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     *
-     * @return void
-     */
     public $emaildata;
 
     public function __construct($emaildata)

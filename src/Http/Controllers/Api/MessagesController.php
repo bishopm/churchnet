@@ -14,7 +14,6 @@ use Bishopm\Churchnet\Services\BulkSMSService;
 use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Jobs\DeliverSMS;
-use Bishopm\Churchnet\Jobs\UserMailerJob;
 
 class MessagesController extends Controller
 {
@@ -130,17 +129,8 @@ class MessagesController extends Controller
                 if ($sender == $indiv['email']) {
                     $sendertold = true;
                 }
-                $configuration = [
-                    'smtp_host' => $settings->email_host,
-                    'smtp_port' => $settings->email_port,
-                    'smtp_username' => $settings->email_user,
-                    'smtp_password' => $settings->email_pw,
-                    'smtp_encryption' => $settings->email_encryption,
-                    'from_email' => $sender,
-                    'from_name' => $sender
-                ];
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
-                    UserMailerJob::dispatch($configuration, $indiv['email'], new GenericMail($data));
+                    Mail::to($indiv['email'])->queue(new GenericMail($data));
                     $dum['emailresult'] = "OK";
                 } else {
                     $dum['emailresult'] = "Invalid";

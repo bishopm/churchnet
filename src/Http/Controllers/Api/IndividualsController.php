@@ -239,7 +239,7 @@ class IndividualsController extends Controller
     public function updategiving(Request $request)
     {
         $indiv = Individual::find($request->id);
-        $indiv->giving = $request->pgnumber;
+        $indiv->giving = $request->pgnumber['value'];
         $indiv->save();
         return "All done";
     }
