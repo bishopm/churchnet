@@ -3,10 +3,13 @@
 namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
 
 class BirthdayMail extends Mailable
 {
 
+    use Queueable, SerializesModels;
     /**
      * Create a new message instance.
      *
@@ -28,6 +31,7 @@ class BirthdayMail extends Mailable
     {
         return $this->subject($this->emaildata['subject'])
             ->from($this->emaildata['sender'])
+            ->replyTo($this->emaildata['sender'])
             ->markdown('churchnet::emails.birthday');
     }
 }

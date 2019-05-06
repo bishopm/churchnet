@@ -64,7 +64,7 @@ class ApiAuthController extends Controller
 
     public function synodlogin(Request $request)
     {
-        $user=User::where('phone', $request->phone)->where('phonetoken', $request->phonetoken)->first();
+        $user=User::with('districts')->where('phone', $request->phone)->where('phonetoken', $request->phonetoken)->first();
         if (!$user) {
             $indiv=Individual::where('cellphone', $request->phone)->first();
             if ($indiv) {
@@ -81,6 +81,11 @@ class ApiAuthController extends Controller
             return response()->json(['error' => 'could_not_create_token'], 500);
         }
         $data['user'] = $user;
+        if ($user->districts[0]['pivot']->permission == 'admin') {
+            $data['admin'] = true;
+        } else {
+            $data['admin'] = false;
+        }
         $data['person'] = Person::where('individual_id',$user->individual_id)->first();
         return $data;
     }

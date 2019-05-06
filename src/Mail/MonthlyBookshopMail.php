@@ -3,6 +3,8 @@
 namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
 
 class MonthlyBookshopMail extends Mailable
 {
@@ -11,6 +13,8 @@ class MonthlyBookshopMail extends Mailable
      *
      * @return void
      */
+    use Queueable, SerializesModels;
+
     public $data;
 
     public function __construct($data)
@@ -27,6 +31,7 @@ class MonthlyBookshopMail extends Mailable
     {
         return $this->subject($this->data['subject'])
             ->from($this->data['sender'])
+            ->replyTo($this->data['sender'])
             ->markdown('connexion::emails.monthlybookshop');
     }
 }

@@ -3,6 +3,8 @@
 namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
 
 class SimpleMail extends Mailable
 {
@@ -12,6 +14,8 @@ class SimpleMail extends Mailable
      *
      * @return void
      */
+    use Queueable, SerializesModels;
+
     public $emaildata;
 
     public function __construct($emaildata)
@@ -28,6 +32,7 @@ class SimpleMail extends Mailable
     {
         return $this->subject($this->emaildata['title'])
         ->from($this->emaildata['sender'])
+        ->replyTo($this->emaildata['sender'])
         ->markdown('churchnet::emails.generic');
     }
 }

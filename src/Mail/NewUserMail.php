@@ -3,6 +3,8 @@
 namespace Bishopm\Churchnet\Mail;
 
 use Illuminate\Mail\Mailable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
 
 class NewUserMail extends Mailable
 {
@@ -12,6 +14,8 @@ class NewUserMail extends Mailable
      *
      * @return void
      */
+    use Queueable, SerializesModels;
+
     public $emaildata;
 
     public function __construct($emaildata)

@@ -24,8 +24,9 @@ class ChurchnetServiceProvider extends ServiceProvider
     {
         $this->app->booted(function () {
             $schedule = app(Schedule::class);
+            $schedule->command('churchnet:preacherreminder')->weekly()->mondays()->at('7:30');
             $schedule->command('churchnet:givingemails')->dailyAt('07:45');
-            $schedule->command('churchnet:birthdayemail')->weekly()->mondays()->at('8:00');
+            $schedule->command('churchnet:birthdayemail')->weekly()->mondays()->at('8:00');            
         });
         if (! $this->app->routesAreCached()) {
             require __DIR__.'/../Http/api.routes.php';

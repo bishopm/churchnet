@@ -37,11 +37,11 @@ class PlannedGivingReportEmail extends Command
     {
         $societies = Society::whereNotNull('giving_user')->whereNotNull('giving_lag')->whereNotNull('giving_reports')->get();
         foreach ($societies as $society) {
-            config(['mail.host'=>$society->email_host]);
-            config(['mail.port'=>$society->email_port]);
-            config(['mail.username'=>$society->email_user]);
-            config(['mail.password'=>$society->email_pw]);
-            config(['mail.encryption'=>$society->email_encryption]);
+            //config(['mail.host'=>$society->email_host]);
+            //config(['mail.port'=>$society->email_port]);
+            //config(['mail.username'=>$society->email_user]);
+            //config(['mail.password'=>$society->email_pw]);
+            //config(['mail.encryption'=>$society->email_encryption]);
             $today=date('Y-m-d');
             $lagtime=intval($society->giving_lag);
             //echo "You have a lag setting of " . $lagtime . " days\n";
@@ -105,7 +105,7 @@ class PlannedGivingReportEmail extends Command
                 $nodat['society']=$society->society;
                 $nodat['website']=$society->website;
                 $nodat['body']=$msg;
-                Mail::to($administrator)->send(new SimpleMail($nodat));
+                Mail::to($administrator)->queue(new SimpleMail($nodat));
                 foreach ($givers as $giver) {
                     $data[$giver->giving]['email'][]=$giver->email;
                     if (count($data[$giver->giving]['email'])==1) {
@@ -135,7 +135,7 @@ class PlannedGivingReportEmail extends Command
                 }
                 foreach ($data as $key=>$pg) {
                     foreach ($pg['email'] as $indiv) {
-                        Mail::to($indiv)->send(new GivingMail($pg));
+                        Mail::to($indiv)->queue(new GivingMail($pg));
                     }
                 }
             } else {
@@ -150,7 +150,7 @@ class PlannedGivingReportEmail extends Command
                     $warndat['body']=$msg;
                     $warndat['society']=$society->society;
                     $warndat['website']=$society->website;
-                    Mail::to($administrator)->send(new SimpleMail($warndat));
+                    Mail::to($administrator)->queue(new SimpleMail($warndat));
                 } else {
                     // echo "Today is not a report date\n";
                 }

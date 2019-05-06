@@ -48,11 +48,11 @@ class BirthdayEmail extends Command
         $todaynum=date('w');
         $societies = Society::whereNotNull('birthday_group')->whereNotNull('birthday_day')->where('birthday_day', $todaynum)->get();
         foreach ($societies as $society) {
-            config(['mail.host'=>$society->email_host]);
-            config(['mail.port'=>$society->email_port]);
-            config(['mail.username'=>$society->email_user]);
-            config(['mail.password'=>$society->email_pw]);
-            config(['mail.encryption'=>$society->email_encryption]);
+            //config(['mail.host'=>$society->email_host]);
+            //config(['mail.port'=>$society->email_port]);
+            //config(['mail.username'=>$society->email_user]);
+            //config(['mail.password'=>$society->email_pw]);
+            //config(['mail.encryption'=>$society->email_encryption]);
             $soc = $society['id'];
             $thisyr=date("Y");
             $mon=strval(date('m-d', strtotime("next Monday")));
@@ -100,7 +100,7 @@ class BirthdayEmail extends Command
                 $data['subject']="Birthdays / Anniversaries: " . $churchname;
                 $data['sender']=$churchemail;
                 $data['emailmessage']=$msg;
-                Mail::to($recip->email)->send(new BirthdayMail($data));
+                Mail::to($recip->email)->queue(new BirthdayMail($data));
             }
         }
     }
