@@ -92,6 +92,18 @@ class MeetingsController extends Controller
         $this->meeting->create($request->all());
         return "New meeting added";
     }
+
+    public function storeagendaitems(Request $request)
+    {
+        $meeting = Meeting::create([
+            'meetable_id' => 1,
+            'meetable_type' => 'Bishopm\Churchnet\Models\Synod',
+            'description' => $request->agenda['description'],
+            'meetingdatetime' => strtotime($request->agenda['agendadate'] . ' ' . $request->agenda['agendatime'] . ':00'),
+            'preachingplan' => 'no'
+        ]);
+        return $meeting;
+    }
     
     public function update($id, Request $request)
     {

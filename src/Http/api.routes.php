@@ -123,6 +123,7 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Meetings
         Route::post('api/meetings', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@store', 'as' => 'api.meetings.store']);
+        Route::post('api/agendaitems', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@storeagendaitems', 'as' => 'api.meetings.storeagendaitems']);
         Route::post('api/meetings/{meeting}/update', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@update', 'as' => 'api.meetings.update']);
         Route::get('api/meetings/{meeting}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@edit', 'as' => 'api.meetings.edit']);
         Route::delete('api/meetings/{meeting}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\MeetingsController@destroy', 'as' => 'api.meetings.destroy']);

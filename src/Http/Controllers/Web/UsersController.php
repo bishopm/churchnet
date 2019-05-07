@@ -13,9 +13,11 @@ class UsersController extends Controller
         $users = User::has('individual')->with('individual.household.society.circuit.district')->get();
         $data = array();
         foreach ($users as $user) {
-            $dd = $user->individual->household->society->circuit->district->district;
-            $cc = $user->individual->household->society->circuit->circuitnumber . " " . $user->individual->household->society->circuit->circuit;
-            $ss = $user->individual->household->society->society;
+            if ($user->individual->household->society) {
+                $dd = $user->individual->household->society->circuit->district->district;
+                $cc = $user->individual->household->society->circuit->circuitnumber . " " . $user->individual->household->society->circuit->circuit;
+                $ss = $user->individual->household->society->society;
+            }
             if (!$user->last_access) {
                 $data[$dd][$cc][$ss]['registered'][] = $user->name;
             } elseif (time() - strtotime($user->last_access) < 60*60*24) {

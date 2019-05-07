@@ -17,7 +17,15 @@ class SynodsController extends Controller
 
     public function index(Request $request)
     {
-        Return Synod::with('circuit','documents', 'agendaitems.society')->where('district_id',$request->district)->where('synodyear',$request->synodyear)->first();
+        $synod = Synod::with('circuit','documents', 'agendaitems')->where('district_id',$request->district)->where('synodyear',$request->synodyear)->first();
+        $thisday = strtotime($synod->startdate);
+        while ($thisday <= strtotime($synod->enddate)) {
+            $days[]=date('Y-m-d',$thisday);
+            $thisday = $thisday + 86400;
+        }
+        $data['synod'] = $synod;
+        $data['days'] = $days;
+        return $data;
     }
 
 

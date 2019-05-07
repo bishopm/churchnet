@@ -87,6 +87,7 @@ class ApiAuthController extends Controller
             $data['admin'] = false;
         }
         $data['person'] = Person::where('individual_id',$user->individual_id)->first();
+        $data['token'] = $token;
         return $data;
     }
 
