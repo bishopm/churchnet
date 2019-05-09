@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\DistrictsRepository;
 use Bishopm\Churchnet\Models\District;
+use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Person;
 use App\Http\Controllers\Controller;
@@ -45,6 +46,7 @@ class DistrictsController extends Controller
     {
         $data['circuits'] = Circuit::with('societies.location')->where('district_id', $id)->orderBy('circuitnumber')->get();
         $data['district'] = District::with('denomination')->find($id);
+        $data['feeds'] = Feeditem::where('library', 'yes')->with('feedpost')->where('distributable_type', 'Bishopm\Churchnet\Models\Synod')->where('distributable_id', 1)->get();
         $first = true;
         foreach ($data['circuits'] as $circuit) {
             foreach ($circuit->societies as $society) {

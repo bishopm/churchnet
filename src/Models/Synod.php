@@ -22,4 +22,9 @@ class Synod extends Model
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Meeting', 'meetable');
     }
+
+    public function feeds()
+    {
+        return $this->morphToMany('Bishopm\Churchnet\Models\Feed', 'feedable');
+    }
 }
