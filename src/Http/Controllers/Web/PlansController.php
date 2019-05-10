@@ -138,7 +138,9 @@ class PlansController extends Controller
         $data['circuit']=$this->circuit;
         $district=District::with('individuals', 'denomination.individuals')->find($data['circuit']->district_id);
         $data['preachers']=$this->circuit->tagged('local preacher')->get();
-        $data['ministers']=$this->circuit->tagged('Circuit minister')->get();
+        $ministers=$this->circuit->tagged('Circuit minister')->get();
+        $deacons=$this->circuit->tagged('Deacon')->get();
+        $data['ministers'] = $ministers->merge($deacons);
         $data['supernumeraries']=$this->circuit->tagged('Supernumerary minister')->get();
         $data['guests']=array();
         while (date($lastSunday+604800<=$lastDay)) {
@@ -430,7 +432,7 @@ class PlansController extends Controller
         }
         $y=$y+2;
         $pdf->SetFont('Arial', 'B', 11);
-        $pdf->text($left_side+$spacer, $y, "Circuit Ministers");
+        $pdf->text($left_side+$spacer, $y, "Circuit Staff");
         $y=$y+4;
         $pdf->SetFont('Arial', '', 8);
         $sortedministers=array();

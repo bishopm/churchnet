@@ -93,10 +93,12 @@ class DistrictsController extends Controller
     {
         $data['district'] = District::with('denomination', 'people.individual')->where('id', $request->id)->first();
         $ministers = Person::districtministers($request->id)->with('tags', 'personable', 'individual')->get();
+        // Adding bishop to ministers
         foreach ($data['district']['people'] as $person) {
             $ministers[] = $person;
         }
-        $data['ministers'] = array();
+        $deacons = Person::districtdeacons($request->id)->with('tags', 'personable', 'individual')->get();
+        $ministers = $ministers->merge($deacons);
         foreach ($ministers as $minister) {
             if (isset($minister->individual)) {
                 $data['ministers'][$minister->individual->surname . $minister->individual->firstname]['individual'] = $minister->individual;

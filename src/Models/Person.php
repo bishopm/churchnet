@@ -51,4 +51,13 @@ class Person extends Model
                     ->where('districts.id', $id);
     }
 
+    public function scopeDistrictdeacons($query, $id)
+    {
+        return $query->join('circuits', 'circuits.id', '=', 'personable_id')
+                    ->join('districts', 'districts.id', '=', 'district_id')
+                    ->where('status', 'deacon')->select('people.*')
+                    ->where('personable_type', 'Bishopm\Churchnet\Models\Circuit')->select('people.*')
+                    ->where('districts.id', $id);
+    }
+
 }
