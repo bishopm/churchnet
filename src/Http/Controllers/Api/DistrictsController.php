@@ -47,6 +47,16 @@ class DistrictsController extends Controller
         $data['circuits'] = Circuit::with('societies.location')->where('district_id', $id)->orderBy('circuitnumber')->get();
         $data['district'] = District::with('denomination')->find($id);
         $data['feeds'] = Feeditem::where('library', 'yes')->with('feedpost')->where('distributable_type', 'Bishopm\Churchnet\Models\Synod')->where('distributable_id', 1)->get();
+        if (env('APP_ENV') == "production"){
+            $images = scandir('/var/www/church.net.za/web/public/vendor/bishopm/images/bluebook');
+        } else {
+            $images = scandir('/var/www/churchnet/public/vendor/bishopm/images/bluebook');
+        }
+        foreach ($images as $img) {
+            if (($img !== '.') and ($img !== '..')) {
+                $data['bluebook'][] = $img;
+            }
+        }
         $first = true;
         foreach ($data['circuits'] as $circuit) {
             foreach ($circuit->societies as $society) {
