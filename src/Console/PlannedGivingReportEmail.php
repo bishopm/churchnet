@@ -37,11 +37,6 @@ class PlannedGivingReportEmail extends Command
     {
         $societies = Society::whereNotNull('giving_user')->whereNotNull('giving_lag')->whereNotNull('giving_reports')->get();
         foreach ($societies as $society) {
-            //config(['mail.host'=>$society->email_host]);
-            //config(['mail.port'=>$society->email_port]);
-            //config(['mail.username'=>$society->email_user]);
-            //config(['mail.password'=>$society->email_pw]);
-            //config(['mail.encryption'=>$society->email_encryption]);
             $today=date('Y-m-d');
             $lagtime=intval($society->giving_lag);
             //echo "You have a lag setting of " . $lagtime . " days\n";

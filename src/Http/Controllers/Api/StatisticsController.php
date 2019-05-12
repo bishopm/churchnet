@@ -15,10 +15,8 @@ use Illuminate\Http\Request;
 class StatisticsController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
+    /*
+    Weekly stats: Grow - use Journey, Give - planned giving, Connect - small groups, Worship - attendance, Serve - teams
      */
 
     private $statistic;
@@ -86,6 +84,13 @@ class StatisticsController extends Controller
         $ayrs=array_values($ayrs);
         sort($ayrs);
         $data['years']=$ayrs;
+        return $data;
+    }
+
+    public function discipleship($society,$yr)
+    {
+        $soc = Society::with('services')->find($society);
+        $data['society'] = $soc;
         return $data;
     }
 

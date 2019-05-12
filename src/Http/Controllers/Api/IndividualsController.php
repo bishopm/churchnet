@@ -166,17 +166,12 @@ class IndividualsController extends Controller
             return "Wrong society";
         }
         $data['society'] = $data['individual']->household->society;
-        unset($data['society']['email_pw']);
         unset($data['society']['sms_pw']);
         unset($data['society']['sms_user']);
         unset($data['society']['giving_user']);
         unset($data['society']['giving_lag']);
         unset($data['society']['giving_reports']);
-        unset($data['society']['email_user']);
-        unset($data['society']['email_encryption']);
         unset($data['society']['birthday_group']);
-        unset($data['society']['email_host']);
-        unset($data['society']['email_port']);
         $gids = array();
         $user = User::where('individual_id', $data['individual']->id)->first();
         if ($user) {

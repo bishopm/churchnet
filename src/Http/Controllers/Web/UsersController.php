@@ -30,6 +30,15 @@ class UsersController extends Controller
                 $data[$dd][$cc][$ss]['ever'][] = $user->name;
             }
         }
+        foreach ($data as $s=>$dd) {
+            ksort($data[$s]);
+            foreach ($dd as $d=>$cc) {
+                ksort($data[$s][$d]);
+                foreach ($cc as $c=>$ss) {
+                    ksort($data[$s][$d][$c]);
+                }
+            }
+        }
         return view('churchnet::people.stats', compact('data'));
     }
 

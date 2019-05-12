@@ -213,6 +213,7 @@ Route::middleware(['handlecors'])->group(function () {
 
         // Statistics
         Route::get('api/statistics/{society}/{yr}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@index', 'as' => 'api.statistics.index']);
+        Route::get('api/discipleship/{society}/{yr}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@discipleship', 'as' => 'api.statistics.discipleship']);
         Route::get('api/statistics/{society}/getfordate/{yr}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@getfordate', 'as' => 'api.statistics.getfordate']);
         Route::post('api/statistics', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@store', 'as' => 'api.statistics.store']);
 
