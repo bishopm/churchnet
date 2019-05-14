@@ -59,7 +59,11 @@ class RecordStats extends Command
             foreach ($worship as $wk) {
                 $totalattendance = $totalattendance + $wk['total'];
             }
-            $data['worship'] = round($totalattendance / count($worship));
+            if ($totalattendance == 0) {
+                $data['worship'] = 0;
+            } else {
+                $data['worship'] = round($totalattendance / count($worship));
+            }
             
             // SERVING
             $members = Group::with('individuals')->where('grouptype','service')->where('society_id',$society->id)->get();
