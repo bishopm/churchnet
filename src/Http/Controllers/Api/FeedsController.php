@@ -244,14 +244,18 @@ class FeedsController extends Controller
                 'publicationdate' => $request->post['publicationdate']
             ]
         );
-        foreach ($request->circuits as $circuit) {
-            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
-        }
-        foreach ($request->societies as $society) {
-            $testsoc = Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
-            if (!$testsoc) {
-                Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society, 'library' => $request->post['library']]);
+        if (isset($request->circuits)) {
+            foreach ($request->circuits as $circuit) {
+                Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Circuit', 'distributable_id' => $circuit, 'library' => $request->post['library']]);
             }
+            foreach ($request->societies as $society) {
+                $testsoc = Society::where('id', $society)->whereIn('circuit_id', $request->circuits)->count();
+                if (!$testsoc) {
+                    Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Society', 'distributable_id' => $society, 'library' => $request->post['library']]);
+                }
+            }
+        } elseif (isset($request->synod)) {
+            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Synod', 'distributable_id' => $request->synod, 'library' => 'no']);
         }
         return "ok";
     }

@@ -33,5 +33,24 @@ class SynodsController extends Controller
         return $data;
     }
 
+    public function bluebookimage(Request $request) {
+        $file = $request->file('file');
+        if (env('APP_ENV') == "production"){
+            $images = scandir('/var/www/church.net.za/web/public/vendor/bishopm/images/bluebook');
+        } else {
+            $images = scandir('/var/www/churchnet/public/vendor/bishopm/images/bluebook');
+        }
+        $bluebook = array();
+        foreach ($images as $img) {
+            if (($img !== '.') and ($img !== '..')) {
+                $bluebook[] = $img;
+            }
+        }
+        $newname = 1 + count($bluebook) . "." . $file->getClientOriginalExtension();
+        $file->move(public_path() . '/vendor/bishopm/images/bluebook', $newname);
+        $bluebook[] = $newname;
+        return $bluebook;
+    }
+
 
 }

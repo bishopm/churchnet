@@ -217,6 +217,9 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/statistics/{society}/getfordate/{yr}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@getfordate', 'as' => 'api.statistics.getfordate']);
         Route::post('api/statistics', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@store', 'as' => 'api.statistics.store']);
 
+        // Synod
+        Route::post('api/bluebookimage', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SynodsController@bluebookimage', 'as' => 'api.statistics.bluebookimage']);
+
         // Tags
         Route::get('/api/circuits/{circuit}/tags', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@index', 'as' => 'api.tags.index']);
         Route::get('/api/circuits/{circuit}/tags/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@show', 'as' => 'api.tags.show']);
