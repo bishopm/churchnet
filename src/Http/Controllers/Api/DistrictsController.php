@@ -46,7 +46,11 @@ class DistrictsController extends Controller
     {
         $data['circuits'] = Circuit::with('societies.location')->where('district_id', $id)->orderBy('circuitnumber')->get();
         $data['district'] = District::with('denomination')->find($id);
-        $data['feeds'] = Feeditem::where('library', 'yes')->with('feedpost')->where('distributable_type', 'Bishopm\Churchnet\Models\Synod')->where('distributable_id', 1)->get();
+        $feeds = Feeditem::where('library', 'yes')->with('feedpost')->where('distributable_type', 'Bishopm\Churchnet\Models\Synod')->where('distributable_id', 1)->get();
+        foreach ($feeds as $feed) {
+            $data['feeds'][$feed->feedpost->title]=$feed;
+        }
+        ksort($data['feeds']);
         if (env('APP_ENV') == "production"){
             $images = scandir('/var/www/church.net.za/web/public/vendor/bishopm/images/bluebook');
         } else {

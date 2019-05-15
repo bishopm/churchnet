@@ -255,7 +255,7 @@ class FeedsController extends Controller
                 }
             }
         } elseif (isset($request->synod)) {
-            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Synod', 'distributable_id' => $request->synod, 'library' => 'no']);
+            Feeditem::create(['feedpost_id' => $feedpost->id, 'distributable_type' => 'Bishopm\Churchnet\Models\Synod', 'distributable_id' => $request->synod, 'library' => 'yes']);
         }
         return "ok";
     }
