@@ -218,7 +218,8 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/statistics', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\StatisticsController@store', 'as' => 'api.statistics.store']);
 
         // Synod
-        Route::post('api/bluebookimage', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SynodsController@bluebookimage', 'as' => 'api.statistics.bluebookimage']);
+        Route::post('api/bluebookimage', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SynodsController@bluebookimage', 'as' => 'api.synods.bluebookimage']);
+        Route::post('api/synoddocs', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SynodsController@synoddocs', 'as' => 'api.synods.synoddocs']);
 
         // Tags
         Route::get('/api/circuits/{circuit}/tags', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LabelsController@index', 'as' => 'api.tags.index']);

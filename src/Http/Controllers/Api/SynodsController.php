@@ -52,5 +52,22 @@ class SynodsController extends Controller
         return $bluebook;
     }
 
+    public function synoddocs(Request $request) {
+        $file = $request->file('file');
+        if (env('APP_ENV') == "production"){
+            $images = scandir('/var/www/church.net.za/web/public/vendor/bishopm/docs');
+        } else {
+            $images = scandir('/var/www/churchnet/public/vendor/bishopm/docs');
+        }
+        $newname = time() . "." . $file->getClientOriginalExtension();
+        $file->move(public_path() . '/vendor/bishopm/docs', $newname);
+        $doc = Document::create([
+            'synod_id'=>$request->synod_id,
+            'title'=>$request->title,
+            'url'=>$newname
+        ]);
+        return $doc;
+    }
+
 
 }
