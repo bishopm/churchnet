@@ -36,6 +36,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('api/societies/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show', 'as' => 'api.societies.show']);
     Route::get('api/journeysettings/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@journeysettings', 'as' => 'api.societies.journeysettings']);
     Route::post('/api/synods', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SynodsController@index', 'as' => 'api.synods.index']);
+    Route::post('/api/feedback', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SynodsController@feedback', 'as' => 'api.synods.feedback']);
     Route::post('/api/documents/upload', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DocumentsController@store', 'as' => 'api.documents.store']);
 
     // Districts

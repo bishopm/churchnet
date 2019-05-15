@@ -33,6 +33,6 @@ class SimpleMail extends Mailable
         return $this->subject($this->emaildata['title'])
         ->from($this->emaildata['sender'])
         ->replyTo($this->emaildata['sender'])
-        ->markdown('churchnet::emails.generic');
+        ->markdown('churchnet::emails.simple');
     }
 }

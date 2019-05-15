@@ -5,6 +5,9 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Models\Synod;
 use Bishopm\Churchnet\Models\Document;
 use Bishopm\Churchnet\Models\Meeting;
+use Bishopm\Churchnet\Models\User;
+use Bishopm\Churchnet\Mail\SimpleMail;
+use Illuminate\Support\Facades\Mail;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
@@ -69,5 +72,16 @@ class SynodsController extends Controller
         return $doc;
     }
 
-
+    public function feedback(Request $request) {
+        $admin = User::find(1)->individual->email;
+        $data = array(
+            'title'=>'Feedback from synod app',
+            'sender'=>'admin@church.net.za',
+            'society'=>'Natal Coastal Synod',
+            'website'=>'natalcoastalsynod.org.za',
+            'body'=>$request->message . '<br>Name: ' . $request->name . '<br>Email: ' . $request->email . '<br>Phone: ' . $request->phone
+        );
+        Mail::to($admin)->queue(new SimpleMail($data));
+        return "ok";
+    }
 }
