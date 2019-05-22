@@ -62,4 +62,5 @@ class Society extends Model
     {
         return $this->morphMany('Bishopm\Churchnet\Models\Meeting', 'meetable');
     }
+
 }
