@@ -18,7 +18,7 @@ class SocietiesRepository extends EloquentBaseRepository
     public function allforcircuit($circuitnumber)
     {
         $circuit=Circuit::find($circuitnumber);
-        return $this->model->with('circuit', 'services')->where('circuit_id', '=', $circuit->id)->get();
+        return $this->model->with('circuit', 'services', 'location')->where('circuit_id', '=', $circuit->id)->get();
     }
 
     public function findBySlugForCircuitSlug($circuit, $slug)
