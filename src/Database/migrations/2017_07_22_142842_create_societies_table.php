@@ -15,6 +15,7 @@ class CreateSocietiesTable extends Migration
         Schema::create('societies', function (Blueprint $table) {
             $table->increments('id');
             $table->string('society');
+            $table->string('active');
             $table->string('slug')->nullable();
             $table->integer('circuit_id');
             $table->string('address')->nullable();

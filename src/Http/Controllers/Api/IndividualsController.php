@@ -59,9 +59,20 @@ class IndividualsController extends Controller
         $household->save();
         if ($request->adduser == 'yes') {
             $user = User::where('phone', $request->phone)->first();
-            $user->individual_id = $individual->id;
-            $user->name = $request->firstname . ' ' . $request->surname;
-            $user->save();
+            if ($user) {
+                $user->individual_id = $individual->id;
+                $user->name = $request->firstname . ' ' . $request->surname;
+                $user->save();
+            } else {
+                $newuser = User::create([
+                    'individual_id' => $individual->id,
+                    'name' => $request->firstname . ' ' . $request->surname,
+                    'phone' => $request->phone,
+                    'phonetoken' => $request->phonetoken,
+                    'lastaccess' => date('Y-m-d H:i:s'),
+                    'level' => 5
+                ]);
+            }
         } else {
             $soc = Society::find($request->society_id);
             $individual->society = $soc->society;

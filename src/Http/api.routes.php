@@ -11,6 +11,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('api/sunday/{date?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@sunday', 'as' => 'api.lectionary.sunday']);
     Route::get('api/reading/{reading}/{bible}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading', 'as' => 'api.lectionary.reading']);
     Route::post('api/userfeed', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@userfeed', 'as' => 'api.feeds.user']);
+    Route::post('api/societies/useradded', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@useradded', 'as' => 'api.societies.useradded']);
     Route::post('/api/feeditemlist', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditems', 'as' => 'api.feeds.feeditems']);
     Route::get('/api/feedlibrary/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedlibrary', 'as' => 'api.feeds.feedlibrary']);
     Route::get('/api/hymns/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@hymns', 'as' => 'api.feeds.hymns']);

@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\SocietiesRepository;
 use Bishopm\Churchnet\Models\Society;
+use Bishopm\Churchnet\Models\Service;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Plan;
 use App\Http\Controllers\Controller;
@@ -71,7 +72,7 @@ class SocietiesController extends Controller
         $dd=date("j", strtotime('sunday'));
         $ss=date("d M Y", strtotime('sunday'));
         $data=array();
-        $societies = Society::with('services')->whereHas('services')->where('circuit_id', $circuit)->orderBy('society')->get();
+        $societies = Society::with('services')->where('active','yes')->whereHas('services')->where('circuit_id', $circuit)->orderBy('society')->get();
         foreach ($societies as $society) {
             foreach ($society->services as $service) {
                 $plan = Plan::with('person.individual')->where('circuit_id', $circuit)->where('society_id', $society->id)->where('service_id', $service->id)->where('planyear', $yy)->where('planmonth', $mm)->where('planday', $dd)->first();
@@ -133,6 +134,27 @@ class SocietiesController extends Controller
         $society->location->latitude = $location['latitude'];
         $society->location->save();
         $society->update($upd);
+        return $society;
+    }
+
+    public function useradded(Request $request)
+    {
+        $society = Society::create([
+            'society' => $request->society,
+            'circuit_id' => $request->circuit,
+            'active' => 'no'
+        ]);
+        $society->location()->create([
+            'locatable_id' => $society->id,
+            'locatable_type' => 'Bishopm\Churchnet\Models\Society',
+            'latitude' => $request->latitude,
+            'longitude' => $request->longitude
+        ]);
+        $society->services()->create([
+            'servicetime' => $request->servicetime,
+            'language' => $request->servicelanguage,
+            'society_id' => $society->id
+        ]);
         return $society;
     }
 
