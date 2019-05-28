@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Cviebrock\EloquentTaggable\Models\Tag;
+use Bishopm\Churchnet\Notifications\SlackNotification;
 
 class IndividualsController extends Controller
 {
@@ -187,6 +188,7 @@ class IndividualsController extends Controller
         $user = User::where('individual_id', $data['individual']->id)->first();
         if ($user) {
             $user->last_access = date('Y-m-d H:i:s');
+            // $user->notify()
             $user->save();
         }
         foreach ($data['individual']->groups as $group) {
