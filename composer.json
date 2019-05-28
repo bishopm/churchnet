@@ -27,7 +27,7 @@
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "1.*",
         "laravel-notification-channels/webpush": "3.*",
-        "laravel/slack-notification-channels": "2.*",
+        "laravel/slack-notification-channel": "2.*",
         "willvincent/feeds": "1.1.*"
     },
     "require-dev": {
