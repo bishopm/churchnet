@@ -74,7 +74,7 @@ class IndividualsController extends Controller
                     'level' => 5
                 ]);
             }
-            $admin=User::find(1);
+            $admin=User::where('level',1)->first();
             $admin->notify(new SlackNotification($user->name . ' has just registered on the Journey App :)'));
         } else {
             $soc = Society::find($request->society_id);
