@@ -47,76 +47,78 @@ class FeedsController extends Controller
         } else {
             $userid = '';
         }
-        $society = Society::with('circuit.district')->find($request->society);
         $feeds = Feed::orderBy('title')->get();
-        $allfeeds = Feedable::with('feed')->where('feedable_id', $society->id)->where('feedable_type', 'Bishopm\Churchnet\Models\Society')
-            ->orWhere('feedable_id', $society->circuit_id)->where('feedable_type', 'Bishopm\Churchnet\Models\Circuit')
-            ->orWhere('feedable_id', $society->circuit->district_id)->where('feedable_type', 'Bishopm\Churchnet\Models\District')
-            ->orWhere('feedable_id', $userid)->where('feedable_type', 'Bishopm\Churchnet\Models\User')
-            ->get();
-        $myfeeds = array();
-        foreach ($allfeeds->sortBy('feed.title') as $ff) {
-            $myfeeds[$ff['feed']['id']] = $ff['feedable_type'];
-            $feed = Feeds::make($ff['feed']['feedurl']);
-            $thisfeed = array();
-            $thisfeed['title'] = $ff['feed']['title'];
-            $thisfeed['permalink'] = $feed->get_permalink();
-            $thisfeed['logo'] = array('url'=>$feed->get_image_url(), 'width'=>$feed->get_image_width(), 'height'=>$feed->get_image_height());
-            $thisfeed['items'] = array();
-            foreach ($feed->get_items() as $item) {
-                if ($ff['feed']['frequency'] == "daily") {
-                    $timeago = time() - (24 * 60 * 60);
-                } else {
-                    $timeago = time() - (24 * 60 * 60 * 7);
-                }
-                $thisitem = array();
-                if ($item->get_date('U') > $timeago) {
-                    $thisitem['body'] = $item->get_content();
-                    $thisitem['title'] = $item->get_title();
-                    $thisitem['image'] = $item->get_link();
-                    $thisitem['description'] = $ff['feed']['description'];
-                    $thisitem['author'] = $item->get_author()->name;
-                    $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
-                    if ($ff['feed']['category'] == 'sermon') {
-                        $thisitem['enclosure'] = $item->get_enclosure();
+        $society = Society::with('circuit.district')->find($request->society);
+        if ($society) {
+            $allfeeds = Feedable::with('feed')->where('feedable_id', $society->id)->where('feedable_type', 'Bishopm\Churchnet\Models\Society')
+                ->orWhere('feedable_id', $society->circuit_id)->where('feedable_type', 'Bishopm\Churchnet\Models\Circuit')
+                ->orWhere('feedable_id', $society->circuit->district_id)->where('feedable_type', 'Bishopm\Churchnet\Models\District')
+                ->orWhere('feedable_id', $userid)->where('feedable_type', 'Bishopm\Churchnet\Models\User')
+                ->get();
+            $myfeeds = array();
+            foreach ($allfeeds->sortBy('feed.title') as $ff) {
+                $myfeeds[$ff['feed']['id']] = $ff['feedable_type'];
+                $feed = Feeds::make($ff['feed']['feedurl']);
+                $thisfeed = array();
+                $thisfeed['title'] = $ff['feed']['title'];
+                $thisfeed['permalink'] = $feed->get_permalink();
+                $thisfeed['logo'] = array('url'=>$feed->get_image_url(), 'width'=>$feed->get_image_width(), 'height'=>$feed->get_image_height());
+                $thisfeed['items'] = array();
+                foreach ($feed->get_items() as $item) {
+                    if ($ff['feed']['frequency'] == "daily") {
+                        $timeago = time() - (24 * 60 * 60);
+                    } else {
+                        $timeago = time() - (24 * 60 * 60 * 7);
                     }
-                    $thisfeed['items'][] = $thisitem;
+                    $thisitem = array();
+                    if ($item->get_date('U') > $timeago) {
+                        $thisitem['body'] = $item->get_content();
+                        $thisitem['title'] = $item->get_title();
+                        $thisitem['image'] = $item->get_link();
+                        $thisitem['description'] = $ff['feed']['description'];
+                        $thisitem['author'] = $item->get_author()->name;
+                        $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
+                        if ($ff['feed']['category'] == 'sermon') {
+                            $thisitem['enclosure'] = $item->get_enclosure();
+                        }
+                        $thisfeed['items'][] = $thisitem;
+                    }
+                }
+                if (count($thisfeed['items'])) {
+                    $data[$ff['feed']['category']][] = $thisfeed;
                 }
             }
-            if (count($thisfeed['items'])) {
-                $data[$ff['feed']['category']][] = $thisfeed;
+            foreach ($feeds as $feed) {
+                if (array_key_exists($feed->id, $myfeeds)) {
+                    $feed->subs = $myfeeds[$feed->id];
+                }
+                $data['feeds'][] = $feed;
             }
-        }
-        foreach ($feeds as $feed) {
-            if (array_key_exists($feed->id, $myfeeds)) {
-                $feed->subs = $myfeeds[$feed->id];
-            }
-            $data['feeds'][] = $feed;
+            $data['events'] = Group::where('society_id', $society->id)->where('eventdatetime', '>', time())->get();
+            $data['diary'] = Meeting::with('society:society,id')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $society->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
+                ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $society->circuit->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
+                ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $society->circuit->district->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
+                ->orderBy('meetingdatetime', 'ASC')->get();
+            $data['diarycount'] = count($data['diary']);
+            $this->monday = date("Y-m-d", strtotime('Monday this week'));
+            $feeditems = Feeditem::monday($this->monday)->with('feedpost')
+                ->where(function ($query) use ($society) {
+                    $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $society->id)
+                        ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $society->circuit->id)
+                        ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $society->circuit->district->id);
+                })->get();
+            foreach ($feeditems as $item) {
+                if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
+                    $item->source = $society->circuit->district->district . " District";
+                } elseif ($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") {
+                    $item->source = $society->circuit->circuit;
+                } else {
+                    $item->source = $society->society;
+                }
+                $data[$item->feedpost->category][] = $item;
+            }    
         }
         $data['feeds'] = $feeds;
-        $data['events'] = Group::where('society_id', $society->id)->where('eventdatetime', '>', time())->get();
-        $data['diary'] = Meeting::with('society:society,id')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $society->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
-            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\Circuit')->where('meetable_id', $society->circuit->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
-            ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $society->circuit->district->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
-            ->orderBy('meetingdatetime', 'ASC')->get();
-        $data['diarycount'] = count($data['diary']);
-        $this->monday = date("Y-m-d", strtotime('Monday this week'));
-        $feeditems = Feeditem::monday($this->monday)->with('feedpost')
-            ->where(function ($query) use ($society) {
-                $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $society->id)
-                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $society->circuit->id)
-                    ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $society->circuit->district->id);
-            })->get();
-        foreach ($feeditems as $item) {
-            if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
-                $item->source = $society->circuit->district->district . " District";
-            } elseif ($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") {
-                $item->source = $society->circuit->circuit;
-            } else {
-                $item->source = $society->society;
-            }
-            $data[$item->feedpost->category][] = $item;
-        }
         $data['userid'] = $userid;
         $data['reminders'] = Reminder::where('user_id', $userid)->orderBy('created_at', 'DESC')->get();
         $data['remindercount'] = count($data['reminders']);
