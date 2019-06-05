@@ -25,7 +25,7 @@ class UsersController extends Controller
             } elseif (time() - strtotime($user->last_access) < 60*60*24*7) {
                 $data[$dd][$cc][$ss]['thisweek'][] = $user->name;
             } elseif (time() - strtotime($user->last_access) < 60*60*24*30) {
-                $data[$dd][$cc][$ss]['thismonth'][] = time()- strtotime($user->last_access);//$user->name;
+                $data[$dd][$cc][$ss]['thismonth'][] = $user->name;
             } else {
                 $data[$dd][$cc][$ss]['ever'][] = $user->name;
             }
