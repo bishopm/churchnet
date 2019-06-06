@@ -5,10 +5,13 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\GroupsRepository;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Individual;
+use Bishopm\Churchnet\Models\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Bishopm\Churchnet\Mail\GenericMail;
+use Illuminate\Support\Facades\Mail;
 
 class GroupsController extends Controller
 {
@@ -38,6 +41,30 @@ class GroupsController extends Controller
             $socs[]=intval($soc);
         }
         return Group::whereIn('society_id', $socs)->where('groupname', 'like', '%' . $request->search . '%')->orderBy('groupname')->get();
+    }
+
+    public function signups($society) {
+        $data=array();
+        $data['fellowship'] = Group::where('society_id',$society)->where('grouptype','fellowship')->where('signup',1)->orderBy('groupname')->get();
+        $data['service'] = Group::where('society_id',$society)->where('grouptype','service')->where('signup',1)->orderBy('groupname')->get();
+        return $data;
+    }
+
+    public function signupmessage(Request $request) {
+        $group = Group::with('society')->find($request->group);
+        //$leader = User::with('individual')->where('individual_id',$group->leader)->first();
+        //$person = User::with('individual')->where('individual_id',$request->person)->first();
+        $leader = User::with('individual')->where('individual_id',570)->first();
+        $person = User::with('individual')->where('individual_id',570)->first();
+        // Email to group leader
+        Mail::to($leader)->queue(new GenericMail([
+            'title'=>'Potential new member (' . $group->groupname . ')',
+            'body'=>'Dear ' . $leader->individual->firstname . '\n\nThis is just to let you know that ' . $person->individual->firstname . ' ' . $person->individual->surname . ' has sent you a message via the Journey App, expressing interest in joining the group (' . $group->groupname . ') that you lead.\n\n',
+            'society'=>$group->society->society,
+            'website'=>$group->society->website,
+            'sender'=>$group->society->email
+        ]));
+        return "Mail sent";
     }
 
     public function query($group, Request $request)

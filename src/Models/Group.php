@@ -28,4 +28,9 @@ class Group extends Model
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Rostergroup');
     }
+
+    public function society()
+    {
+        return $this->belongsTo('Bishopm\Churchnet\Models\Society');
+    }
 }
