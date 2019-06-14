@@ -119,7 +119,7 @@ class FeedsController extends Controller
                 $data[$item->feedpost->category][] = $item;
             }    
         }
-        $data['dailyreading'] = Dailyreading::where('readingplan_id',1)->first();
+        $data['dailyreading'] = Dailyreading::with('readingplan')->where('readingplan_id',1)->first();
         $data['feeds'] = $feeds;
         $data['userid'] = $userid;
         $data['reminders'] = Reminder::where('user_id', $userid)->orderBy('created_at', 'DESC')->get();
