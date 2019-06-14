@@ -5,6 +5,8 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ReadingsRepository;
 use Bishopm\Churchnet\Models\Cache;
+use Bishopm\Churchnet\Models\Readingplan;
+use Bishopm\Churchnet\Models\Dailyreading;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
@@ -61,6 +63,16 @@ class LectionaryController extends Controller
         $this->setUpArray();
         $this->buildYear();
         return $this->data;
+    }
+
+    public function readingplans()
+    {
+        return Readingplan::orderBy('title')->get();
+    }
+
+    public function dailyreading ($plan,$id)
+    {
+        return Dailyreading::with('readingplan')->where('readingplan_id',$plan)->where('readingday',$id)->first();
     }
 
     public function reading($reading, $translation)

@@ -10,6 +10,8 @@ Route::middleware(['handlecors'])->group(function () {
     Route::post('/api/login', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@journeylogin', 'as' => 'api.journey.login']);
     Route::get('api/sunday/{date?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@sunday', 'as' => 'api.lectionary.sunday']);
     Route::get('api/reading/{reading}/{bible}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading', 'as' => 'api.lectionary.reading']);
+    Route::get('api/readingplans', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@readingplans', 'as' => 'api.lectionary.readingplans']);
+    Route::get('api/dailyreading/{plan}/{id}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@dailyreading', 'as' => 'api.lectionary.dailyreading']);
     Route::post('api/userfeed', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@userfeed', 'as' => 'api.feeds.user']);
     Route::post('api/societies/useradded', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@useradded', 'as' => 'api.societies.useradded']);
     Route::post('/api/feeditemlist', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditems', 'as' => 'api.feeds.feeditems']);

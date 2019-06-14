@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
-use Bishopm\Churchnet\Models\Dailyreading;
 use Bishopm\Churchnet\Models\Feed;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Feedpost;
@@ -119,7 +118,6 @@ class FeedsController extends Controller
                 $data[$item->feedpost->category][] = $item;
             }    
         }
-        $data['dailyreading'] = Dailyreading::with('readingplan')->where('readingplan_id',1)->first();
         $data['feeds'] = $feeds;
         $data['userid'] = $userid;
         $data['reminders'] = Reminder::where('user_id', $userid)->orderBy('created_at', 'DESC')->get();
