@@ -67,6 +67,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/circuits', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@index', 'as' => 'api.circuits.index']);
         Route::get('api/circuits/create', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@create', 'as' => 'api.circuits.create']);
         Route::get('api/circuits/{circuit}/edit', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@edit', 'as' => 'api.circuits.edit']);
+        Route::post('api/circuits/search', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@search', 'as' => 'api.circuits.search']);
         Route::post('api/circuits/{circuit}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@update', 'as' => 'api.circuits.update']);
         Route::post('api/circuits', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@store', 'as' => 'api.circuits.store']);
         Route::delete('api/circuits/{circuit}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@destroy', 'as' => 'api.circuits.destroy']);
