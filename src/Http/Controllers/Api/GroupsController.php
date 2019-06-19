@@ -57,27 +57,60 @@ class GroupsController extends Controller
         } else {
             $gtype = "group";
         }
-        $leader = User::with('individual')->where('individual_id',$group->leader)->first();
-        $person = User::with('individual')->where('individual_id',$request->person)->first();
-        $leader = User::with('individual')->where('individual_id',570)->first();
+        //$person = User::with('individual')->where('individual_id',$request->person)->first();
         $person = User::with('individual')->where('individual_id',570)->first();
-        // Email to group leader
-        $leadermessage =  'Dear ' . $leader->individual->firstname . '<br><br>This is to let you know that <b>' . 
-                    $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent you a 
-                    message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . 
-                    ') that you co-ordinate.<br><br>Please could you get in touch with ' . $person->individual->firstname . 
-                    ' (' . $person->individual->cellphone . ').<br><br>Thank you!';
-        Mail::to($leader->individual->email)->cc($group->society->email)->queue(new GenericMail([
-            'title'=>'Potential new ' . $gtype . ' member (' . $group->groupname . ')',
-            'body'=>$leadermessage,
-            'society'=>$group->society->society,
-            'website'=>$group->society->website,
-            'sender'=>$group->society->email
-        ]));
+        if ($group->leader) {
+            //$leader = User::with('individual')->where('individual_id',$group->leader)->first();
+            $leader = User::with('individual')->where('individual_id',570)->first();
+            // Email to group leader
+            $leadermessage =  'Dear ' . $leader->individual->firstname . '<br><br>This is to let you know that <b>' . 
+                        $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent you a 
+                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . 
+                        ') that you co-ordinate.<br><br>Please could you get in touch with ' . $person->individual->firstname . 
+                        ' (' . $person->individual->cellphone . ').<br><br>Thank you!';
+            if (!$leader->individual->email) {
+                $leadermessage = $leadermessage . "<br><br><b>Note to the church office: The group leader does not have an email address!</b>";
+                Mail::to($group->society->email)->queue(new GenericMail([
+                    'title'=>'Potential new ' . $gtype . ' member (' . $group->groupname . ')',
+                    'body'=>$leadermessage,
+                    'society'=>$group->society->society,
+                    'website'=>$group->society->website,
+                    'sender'=>$group->society->email
+                ]));
+            } else {
+                Mail::to($leader->individual->email)->cc($group->society->email)->queue(new GenericMail([
+                    'title'=>'Potential new ' . $gtype . ' member (' . $group->groupname . ')',
+                    'body'=>$leadermessage,
+                    'society'=>$group->society->society,
+                    'website'=>$group->society->website,
+                    'sender'=>$group->society->email
+                ]));
+            }
+        } else {
+            // Email to church office
+            $leadermessage =  'This is to let you know that <b>' . 
+                        $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent a 
+                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . 
+                        ').<br><br>. The group does not have a leader / co-ordinator. Please could you get in touch with ' . $person->individual->firstname . 
+                        ' (' . $person->individual->cellphone . ').<br><br>Thank you!';
+            Mail::to($group->society->email)->queue(new GenericMail([
+                'title'=>'Potential new ' . $gtype . ' member (' . $group->groupname . ')',
+                'body'=>$leadermessage,
+                'society'=>$group->society->society,
+                'website'=>$group->society->website,
+                'sender'=>$group->society->email
+            ]));
+        }
         // Email to person
-        $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
+        if ($group->leader){
+            $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
                     $group->groupname . '). We have sent your contact details to ' . $leader->individual->firstname . ' ' . $leader->individual->surname . ', who co-ordinates that  ' . $gtype
                     . '. If you don\'t hear from ' . $leader->individual->firstname . ' soon, you are welcome to make contact directly on ' . $leader->individual->cellphone . ' or get in touch with the church office by replying to this email.<br><br>Thank you!';
+        } else {
+            $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
+                    $group->groupname . '). We have sent your contact details to the church office and you should hear from the office soon. ' .
+                    'You are also welcome to contact the church office directly by replying to this email.<br><br>Thank you!';
+        }
         Mail::to($person->individual->email)->queue(new GenericMail([
             'title'=>$group->groupname,
             'body'=>$personmessage,
