@@ -88,10 +88,8 @@ class GroupsController extends Controller
             }
         } else {
             // Email to church office
-            $leadermessage =  'This is to let you know that <b>' . 
-                        $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent a 
-                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . 
-                        ').<br><br>. The group does not have a leader / co-ordinator. Please could you get in touch with ' . $person->individual->firstname . 
+            $leadermessage =  'This is to let you know that <b>' . $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent a 
+                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . ').<br><br>The group does not have a leader / co-ordinator. Please could you get in touch with ' . $person->individual->firstname . 
                         ' (' . $person->individual->cellphone . ').<br><br>Thank you!';
             Mail::to($group->society->email)->queue(new GenericMail([
                 'title'=>'Potential new ' . $gtype . ' member (' . $group->groupname . ')',
@@ -102,22 +100,24 @@ class GroupsController extends Controller
             ]));
         }
         // Email to person
-        if ($group->leader){
-            $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
-                    $group->groupname . '). We have sent your contact details to ' . $leader->individual->firstname . ' ' . $leader->individual->surname . ', who co-ordinates that  ' . $gtype
-                    . '. If you don\'t hear from ' . $leader->individual->firstname . ' soon, you are welcome to make contact directly on ' . $leader->individual->cellphone . ' or get in touch with the church office by replying to this email.<br><br>Thank you!';
-        } else {
-            $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
-                    $group->groupname . '). We have sent your contact details to the church office and you should hear from the office soon. ' .
-                    'You are also welcome to contact the church office directly by replying to this email.<br><br>Thank you!';
+        if ($person->individual->email) {
+            if ($group->leader){
+                $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
+                        $group->groupname . '). We have sent your contact details to ' . $leader->individual->firstname . ' ' . $leader->individual->surname . ', who co-ordinates that  ' . $gtype
+                        . '. If you don\'t hear from ' . $leader->individual->firstname . ' soon, you are welcome to make contact directly on ' . $leader->individual->cellphone . ' or get in touch with the church office by replying to this email.<br><br>Thank you!';
+            } else {
+                $personmessage =  'Dear ' . $person->individual->firstname . '<br><br>Thanks for your interest in one of our ' . $gtype . 's (' .
+                        $group->groupname . '). We have sent your contact details to the church office and you should hear from the office soon. ' .
+                        'You are also welcome to contact the church office directly by replying to this email.<br><br>Thank you!';
+            }
+            Mail::to($person->individual->email)->queue(new GenericMail([
+                'title'=>$group->groupname,
+                'body'=>$personmessage,
+                'society'=>$group->society->society,
+                'website'=>$group->society->website,
+                'sender'=>$group->society->email
+            ]));
         }
-        Mail::to($person->individual->email)->queue(new GenericMail([
-            'title'=>$group->groupname,
-            'body'=>$personmessage,
-            'society'=>$group->society->society,
-            'website'=>$group->society->website,
-            'sender'=>$group->society->email
-        ]));
         return "Mail sent";
     }
 
@@ -138,6 +138,9 @@ class GroupsController extends Controller
         $group->datestr = date('Y-m-d H:i', $group->eventdatetime);
         $group->till = Carbon::parse($group->eventdatetime)->diffForHumans();
         $data['group'] = $group;
+        if ($group->leader) {
+            $data['leader'] = Individual::find($group->leader);
+        }
         if (in_array($data['group']->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $data;
         } else {
