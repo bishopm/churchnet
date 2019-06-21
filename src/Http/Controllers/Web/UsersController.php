@@ -30,6 +30,7 @@ class UsersController extends Controller
                 $data[$dd][$cc][$ss]['ever'][] = $user->name;
             }
         }
+        ksort($data);
         foreach ($data as $s=>$dd) {
             ksort($data[$s]);
             foreach ($dd as $d=>$cc) {
