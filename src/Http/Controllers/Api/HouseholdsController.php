@@ -49,7 +49,11 @@ class HouseholdsController extends Controller
                 $socs[] = intval($soc);
             }
         }
-        return Household::with('individuals')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->get();
+        if ($request->scope === true) {
+            return Household::with('individuals','society.circuit')->where('addressee', 'like', '%' . $request->search . '%')->get();
+        } else {
+            return Household::with('individuals','society')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->get();
+        }
     }
 
     public function stickers(Request $request)
@@ -138,6 +142,8 @@ class HouseholdsController extends Controller
         $household = Household::with('individuals', 'individuals.groups', 'individuals.tags', 'pastorals.individual', 'specialdays', 'location', 'society.location')->where('id', $id)->first();
         $household->alltags = Tag::where('type', 'leader')->get();
         if (in_array($household->society->id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
+            return $household;
+        } elseif (\Illuminate\Support\Facades\Request::get('super_admin') == 'true') {
             return $household;
         } else {
             return "Unauthorised";

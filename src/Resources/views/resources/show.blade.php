@@ -20,7 +20,8 @@
                 <span class="badge bg-dark"><a style="color:white;text-decoration:none;" href="{{route('tag',$tag->normalized)}}">{{$tag->name}}</a></span>
             @endforeach
             <hr>
-            <p><a target="_blank" title="Click to view resource" href="{!!$resource->url!!}"><i class="fa fa-lg fa-globe"></i></a> {{$resource->description}}</p>
+            <p><a target="_blank" title="Click to view resource" href="{!!$resource->url!!}"><i class="fa fa-lg fa-globe"></i> {!!$resource->url!!}</a><br>
+            {{$resource->description}}</p>
         </div>
     </div>
     @auth

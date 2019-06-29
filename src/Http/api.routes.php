@@ -237,7 +237,7 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('/api/tags', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\TagsController@appindex', 'as' => 'api.tags.appindex']);
 
         // Users
-        Route::get('api/users', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@index', 'as' => 'api.users.index']);
+        Route::post('api/users/search', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@index', 'as' => 'api.users.index']);
         Route::post('api/users', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@store', 'as' => 'api.users.store']);
         Route::post('api/permissibles', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@permissibles', 'as' => 'api.users.permissibles']);
         Route::post('api/permissibles/delete', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@deletepermissibles', 'as' => 'api.users.deletepermissibles']);

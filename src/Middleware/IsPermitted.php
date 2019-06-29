@@ -28,6 +28,9 @@ class IsPermitted
         $request->attributes->add(['user_soc' => $user_soc]);
         $request->attributes->add(['user_cir' => $user_cir]);
         $request->attributes->add(['user_dis' => $user_dis]);
+        if ($user['level'] == 1) {
+            $request->attributes->add(['super_admin' => 'true']);
+        }
         return $next($request);
     }
 }

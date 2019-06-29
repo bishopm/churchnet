@@ -65,9 +65,21 @@ class UsersController extends Controller
         return $user;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        return User::where('level', '<>', 'user')->orderBy('name')->get();
+        $users = User::with('individual.household.society.circuit')->whereNotNull('individual_id')->where('level', '<>', 'user')->where('name','like','%' . $request->search . '%')->orderBy('name')->get();
+        $data = array();
+        foreach ($users as $user) {
+            if ($user->individual){
+                $dum=array();
+                $dum['name'] = $user->individual->title . ' ' . $user->individual->firstname . ' ' . $user->individual->surname;
+                $dum['society'] = $user->individual->household->society->society;
+                $dum['circuit'] = $user->individual->household->society->circuit->circuit;
+                $dum['phonetoken'] = $user->phonetoken;
+                $data[] = $dum;
+            }
+        }
+        return $data;
     }
 
     public function specialaccess($society_id, $accesstype, $token)

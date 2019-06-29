@@ -31,20 +31,25 @@
             </div>
         </div>
         <div class="col-md-4">
+            <a class="btn btn-secondary" href="{{route('admin.resources.create')}}">Add new content</a>
+            <h3 style="margin-top:15px;">Churches</h3>
+            @foreach ($denominations as $denomination)
+                <li><a href="{{route('denominations.show',$denomination->slug)}}">{{$denomination->denomination}}</a></li>
+            @endforeach
+            <h3 style="margin-top:15px;">Added recently</h3>
+            <div>
+                @foreach ($recentresources as $recent)
+                    <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
+                @endforeach
+            </div>
             @if ((Auth::user()) and (Auth::user()->level<>'user'))
-                <h3>Recent users</h3>
+                <h3 style="margin-top:15px;">Recent users</h3>
                 <div>
                     @foreach ($users as $user)
                         <li>{{$user->name}} ({{$user->created_at}})</a></li>
                     @endforeach
                 </div>
             @endif
-            <h3>Added recently</h3>
-            <div>
-                @foreach ($recentresources as $recent)
-                    <li><a href="{{route('resources.show',$recent->id)}}">{{$recent->title}}</a></li>
-                @endforeach
-            </div>
         </div>
         
     </div>

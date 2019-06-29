@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ResourcesRepository;
 use Bishopm\Churchnet\Repositories\PagesRepository;
 use Bishopm\Churchnet\Models\Resource;
+use Bishopm\Churchnet\Models\Denomination;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Page;
 use Cviebrock\EloquentTaggable\Models\Tag;
@@ -47,6 +48,7 @@ class HomeController extends Controller
             $link = '<a size="'.$size.'" href="'.$baseUrl.'/tag/'.$tag['url'].'">'.$tag['tag'].'</a>';
             return "{$link} ";
         });
+        $data['denominations'] = Denomination::orderBy('slug')->get();
         $data['cloud'] = $cloud->render();
         $data['recentresources'] = $this->resource->recents(15);
         $data['users'] = User::orderBy('created_at', 'DESC')->get()->take(5);
