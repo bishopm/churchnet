@@ -76,6 +76,7 @@ class UsersController extends Controller
                 $dum['society'] = $user->individual->household->society->society;
                 $dum['circuit'] = $user->individual->household->society->circuit->circuit;
                 $dum['phonetoken'] = $user->phonetoken;
+                $dum['id'] = $user->id;
                 $data[] = $dum;
             }
         }
