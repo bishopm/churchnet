@@ -143,6 +143,8 @@ class GroupsController extends Controller
         }
         if (in_array($data['group']->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
             return $data;
+        } elseif (\Illuminate\Support\Facades\Request::get('super_admin') == 'true') {
+            return $data;
         } else {
             return "Unauthorised";
         }

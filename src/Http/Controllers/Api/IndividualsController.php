@@ -274,12 +274,12 @@ class IndividualsController extends Controller
         if (isset($request->circuit)) {
             return Individual::societymember($socs)->with('household.society')->where(function ($query) {
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
-            })->get();
+            })->orderBy('surname')->orderBy('firstname')->get();
         } else {
             $socs = array($request->society);
             return Individual::societymember($socs)->with('household.society')->where(function ($query) {
                 $query->where('surname', 'like', '%' . $this->search . '%')->orWhere('firstname', 'like', '%' . $this->search . '%');
-            })->get();
+            })->orderBy('surname')->orderBy('firstname')->get();
         }
     }
 

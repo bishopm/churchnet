@@ -162,6 +162,10 @@ class HouseholdsController extends Controller
     {
         $household = $this->household->find($id);
         $data = $this->household->update($household, $request->except('latitude', 'longitude'));
+        $household->location->latitude = $request->latitude;
+        $household->location->longitude = $request->longitude;
+        $household->location->phone = $request->location->phone;
+        $household->location->address = $request->location->address;
         return $data;
     }
 
