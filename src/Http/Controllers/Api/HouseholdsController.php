@@ -14,6 +14,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateHouseholdRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateHouseholdRequest;
+use Bishopm\Churchnet\Models\Society;
 
 class HouseholdsController extends Controller
 {
@@ -152,8 +153,19 @@ class HouseholdsController extends Controller
 
     public function store(Request $request)
     {
-        $household = Household::create($request->except('longitude', 'latitude'));
-        $household->location()->create(['latitude' => $request->latitude, 'longitude' => $request->longitude]);
+        $household = Household::create(['addressee' => $request->addressee, 'society_id' => $request->society_id, 'householdcell' => $request->householdcell]);
+        $household->location()->create(['latitude' => $request->location['latitude'], 'longitude' => $request->location['longitude'], 'phone' => $request->location['phone'], 'address' => $request->location['address']]);
+        if (($household->location->latitude == null) or ($household->location->longitude == null)){
+            $society = Society::find($request->society_id);
+            if ($society->location) {
+                $household->location->latitude = $society->location->latitude;
+                $household->location->longitude = $society->location->longitude;
+            } else {
+                $household->location->latitude = 0;
+                $household->location->longitude = 0;
+            }
+            $household->location->save();
+        }
         $household->save();
         return $household;
     }
@@ -161,12 +173,15 @@ class HouseholdsController extends Controller
     public function update($id, Request $request)
     {
         $household = $this->household->find($id);
-        $data = $this->household->update($household, $request->except('latitude', 'longitude'));
-        $household->location->latitude = $request->latitude;
-        $household->location->longitude = $request->longitude;
-        $household->location->phone = $request->location->phone;
-        $household->location->address = $request->location->address;
-        return $data;
+        $household->addressee = $request->addressee;
+        $household->householdcell = $request->householdcell;
+        $household->location->latitude = $request->location['latitude'];
+        $household->location->longitude = $request->location['longitude'];
+        $household->location->phone = $request->location['phone'];
+        $household->location->address = $request->location['address'];
+        $household->location->save();
+        $household->save();        
+        return $household;
     }
 
     public function destroy(Request $request)
