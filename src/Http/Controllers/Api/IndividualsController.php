@@ -140,6 +140,7 @@ class IndividualsController extends Controller
             }
             foreach ($request->leader['tags'] as $tagid) {
                 $tag = Tag::find($tagid)->name;
+                return array($indiv, $tag);
                 $indiv->tag($tag);
             }
             return "Leader added";
