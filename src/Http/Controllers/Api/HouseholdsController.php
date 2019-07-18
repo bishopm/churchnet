@@ -51,9 +51,9 @@ class HouseholdsController extends Controller
             }
         }
         if ($request->scope === true) {
-            return Household::with('individuals','society.circuit')->where('addressee', 'like', '%' . $request->search . '%')->get();
+            return Household::with('individuals','society.circuit')->where('addressee', 'like', '%' . $request->search . '%')->orderBy('sortsurname')->get();
         } else {
-            return Household::with('individuals','society')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->get();
+            return Household::with('individuals','society')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->orderBy('sortsurname')->get();
         }
     }
 

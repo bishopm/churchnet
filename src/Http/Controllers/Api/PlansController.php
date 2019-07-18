@@ -100,8 +100,9 @@ class PlansController extends Controller
 
     public function getservicedates($circuit, $yy, $mm)
     {
+        date_default_timezone_set('Africa/Johannesburg');
         $services=array();
-        $first = strtotime($yy . "-" . $mm . '-01');
+        $first = strtotime(gmdate($yy . "-" . $mm . '-01'));
         $sun=strtotime("first sunday " . $yy . "-" . $mm);
         $last = strtotime("last day of " . $yy . "-" . $mm);
         $weekdays = Weekday::where('servicedate', '>=', $first)->where('servicedate', '<=', $last)->orderBy('servicedate', 'ASC')->get();
@@ -170,6 +171,7 @@ class PlansController extends Controller
         $this->circuit_id = $circuit;
         $data=array();
         $dates=$this->getservicedates($circuit, $yy, $mm);
+        return $dates;
         $societies = Society::where('circuit_id', $circuit)->pluck('id')->toArray();
         $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) {
             $q->where('status', 'preacher')->orWhere('status', 'minister');
