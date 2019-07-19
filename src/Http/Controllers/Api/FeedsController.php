@@ -103,27 +103,30 @@ class FeedsController extends Controller
 
             // Weekly published content
             $this->monday = date("Y-m-d", strtotime('Monday this week'));
-            $feeditems = Feeditem::monday($this->monday)->with('feedpost')->get();
+            $feeditems = Feeditem::monday($this->monday)->with('feedpost','distributable')->get();
             foreach ($feeditems as $item) {
                 if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
-                    $item->source = $society->circuit->district->district . " Synod";
                     if ($item->distributable_id == $society->circuit->district->id) {
+                        $item->source = $society->circuit->district->district . " Synod";
                         $data[$item->feedpost->category][] = $item;
                     } else {
+                        $item->source = $society->circuit->district->district . " Synod";
                         $data['others'][ucfirst($item->feedpost->category)][] = array('id'=>$item->feedpost_id, 'title'=>$item->feedpost->title, 'source'=>$item->source);
                     }
                 } elseif ($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") {
-                    $item->source = $society->circuit->circuit;
                     if ($item->distributable_id == $society->circuit->id) {
+                        $item->source = $society->circuit->circuit;
                         $data[$item->feedpost->category][] = $item;
                     } else {
+                        $item->source = $item->distributable->circuit;
                         $data['others'][ucfirst($item->feedpost->category)][] = array('id'=>$item->feedpost_id, 'title'=>$item->feedpost->title, 'source'=>$item->source);
                     }
                 } else {
-                    $item->source = $society->society . ' Society';
                     if ($item->distributable_id == $society->id) {
+                        $item->source = $society->society . ' Society';
                         $data[$item->feedpost->category][] = $item;
                     } else {
+                        $item->source = $item->distributable->society  . ' Society';
                         $data['others'][ucfirst($item->feedpost->category)][] = array('id'=>$item->feedpost_id, 'title'=>$item->feedpost->title, 'source'=>$item->source);
                     }
                 }
