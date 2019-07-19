@@ -100,23 +100,37 @@ class FeedsController extends Controller
                 ->orWhere('meetable_type', 'Bishopm\Churchnet\Models\District')->where('meetable_id', $society->circuit->district->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
                 ->orderBy('meetingdatetime', 'ASC')->get();
             $data['diarycount'] = count($data['diary']);
+
+            // Weekly published content
             $this->monday = date("Y-m-d", strtotime('Monday this week'));
-            $feeditems = Feeditem::monday($this->monday)->with('feedpost')
-                ->where(function ($query) use ($society) {
-                    $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $society->id)
-                        ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $society->circuit->id)
-                        ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $society->circuit->district->id);
-                })->get();
+            $feeditems = Feeditem::monday($this->monday)->with('feedpost','distributable')->get();
             foreach ($feeditems as $item) {
                 if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
-                    $item->source = $society->circuit->district->district . " District";
+                    if ($item->distributable_id == $society->circuit->district->id) {
+                        $item->source = $society->circuit->district->district . " Synod";
+                        $data[$item->feedpost->category][] = $item;
+                    } else {
+                        $item->source = $society->circuit->district->district . " Synod";
+                        $data['others'][ucfirst($item->feedpost->category)][] = array('id'=>$item->feedpost_id, 'title'=>$item->feedpost->title, 'source'=>$item->source);
+                    }
                 } elseif ($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") {
-                    $item->source = $society->circuit->circuit;
+                    if ($item->distributable_id == $society->circuit->id) {
+                        $item->source = $society->circuit->circuit;
+                        $data[$item->feedpost->category][] = $item;
+                    } else {
+                        $item->source = $item->distributable->circuit;
+                        $data['others'][ucfirst($item->feedpost->category)][] = array('id'=>$item->feedpost_id, 'title'=>$item->feedpost->title, 'source'=>$item->source);
+                    }
                 } else {
-                    $item->source = $society->society;
+                    if ($item->distributable_id == $society->id) {
+                        $item->source = $society->society . ' Society';
+                        $data[$item->feedpost->category][] = $item;
+                    } else {
+                        $item->source = $item->distributable->society  . ' Society';
+                        $data['others'][ucfirst($item->feedpost->category)][] = array('id'=>$item->feedpost_id, 'title'=>$item->feedpost->title, 'source'=>$item->source);
+                    }
                 }
-                $data[$item->feedpost->category][] = $item;
-            }    
+            }
         }
         $data['feeds'] = $feeds;
         $data['userid'] = $userid;
