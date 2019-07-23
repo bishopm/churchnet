@@ -15,6 +15,7 @@ class GenericMail extends Mailable
     public function __construct($emaildata)
     {
         $this->emaildata=$emaildata;
+        return $emaildata;
     }
     
     /**
