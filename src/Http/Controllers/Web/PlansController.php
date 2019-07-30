@@ -137,7 +137,7 @@ class PlansController extends Controller
         $data['societies']=$this->societies->allforcircuit($this->circuit->id);
         $data['circuit']=$this->circuit;
         $district=District::with('individuals', 'denomination.individuals')->find($data['circuit']->district_id);
-        $data['preachers']=$this->circuit->tagged('local preacher')->get();
+        $data['preachers']=$this->circuit->tagged('Local preacher, Local preacher on trial')->get();
         $ministers=$this->circuit->tagged('Circuit minister')->get();
         $deacons=$this->circuit->tagged('Deacon')->get();
         $data['ministers'] = $ministers->merge($deacons);

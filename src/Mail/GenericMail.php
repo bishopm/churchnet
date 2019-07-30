@@ -15,7 +15,6 @@ class GenericMail extends Mailable
     public function __construct($emaildata)
     {
         $this->emaildata=$emaildata;
-        return $emaildata;
     }
     
     /**
@@ -29,7 +28,7 @@ class GenericMail extends Mailable
             return $this->subject($this->emaildata['title'])
                     ->from($this->emaildata['sender'])
                     ->replyTo($this->emaildata['sender'])
-                    ->attach($this->emaildata['file'], ['as' => $this->emaildata['attachment']['name'], 'mime' => $this->emaildata['attachment']['type']])
+                    ->attachData($this->emaildata['file'], $this->emaildata['attachment']['name'], ['mime' => $this->emaildata['attachment']['type']])
                     ->markdown('churchnet::emails.generic');
         } else {
         return $this->subject($this->emaildata['title'])

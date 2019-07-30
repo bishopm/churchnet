@@ -31,6 +31,8 @@ class MessagesController extends Controller
         if ($data['messagetype'] == "email") {
             if ($request->hasFile('file')) {
                 $data['file'] = base64_encode($request->file('file'));
+            } else {
+                $data['file'] = '';
             }
             return $this->sendemail($data, $recipients);
         } elseif ($data['messagetype'] == "sms") {
@@ -130,7 +132,12 @@ class MessagesController extends Controller
                     $sendertold = true;
                 }
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
-                    Mail::to($indiv['email'])->queue(new GenericMail($data));
+                    if ($data['file'] == ''){
+                        Mail::to($indiv['email'])->queue(new GenericMail($data));
+                    } else {
+                        // Attachments can't be queued
+                        Mail::to($indiv['email'])->send(new GenericMail($data));
+                    }
                     $dum['emailresult'] = "OK";
                 } else {
                     $dum['emailresult'] = "Invalid";
