@@ -26,14 +26,9 @@ class MessagesController extends Controller
 
     public function send(Request $request)
     {
-        $data = json_decode($request->message, true);
+        $data = $request->message;
         $recipients = $this->getrecipients($data['groups'], $data['individuals'], $data['society_id'], $data['messagetype']);
         if ($data['messagetype'] == "email") {
-            if ($request->hasFile('file')) {
-                $data['file'] = base64_encode($request->file('file'));
-            } else {
-                $data['file'] = '';
-            }
             return $this->sendemail($data, $recipients);
         } elseif ($data['messagetype'] == "sms") {
             return $this->sendsms($data['textmessage'], $recipients, $data['society_id']);
@@ -132,7 +127,7 @@ class MessagesController extends Controller
                     $sendertold = true;
                 }
                 if (filter_var($indiv['email'], FILTER_VALIDATE_EMAIL)) {
-                    if ($data['file'] == ''){
+                    if (!isset($data['attachment']['data'])){
                         Mail::to($indiv['email'])->queue(new GenericMail($data));
                     } else {
                         // Attachments can't be queued

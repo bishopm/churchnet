@@ -24,11 +24,11 @@ class GenericMail extends Mailable
      */
     public function build()
     {
-        if (array_key_exists('file',$this->emaildata)) {
+        if (array_key_exists('data',$this->emaildata['attachment'])) {
             return $this->subject($this->emaildata['title'])
                     ->from($this->emaildata['sender'])
                     ->replyTo($this->emaildata['sender'])
-                    ->attachData($this->emaildata['file'], $this->emaildata['attachment']['name'], ['mime' => $this->emaildata['attachment']['type']])
+                    ->attachData(base64_decode(str_replace("data:application/pdf;base64,","",$this->emaildata['attachment']['data'])), $this->emaildata['attachment']['name'], ['mime' => $this->emaildata['attachment']['type']])
                     ->markdown('churchnet::emails.generic');
         } else {
         return $this->subject($this->emaildata['title'])
