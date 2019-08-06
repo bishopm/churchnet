@@ -170,6 +170,11 @@ class IndividualsController extends Controller
         return "Individual added / updated";
     }
 
+    public function checkphone(Request $request)
+    {
+        return Individual::select('firstname', 'surname', 'cellphone', 'email', 'id')->where('cellphone', $request->phone)->first();
+    }
+
     public function phone(Request $request)
     {
         $data['individual'] = Individual::select('firstname', 'household_id', 'surname', 'cellphone', 'title', 'id')
@@ -177,7 +182,7 @@ class IndividualsController extends Controller
             ->where('cellphone', $request->phone)->first();
         if (!$data['individual']) {
             return "No individual";
-        } elseif ($data['individual']->household->society_id <> $request->society_id) {
+        } elseif ((isset($request->society_id)) and ($data['individual']->household->society_id <> $request->society_id)) {
             return "Wrong society";
         }
         $data['society'] = $data['individual']->household->society;

@@ -8,6 +8,7 @@ Route::middleware(['handlecors'])->group(function () {
 
     // Journey routes
     Route::post('/api/login', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@journeylogin', 'as' => 'api.journey.login']);
+    Route::post('/api/checkphone', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@checkphone', 'as' => 'api.individuals.checkphone']);
     Route::get('api/sunday/{date?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@sunday', 'as' => 'api.lectionary.sunday']);
     Route::get('api/reading/{reading}/{bible}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading', 'as' => 'api.lectionary.reading']);
     Route::get('api/readingplans', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@readingplans', 'as' => 'api.lectionary.readingplans']);
