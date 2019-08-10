@@ -65,7 +65,7 @@ class IndividualsController extends Controller
                 $user->name = $request->firstname . ' ' . $request->surname;
                 $user->save();
             } else {
-                $newuser = User::create([
+                $user = User::create([
                     'individual_id' => $individual->id,
                     'name' => $request->firstname . ' ' . $request->surname,
                     'phone' => $request->phone,
