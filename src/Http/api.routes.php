@@ -20,6 +20,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('/api/hymns/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@hymns', 'as' => 'api.feeds.hymns']);
     Route::get('/api/feedpost/{post}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedpost', 'as' => 'api.feeds.feedpost']);
     Route::get('/api/feeditem/{id}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditem', 'as' => 'api.feeds.feeditem']);
+    Route::post('/api/feedarchive', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@archive', 'as' => 'api.feeds.archive']);
     Route::post('/api/myfeeditems', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@myfeeds', 'as' => 'api.feeditems.myfeeds']);
     Route::post('/api/reminders', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\RemindersController@show', 'as' => 'api.reminders.show']);
     Route::post('/api/reminders/delete', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\RemindersController@destroy', 'as' => 'api.reminders.destroy']);

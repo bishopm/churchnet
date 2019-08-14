@@ -139,6 +139,35 @@ class FeedsController extends Controller
         return $data;
     }
 
+    public function archive(Request $request)
+    {
+        $society = Society::with('circuit.district')->find($request->society);
+        if ($society) {
+            // Archived weekly published content
+            $this->monday = date("Y-m-d", strtotime('Monday this week'));
+            $feeditems = Feeditem::with('feedpost','distributable')->orderBy('created_at','DESC')->get();
+            foreach ($feeditems as $item) {
+                if ($item->distributable_type == "Bishopm\Churchnet\Models\District") {
+                    if (($item->distributable_id == $society->circuit->district->id) and ($item->feedpost->category==$request->contenttype)){
+                        $item->source = $society->circuit->district->district . " Synod";
+                        $data[] = $item;
+                    }
+                } elseif (($item->distributable_type == "Bishopm\Churchnet\Models\Circuit") and ($item->feedpost->category==$request->contenttype)){
+                    if ($item->distributable_id == $society->circuit->id) {
+                        $item->source = $society->circuit->circuit;
+                        $data[] = $item;
+                    }
+                } elseif ($item->feedpost->category==$request->contenttype){
+                    if ($item->distributable_id == $society->id) {
+                        $item->source = $society->society . ' Society';
+                        $data[] = $item;
+                    }
+                }
+            }
+        }
+        return $data;
+    }
+
     public function feedlibrary($society)
     {
         $data = array();
