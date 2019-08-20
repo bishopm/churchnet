@@ -7,6 +7,7 @@ use Bishopm\Churchnet\Repositories\ReadingsRepository;
 use Bishopm\Churchnet\Models\Cache;
 use Bishopm\Churchnet\Models\Readingplan;
 use Bishopm\Churchnet\Models\Dailyreading;
+use Bishopm\Churchnet\Models\Denomination;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
@@ -34,6 +35,7 @@ class LectionaryController extends Controller
         $res['description']=$fin['lection']['description'] . ' [' . $fin['lection']['year'] . '] - ' . $fin['lection']['colour'];
         $res['readings']=explode(';', $fin['lection']['readings']);
         $res['colour']=$fin['lection']['colour'];
+        $res['denominations']=Denomination::orderBy('denomination')->get();
         if ($fin['lection']['description'] == "First Sunday in Lent") {
             $res['extras'][date("j F Y", strtotime($fin['date'])-4*24*3600)]=$this->reading->findByDesc($this->lyear, 'Ash Wednesday');
         } elseif ($fin['lection']['description'] == "Resurrection of the Lord - Easter Day") {
@@ -50,6 +52,7 @@ class LectionaryController extends Controller
         } elseif ($fin['lection']['description'] == "Christmas Day") {
             $res['extras'][date("Y", strtotime($fin['date'])) . "-12-24"]=$this->reading->findByDesc($this->lyear, 'Christmas Eve');
         }
+
         return $res;
     }
 
