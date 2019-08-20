@@ -8,15 +8,14 @@ use App\Http\Controllers\Controller;
 class DenominationsController extends Controller
 {
 
-    /**
-     * Display a listing of the resource.
-     *
-     * @return Response
-     */
+    public function index()
+    {
+        return Denomination::orderBy('denomination')->get();
+    }
 
     public function societies($id)
     {
-        $societies = Denomination::find($id)->with('circuits.societies')->first();
+        $societies = Denomination::with('circuits.societies')->where('id',$id)->first();
         $socs = array();
         foreach ($societies->circuits as $circuit) {
             foreach ($circuit->societies as $society) {

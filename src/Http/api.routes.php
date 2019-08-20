@@ -31,6 +31,7 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('/api/circuits/{circuit}/societies/thisweek', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@thisweek', 'as' => 'api.societies.thisweek']);
     Route::get('api/circuits/{circuit}/societies/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\SocietiesController@show', 'as' => 'api.societies.show']);
     Route::get('api/services/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\ServicesController@index', 'as' => 'api.services.index']);
+    Route::get('/api/denominations', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DenominationsController@index', 'as' => 'api.denominations.index']);
     Route::get('/api/denominations/{id}/societies', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DenominationsController@societies', 'as' => 'api.denominations.societies']);
     Route::post('groupreport', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PlansController@groupreport', 'as' => 'groupreport.show']);
 
