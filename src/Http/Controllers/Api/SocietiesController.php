@@ -34,6 +34,11 @@ class SocietiesController extends Controller
         return json_decode($this->society->allforcircuit($circuit));
     }
 
+    public function independents()
+    {
+        return Society::whereNull('circuit_id')->orderBy('society')->get();
+    }
+
     public function search(Request $request)
     {
         if (isset($request->scope)) {
