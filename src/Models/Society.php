@@ -12,6 +12,9 @@ class Society extends Model
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');
+    protected $casts = [
+        'giving_user' => 'integer',
+    ];
 
     public function services()
     {
