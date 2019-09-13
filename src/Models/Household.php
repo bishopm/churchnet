@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Household extends Model
 {
     protected $guarded = array('id');
+    protected $casts = [
+        'householdcell' => 'integer',
+        'society_id' => 'integer'
+    ];
 
     public function individuals()
     {

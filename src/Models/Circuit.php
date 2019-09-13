@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Circuit extends Model
 {
     protected $guarded = array('id');
+    protected $casts = [
+        'circuitnumber' => 'integer',
+        'district_id' => 'integer'
+    ];
 
     public function societies()
     {

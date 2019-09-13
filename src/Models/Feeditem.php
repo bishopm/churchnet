@@ -8,6 +8,10 @@ use Illuminate\Database\Eloquent\Builder;
 class Feeditem extends Model
 {
     protected $guarded = array('id');
+    protected $casts = [
+        'feedpost_id' => 'integer',
+        'distributable_id' => 'integer'
+    ];
 
     public function distributable()
     {

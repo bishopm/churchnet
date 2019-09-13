@@ -12,6 +12,11 @@ class Person extends Model
 
     protected $dates = ['deleted_at'];
     protected $guarded = array('id');
+    protected $casts = [
+        'circuit_id' => 'integer',
+        'personable_id' => 'integer',
+        'individual_id' => 'integer'
+    ];
 
     public function personable()
     {

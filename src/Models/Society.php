@@ -14,6 +14,9 @@ class Society extends Model
     protected $guarded = array('id');
     protected $casts = [
         'giving_user' => 'integer',
+        'giving_lag' => 'integer',
+        'giving_reports' => 'integer',
+        'pastoral_group' => 'integer'
     ];
 
     public function services()

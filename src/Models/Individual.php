@@ -10,6 +10,9 @@ class Individual extends Model
     use Taggable;
 
     protected $guarded = array('id');
+    protected $casts = [
+        'household_id' => 'integer'
+    ];
 
     public function household()
     {

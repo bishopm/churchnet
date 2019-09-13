@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Meeting extends Model
 {
     protected $guarded = array('id');
+    protected $casts = [
+        'meetable_id' => 'integer',
+        'society_id' => 'integer'
+    ];
 
     public function society()
     {

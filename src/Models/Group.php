@@ -8,6 +8,10 @@ use Bishopm\Churchnet\Models\Individual;
 class Group extends Model
 {
     protected $guarded = array('id');
+    protected $casts = [
+        'leader' => 'integer',
+        'society_id' => 'integer'
+    ];
 
     public function individuals()
     {

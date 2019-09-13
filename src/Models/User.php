@@ -30,6 +30,11 @@ class User extends Authenticatable implements JWTSubject
         'password'
     ];
 
+    protected $casts = [
+        'individual_id' => 'integer',
+        'level' => 'integer'
+    ];
+
     public function individual()
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Individual');
