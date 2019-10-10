@@ -153,6 +153,8 @@ class PlansController extends Controller
                     $data[$this->make_key($serv)][$k]['person']['id']='';
                     $data[$this->make_key($serv)][$k]['tag']='';
                     $data[$this->make_key($serv)][$k]['id']=0;
+                    $data[$this->make_key($serv)][$k]['trial']['name']='';
+                    $data[$this->make_key($serv)][$k]['trial']['id']='';
                 }
             }
         }
@@ -190,6 +192,11 @@ class PlansController extends Controller
             $allplans[$js][$kk]['tag']=$plan->servicetype;
             if ($plan->person) {
                 $allplans[$js][$kk]['person']['name']=substr($plan->person->individual->firstname, 0, 1) . ' ' . $plan->person->individual->surname;
+            }
+            if ($plan->trialservice) {
+                $tp = Person::with('individual')->find($plan->trialservice);
+                $allplans[$js][$kk]['trial']['id']=$plan->trialservice;
+                $allplans[$js][$kk]['trial']['name']=substr($tp->individual->firstname,0,1) . " " . $tp->individual->surname;
             }
             $allplans[$js][$kk]['person']['id']=$plan->person_id;
             $allplans[$js][$kk]['id']=$plan->id;

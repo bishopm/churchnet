@@ -358,7 +358,7 @@ class PlansController extends Controller
                     if (isset($dat['fin'][$soc['society']][$sun['yy']][$sun['mm']][$sun['dd']][$ser['servicetime']]['trial'])) {
                         $pdf->setxy($x, $y+$tagadd+2.5);
                         $trial=$this->people->find($dat['fin'][$soc['society']][$sun['yy']][$sun['mm']][$sun['dd']][$ser['servicetime']]['trial']);
-                        $tname="[" . utf8_decode(substr($trial->firstname, 0, 1) . " " . $trial->surname) . "]";
+                        $tname="[" . utf8_decode(substr($trial->individual->firstname, 0, 1) . " " . $trial->individual->surname) . "]";
                         $pdf->SetFont('Arial', '', 6.5);
                         $pdf->cell($x_add, $y_add-3, $tname, 0, 0, 'C');
                     }
