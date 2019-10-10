@@ -7,6 +7,7 @@ use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\Setting;
 use Bishopm\Churchnet\Models\Permissible;
 use Illuminate\Http\Request;
 use Auth;
@@ -62,6 +63,8 @@ class UsersController extends Controller
         $user['name'] = $data->name;
         $user['level'] = $data->level;
         $user['email'] = $data->email;
+        $user['version']=Setting::where('setting_key','churchnet_version')->first()->setting_value;
+        $user['updatenotes']=Setting::where('setting_key','churchnet_updatenotes')->first()->setting_value;
         return $user;
     }
 

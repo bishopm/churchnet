@@ -178,7 +178,7 @@ class PlansController extends Controller
         $data=array();
         $dates=$this->getservicedates($circuit, $yy, $mm);
         $societies = Society::where('circuit_id', $circuit)->pluck('id')->toArray();
-        $preachers = Individual::societymember($societies)->with('person')->whereHas('person', function ($q) {
+        $preachers = Individual::societymember($societies)->with('person.tags')->whereHas('person', function ($q) {
             $q->where('status', 'preacher')->orWhere('status', 'minister');
         })->whereHas('person', function ($q1) {
             $q1->where('active', 'yes');
