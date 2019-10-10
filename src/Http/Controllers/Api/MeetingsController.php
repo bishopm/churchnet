@@ -10,8 +10,6 @@ use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\District;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Bishopm\Churchnet\Http\Requests\CreateMeetingRequest;
-use Bishopm\Churchnet\Http\Requests\UpdateMeetingRequest;
 
 class MeetingsController extends Controller
 {
