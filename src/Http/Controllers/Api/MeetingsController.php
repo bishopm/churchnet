@@ -95,7 +95,6 @@ class MeetingsController extends Controller
 
     public function storeagendaitems(Request $request)
     {
-        date_default_timezone_set('Africa/Johannesburg');
         $meeting = Meeting::create([
             'meetable_id' => 1,
             'meetable_type' => 'Bishopm\Churchnet\Models\Synod',

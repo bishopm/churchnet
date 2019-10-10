@@ -21,27 +21,18 @@
                         <table id="indexTable" class="table table-striped table-hover table-condensed" cellspacing="0">
                             <thead>
                                 <tr>
-                                    <th>Setting Key</th><th>Level</th><th>Setting Value</th>
+                                    <th>Setting Key</th><th>Setting Value</th>
                                 </tr>
                             </thead>
                             <tfoot>
                                 <tr>
-                                    <th>Setting Key</th><th>Level</th><th>Setting Value</th>
+                                    <th>Setting Key</th><th>Setting Value</th>
                                 </tr>
                             </tfoot>
                             <tbody>
                                 @forelse ($settings as $setting)
                                     <tr>
                                         <td><a href="{{route('admin.settings.edit',$setting->id)}}">{{ucwords(str_replace('_',' ',$setting->setting_key))}}</a></td>
-                                        <td><a href="{{route('admin.settings.edit',$setting->id)}}">
-                                        @if (!isset($setting->relatable))
-                                            Connexion
-                                        @elseif ($setting->relatable_type=="Bishopm\Churchnet\Models\District")
-                                            {{$setting->relatable->district}} District
-                                        @else
-                                            {{ucwords(strtolower($setting->relatable->circuit))}}
-                                        @endif
-                                        </a></td>
                                         <td><a href="{{route('admin.settings.edit',$setting->id)}}">{{$setting->setting_value}}</a></td>
                                     </tr>
                                 @empty

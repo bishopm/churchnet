@@ -39,16 +39,12 @@ class SettingsController extends Controller
 
     public function edit(Setting $setting)
     {
-        $data['districts']=$this->districts->all();
-        $data['circuits']=$this->circuits->all();
         $data['setting']=$setting;
         return view('churchnet::settings.edit', $data);
     }
 
     public function create()
     {
-        $data['districts']=$this->districts->all();
-        $data['circuits']=$this->circuits->all();
         return view('churchnet::settings.create', $data);
     }
 
@@ -65,17 +61,6 @@ class SettingsController extends Controller
         $arr= array();
         $arr['setting_key']=$request->setting_key;
         $arr['setting_value']=$request->setting_value;
-        if ($request->level=="Connexion") {
-            $arr['level']=$request->level;
-        } elseif ($request->level=="Bishopm\\Churchnet\\Models\\District") {
-            $arr['level']="District";
-            $arr['relatable_type']=$request->level;
-            $arr['relatable_id']=$request->district_id;
-        } else {
-            $arr['level']="Circuit";
-            $arr['relatable_type']=$request->level;
-            $arr['relatable_id']=$request->circuit_id;
-        }
         $setting = Setting::create($arr);
         return redirect()->route('admin.settings.index')
             ->withSuccess('New setting added');
@@ -86,17 +71,6 @@ class SettingsController extends Controller
         $arr= array();
         $arr['setting_key']=$request->setting_key;
         $arr['setting_value']=$request->setting_value;
-        if ($request->level=="Connexion") {
-            $arr['level']=$request->level;
-        } elseif ($request->level=="Bishopm\\Churchnet\\Models\\District") {
-            $arr['level']="District";
-            $arr['relatable_type']=$request->level;
-            $arr['relatable_id']=$request->district_id;
-        } else {
-            $arr['level']="Circuit";
-            $arr['relatable_type']=$request->level;
-            $arr['relatable_id']=$request->circuit_id;
-        }
         $this->setting->update($setting, $arr);
         return redirect()->route('admin.settings.index')->withSuccess('Setting has been updated');
     }

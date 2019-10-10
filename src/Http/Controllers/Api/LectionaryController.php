@@ -8,6 +8,7 @@ use Bishopm\Churchnet\Models\Cache;
 use Bishopm\Churchnet\Models\Readingplan;
 use Bishopm\Churchnet\Models\Dailyreading;
 use Bishopm\Churchnet\Models\Denomination;
+use Bishopm\Churchnet\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
@@ -36,6 +37,8 @@ class LectionaryController extends Controller
         $res['readings']=explode(';', $fin['lection']['readings']);
         $res['colour']=$fin['lection']['colour'];
         $res['denominations']=Denomination::orderBy('denomination')->get();
+        $res['version']=Setting::where('setting_key','journey_version')->first()->setting_value;
+        $res['updatenotes']=Setting::where('setting_key','journey_updatenotes')->first()->setting_value;
         if ($fin['lection']['description'] == "First Sunday in Lent") {
             $res['extras'][date("j F Y", strtotime($fin['date'])-4*24*3600)]=$this->reading->findByDesc($this->lyear, 'Ash Wednesday');
         } elseif ($fin['lection']['description'] == "Resurrection of the Lord - Easter Day") {
