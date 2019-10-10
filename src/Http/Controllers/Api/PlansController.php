@@ -130,6 +130,7 @@ class PlansController extends Controller
                 $plan = Plan::where('service_id', $request->service_id)->where('planyear', $request->planyear)->where('planmonth', $request->planmonth)->where('planday', $request->planday)->first();
                 if ($plan) {
                     $plan->person_id = $request->person_id;
+                    $plan->trialservice= $request->trialservice;
                     $plan->servicetype = $request->servicetype;
                     $plan->save();
                 } else {
