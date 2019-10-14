@@ -140,23 +140,19 @@ class LectionaryController extends Controller
         if ($cache) {
             return json_decode($cache->cached);
         } else {
-            $api_secret='DE3446OVkzT6ASUVyr5iNeoTNbEuZwkPO4Wj1dft';
-            $client = new Client(['auth' => [$api_secret,''],'verify' => false]);
-            $query = 'https://bibles.org/v2/passages.js?q[]=' . urlencode($reading) . '&version=' . $this->translation;
+            $client = new Client();
+            $query = 'https://labs.bible.org/api/?passage=' . urlencode($reading);
             try {
-                $response=json_decode($client->request('GET', $query)->getBody()->getContents(), true);
+                $dum['text']=$client->request('GET', $query)->getBody()->getContents();
                 $dum['reading']=$reading;
-                $dum['text']=$response['response']['search']['result']['passages'][0]['text'];
-                if ($this->translation == "eng-MSG") {
-                    $dum['copyright']="Scripture taken from The Message. Copyright © 1993, 1994, 1995, 1996, 2000, 2001, 2002. Used by permission of NavPress Publishing Group. ";
-                } else {
-                    $dum['copyright']="Good News Bible. Scripture taken from the Good News Bible (Today's English Version Second Edition, UK/British Edition). Copyright © 1992 British & Foreign Bible Society. Used by permission. ";
-                }
+                $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
                 $dum['copyright'].= "Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
-                $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
+                if ($dum['text']) {
+                    $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
+                }
                 $dum['source']="API";
             } catch (GuzzleException $e) {
-                $dum['text'] = "Sorry - we're not able to access bibles.org at the moment, please try again later";
+                $dum['text'] = "Sorry - we're not able to access bible.org at the moment, please try again later";
                 return $dum;
             }
             return $dum;
