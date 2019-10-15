@@ -13,6 +13,7 @@ class ChurchnetServiceProvider extends ServiceProvider
         'Bishopm\Churchnet\Console\BirthdayEmail',
         'Bishopm\Churchnet\Console\PlannedGivingReportEmail',
         'Bishopm\Churchnet\Console\PreacherReminder',
+        'Bishopm\Churchnet\Console\RosterReminder',
         'Bishopm\Churchnet\Console\RecordStats'
     ];
 

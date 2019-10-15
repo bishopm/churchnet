@@ -3,6 +3,7 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Models\Cache;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
@@ -57,6 +58,14 @@ class FeedsController extends Controller
                 ->get();
             $myfeeds = array();
             foreach ($allfeeds->sortBy('feed.title') as $ff) {
+                if ($ff->frequency == 'daily') {
+                    $cache=Cache::where('feed_id', $ff->feed_id)->where('ndx', date('Y-m-d'))->first();
+                }
+                if (isset($cache)) {
+                    
+                } else {
+
+                }
                 $myfeeds[$ff['feed']['id']] = $ff['feedable_type'];
                 $feed = Feeds::make($ff['feed']['feedurl']);
                 $thisfeed = array();
