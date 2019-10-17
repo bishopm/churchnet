@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Console;
 
 use Illuminate\Console\Command;
 use Bishopm\Churchnet\Models\User;
+use Bishopm\Churchnet\Models\Rosteritem;
 use Bishopm\Churchnet\Models\Reminder;
 use Bishopm\Churchnet\Notifications\PushNotification;
 use Illuminate\Support\Facades\Notification;
@@ -31,9 +32,11 @@ class RosterReminder extends Command
      */
     public function handle()
     {
+        
+        $items = Rosteritem::where
         $message = "This is a reminder that you are preaching this Sunday at:\n";
         $message = $message . "\n\nThe lectionary readings for Sunday are: ";
         $reminder = Reminder::create(['user_id'=>1, 'message'=>$message]);
-        Notification::send(User::find(1), new PushNotification('Michael Bishop', $message));
+        // Notification::send(User::find(1), new PushNotification('Michael Bishop', $message));
     }
 }

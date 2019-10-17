@@ -192,7 +192,7 @@ class RostersController extends Controller
 
     public function store(Request $request)
     {
-        $roster = Roster::create(['name' => $request->name, 'dayofweek' => $request->dayofweek, 'society_id' => $request->society_id, 'message' => $request->message]);
+        $roster = Roster::create(['name' => $request->name, 'dayofweek' => $request->dayofweek, 'reminderday' => $request->reminderday, 'society_id' => $request->society_id, 'message' => $request->message]);
         return $roster;
     }
 
@@ -201,6 +201,7 @@ class RostersController extends Controller
         $roster = Roster::find($id);
         $roster->name = $request->name;
         $roster->dayofweek=$request->dayofweek;
+        $roster->reminderday=$request->reminderday;
         $roster->message=$request->message;
         $roster->save();
         return $roster;

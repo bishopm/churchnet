@@ -16,7 +16,8 @@ class CreateRostersTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->integer('society_id');
-            $table->integer('dayofweek');
+            $table->string('dayofweek');
+            $table->string('reminderday');
             $table->softDeletes();
             $table->timestamps();
         });
