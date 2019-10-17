@@ -33,10 +33,11 @@ class RosterReminder extends Command
     public function handle()
     {
         
-        $items = Rosteritem::where
+        $items = Rosteritem::with('rostergroup.roster')->where('rosterdate',date('Y-m-d'))->first();
+        
         $message = "This is a reminder that you are preaching this Sunday at:\n";
         $message = $message . "\n\nThe lectionary readings for Sunday are: ";
-        $reminder = Reminder::create(['user_id'=>1, 'message'=>$message]);
+        // $reminder = Reminder::create(['user_id'=>1, 'message'=>$message]);
         // Notification::send(User::find(1), new PushNotification('Michael Bishop', $message));
     }
 }
