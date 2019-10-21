@@ -66,13 +66,8 @@ class RostersController extends Controller
         DB::enableQueryLog();
         foreach ($weeks as $wkno=>$week) {
             foreach ($roster->rostergroups as $grp) {
-                $ri = Rosteritem::where('rostergroup_id', $grp->id)->where('rosterdate', $week)->first();
-                if ($ri['individuals']) {
-                    $indivs = explode(',', $ri['individuals']);
-                    $data[$grp->group->groupname][$week]=Individual::whereIn('id', $indivs)->select('surname', 'firstname', 'id')->get()->toArray();
-                } else {
-                    $data[$grp->group->groupname][$week]=array();
-                }
+                $ri = Rosteritem::with('individuals')->where('rostergroup_id', $grp->id)->where('rosterdate', $week)->first();
+                $data[$grp->group->groupname][$week]=$ri['individuals'];
             }
             ksort($data);
         }
@@ -98,15 +93,17 @@ class RostersController extends Controller
                     $headings[] = date("j F Y", strtotime($wk));
                 }
                 $yadd=0;
-                foreach ($cell as $ii) {
-                    if (count($cell)>$maxi){
-                        $maxi=count($cell);
+                if ($cell) {
+                    foreach ($cell as $ii) {
+                        if (count($cell)>$maxi){
+                            $maxi=count($cell);
+                        }
+                        $pdf->setxy($xx, $yy+$yadd);
+                        if ($ii) {
+                            $pdf->cell(45, 0, $ii['firstname'] . ' ' . $ii['surname'], 0, 0, 'C');
+                        }
+                        $yadd=$yadd+4;
                     }
-                    $pdf->setxy($xx, $yy+$yadd);
-                    if ($ii) {
-                        $pdf->cell(45, 0, $ii['firstname'] . ' ' . $ii['surname'], 0, 0, 'C');
-                    }
-                    $yadd=$yadd+4;
                 }
                 $xx=$xx+45;
             }

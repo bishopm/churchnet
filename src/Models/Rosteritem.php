@@ -17,4 +17,9 @@ class Rosteritem extends Model
     {
         return $query->where('rosterdate',$date);
     }
+
+    public function individuals()
+    {
+        return $this->belongsToMany('Bishopm\Churchnet\Models\Individual')->orderBy('surname')->orderBy('firstname');
+    }
 }

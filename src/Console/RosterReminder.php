@@ -32,12 +32,18 @@ class RosterReminder extends Command
      */
     public function handle()
     {
-        
-        $items = Rosteritem::with('rostergroup.roster')->where('rosterdate',date('Y-m-d'))->first();
-        
-        $message = "This is a reminder that you are preaching this Sunday at:\n";
-        $message = $message . "\n\nThe lectionary readings for Sunday are: ";
-        // $reminder = Reminder::create(['user_id'=>1, 'message'=>$message]);
-        // Notification::send(User::find(1), new PushNotification('Michael Bishop', $message));
+        $remindertime = strtotime(date('Y-m-d')) + (86400 * 6);
+        $items = Rosteritem::with('rostergroup.roster','rostergroup.group','individuals.user')->where('rosterdate',date('Y-m-d',$remindertime))->get();
+        foreach ($items as $item) {
+            if (isset($item->individuals)) {
+                foreach ($item->individuals as $indiv) {
+                    if (isset($indiv->user->id)) {
+                        $message = $indiv->firstname . " " . $indiv->surname . ": A roster reminder for " . date('D d M',strtotime($item->rosterdate)) . " (" . $item->rostergroup->group->groupname . ")\n";
+                        Reminder::create(['user_id'=>$indiv->user->id, 'message'=>$message]);
+                        Notification::send(User::find($indiv->user->id), new PushNotification($indiv->firstname . ' ' . $indiv->surname, $message));
+                    }
+                }
+            } 
+        }
     }
 }

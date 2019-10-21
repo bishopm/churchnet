@@ -51,7 +51,7 @@ class RostersController extends Controller
 
     public function show($id, $yr, $mth)
     {
-        $roster = Roster::with('rostergroups.group', 'rostergroups.rosteritems', 'society')->where('id', $id)->first();
+        $roster = Roster::with('rostergroups.group', 'rostergroups.rosteritems.individuals', 'society')->where('id', $id)->first();
         $firstweek = "First " . $roster->dayofweek . " of " . $mth . " " . $yr;
         $weeks[0] = date("Y-m-d", strtotime($firstweek));
         $weeks[] = date("Y-m-d", strtotime($weeks[0] . " + 1 week"));
@@ -75,20 +75,11 @@ class RostersController extends Controller
             foreach ($rg->rosteritems as $ri) {
                 $wk = array_search($ri->rosterdate, $weeks);
                 if (($wk) or ($wk === 0)) {
-                    $indivs = explode(',', $ri->individuals);
                     $people=array();
-                    foreach ($indivs as $indiv) {
-                        if ($indiv >= 1) {
-                            $person = Individual::find($indiv);
-                            if ($person) {
-                                $dum['label']=substr($person->firstname, 0, 1) . " " . $person->surname;
-                                $dum['id']=$person->id;
-                            } else {
-                                $dum['label']=$indiv;
-                                $dum['id']=$indiv;
-                            }
-                            $people[]=$dum;
-                        }
+                    foreach ($ri->individuals as $indiv) {
+                        $dum['label']=substr($indiv->firstname, 0, 1) . " " . $indiv->surname;
+                        $dum['id']=$indiv->id;
+                        $people[]=$dum;
                     }
                     $row->$wk->people=$people;
                 }
@@ -121,24 +112,21 @@ class RostersController extends Controller
             $nextday = date('Y-m-d', strtotime('next ' . $this->roster->dayofweek));
         }
         $messages = array();
-        $items = Rosteritem::where('rosterdate', $nextday)->with('rostergroup')->whereHas('rostergroup', function ($query) {
+        $items = Rosteritem::where('rosterdate', $nextday)->with('rostergroup','individuals')->whereHas('rostergroup', function ($query) {
             $query->where('roster_id', '=', $this->roster->id);
         })->get();
         $extras = array();
         foreach ($items as $item) {
             $individs = explode(',', $item->individuals);
-            if ($item->individuals !== "") {
-                foreach ($individs as $individ) {
-                    $message = new \stdClass;
-                    $indiv = Individual::find($individ);
-                    $message->firstname = $indiv->firstname;
-                    $message->surname = $indiv->surname;
-                    $message->cellphone = $indiv->cellphone;
-                    $messages[$individ]['person']=$message;
-                    $messages[$individ]['groups'][$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
-                    if ($item->rostergroup->extrainfo == 'yes') {
-                        $extras[$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
-                    }
+            foreach ($item->individuals as $indiv) {
+                $message = new \stdClass;
+                $message->firstname = $indiv->firstname;
+                $message->surname = $indiv->surname;
+                $message->cellphone = $indiv->cellphone;
+                $messages[$indiv->id]['person']=$message;
+                $messages[$indiv->id]['groups'][$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
+                if ($item->rostergroup->extrainfo == 'yes') {
+                    $extras[$item->rostergroup->group->id]=$item->rostergroup->group->groupname;
                 }
             }
         }
@@ -213,8 +201,10 @@ class RostersController extends Controller
         if ($delete) {
             $delete->delete();
         }
-        $rosteritem = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate, 'individuals' => implode(",", $request->individuals)]);
-        return $rosteritem;
+        $data['rosteritem'] = Rosteritem::create(['rostergroup_id' => $request->rostergroup_id, 'rosterdate' => $request->rosterdate]);
+        $data['rosteritem']->individuals()->sync($request->individuals);
+        $data['individuals'] = $data['rosteritem']->individuals;
+        return $data;
     }
 
     public function storerostergroup(Request $request)

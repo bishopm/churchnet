@@ -14,6 +14,11 @@ class Individual extends Model
         'household_id' => 'integer'
     ];
 
+    public function rosteritems()
+    {
+        return $this->belongsToMany('Bishopm\Churchnet\Models\Rosteritem');
+    }
+
     public function household()
     {
         return $this->belongsTo('Bishopm\Churchnet\Models\Household');
