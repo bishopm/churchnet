@@ -76,10 +76,12 @@ class RostersController extends Controller
                 $wk = array_search($ri->rosterdate, $weeks);
                 if (($wk) or ($wk === 0)) {
                     $people=array();
-                    foreach ($ri->individuals as $indiv) {
-                        $dum['label']=substr($indiv->firstname, 0, 1) . " " . $indiv->surname;
-                        $dum['id']=$indiv->id;
-                        $people[]=$dum;
+                    if (isset($ri->individuals)) {
+                        foreach ($ri->individuals as $indiv) {
+                            $dum['label']=substr($indiv->firstname, 0, 1) . " " . $indiv->surname;
+                            $dum['id']=$indiv->id;
+                            $people[]=$dum;
+                        }
                     }
                     $row->$wk->people=$people;
                 }
@@ -117,7 +119,7 @@ class RostersController extends Controller
         })->get();
         $extras = array();
         foreach ($items as $item) {
-            $individs = explode(',', $item->individuals);
+            // $individs = explode(',', $item->individuals);
             foreach ($item->individuals as $indiv) {
                 $message = new \stdClass;
                 $message->firstname = $indiv->firstname;
