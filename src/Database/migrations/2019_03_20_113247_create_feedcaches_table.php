@@ -21,6 +21,7 @@ class CreateFeedcachesTable extends Migration
             $table->string('author')->nullable();
             $table->string('description')->nullable();
             $table->string('pubdate')->nullable();
+            $table->string('enclosure')->nullable();
             $table->text('body')->nullable();
             $table->timestamps();
         });

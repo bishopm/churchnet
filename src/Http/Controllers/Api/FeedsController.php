@@ -3,7 +3,6 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Bishopm\Churchnet\Models\Cache;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
@@ -68,45 +67,48 @@ class FeedsController extends Controller
                         $thisfeed['title'] = $ff['feed']['title'];
                         $thisfeed['items'] = $cached;
                         $data[$ff['feed']['category']][]=$thisfeed;
-                    }
-                } else {
-                    $feed = Feeds::make($ff['feed']['feedurl']);
-                    $thisfeed = array();
-                    $thisfeed['title'] = $ff['feed']['title'];
-                    $thisfeed['permalink'] = $feed->get_permalink();
-                    $thisfeed['logo'] = array('url'=>$feed->get_image_url(), 'width'=>$feed->get_image_width(), 'height'=>$feed->get_image_height());
-                    $thisfeed['items'] = array();
-                    foreach ($feed->get_items() as $item) {
-                        if ($ff['feed']['frequency'] == "daily") {
-                            $timeago = time() - (24 * 60 * 60);
-                        } else {
-                            $timeago = time() - (24 * 60 * 60 * 7);
-                        }
-                        $thisitem = array();
-                        if ($item->get_date('U') > $timeago) {
-                            $thisitem['body'] = $item->get_content();
-                            $thisitem['title'] = $item->get_title();
-                            $thisitem['image'] = $item->get_link();
-                            $thisitem['description'] = $ff['feed']['description'];
-                            $thisitem['author'] = $item->get_author()->name;
-                            $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
-                            if ($ff['feed']['category'] == 'sermon') {
-                                $thisitem['enclosure'] = $item->get_enclosure();
+                    } else {
+                        $feed = Feeds::make($ff['feed']['feedurl']);
+                        $thisfeed = array();
+                        $thisfeed['title'] = $ff['feed']['title'];
+                        $thisfeed['permalink'] = $feed->get_permalink();
+                        $thisfeed['logo'] = array('url'=>$feed->get_image_url(), 'width'=>$feed->get_image_width(), 'height'=>$feed->get_image_height());
+                        $thisfeed['items'] = array();
+                        foreach ($feed->get_items() as $item) {
+                            if ($ff['feed']['frequency'] == "daily") {
+                                $timeago = time() - (24 * 60 * 60);
+                            } else {
+                                $timeago = time() - (24 * 60 * 60 * 7);
                             }
-                            $thisfeed['items'][] = $thisitem;
-                            Feedcache::create(
-                                ['body'=>$thisitem['body'],
-                                'title'=>$thisitem['title'],
-                                'image'=>$thisitem['image'],
-                                'description'=>$thisitem['description'],
-                                'author'=>$thisitem['author'],
-                                'pubdate'=>$thisitem['pubdate'],
-                                'feed_id'=>$ff['feed']['id']
-                            ]);
+                            $thisitem = array();
+                            if ($item->get_date('U') > $timeago) {
+                                $thisitem['body'] = $item->get_content();
+                                $thisitem['title'] = $item->get_title();
+                                $thisitem['image'] = $item->get_link();
+                                $thisitem['description'] = $ff['feed']['description'];
+                                $thisitem['author'] = $item->get_author()->name;
+                                $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
+                                if ($ff['feed']['category'] == 'sermon') {
+                                    $thisitem['enclosure'] = $item->get_enclosure();
+                                } else {
+                                    $thisitem['enclosure'] = null;
+                                }
+                                $thisfeed['items'][] = $thisitem;
+                                Feedcache::create(
+                                    ['body'=>$thisitem['body'],
+                                    'title'=>$thisitem['title'],
+                                    'image'=>$thisitem['image'],
+                                    'description'=>$thisitem['description'],
+                                    'author'=>$thisitem['author'],
+                                    'pubdate'=>$thisitem['pubdate'],
+                                    'enclosure'=>json_encode($thisitem['enclosure']),
+                                    'feed_id'=>$ff['feed']['id']
+                                ]);
+                            }
                         }
-                    }
-                    if (count($thisfeed['items'])) {
-                        $data[$ff['feed']['category']][] = $thisfeed;
+                        if (count($thisfeed['items'])) {
+                            $data[$ff['feed']['category']][] = $thisfeed;
+                        }
                     }
                 }
                 foreach ($feeds as $feed) {
