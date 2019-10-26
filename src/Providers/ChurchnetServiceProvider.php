@@ -29,6 +29,7 @@ class ChurchnetServiceProvider extends ServiceProvider
             $schedule->command('churchnet:preacherreminder')->weekly()->mondays()->at('7:30');
             $schedule->command('churchnet:givingemails')->dailyAt('07:45');
             $schedule->command('churchnet:birthdayemail')->weekly()->mondays()->at('8:00');
+            $schedule->command('churchnet:rosterreminder')->weekly()->tuesdays()->at('8:00');
             $schedule->command('churchnet:recordstats')->monthlyOn(1, '8:10');
         });
         if (! $this->app->routesAreCached()) {
