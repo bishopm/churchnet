@@ -126,6 +126,10 @@ class LectionaryController extends Controller
         return $data;
     }
 
+    private function readingfix($rawreading) {
+        return $rawreading;
+    }
+
     private function fetchReading($reading)
     {
         $reading=str_replace('[', '', $reading);
@@ -141,7 +145,18 @@ class LectionaryController extends Controller
             return json_decode($cache->cached);
         } else {
             $client = new Client();
-            $query = 'https://labs.bible.org/api/?passage=' . urlencode($reading);
+            if ($this->translation == 'CEV') {
+                $translationID = '555fef9a6cb31151-01';
+                $query = 'https://labs.bible.org/api/?passage=' . urlencode($reading);
+                $dum['copyright']="Contemporary English Version, Second Edition (CEV®) © 2006 American Bible Society. All rights reserved.";
+            } elseif ($this->translation == 'NET') {
+                $query = 'https://labs.bible.org/api/?passage=' . urlencode($reading);
+                $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
+            } else {
+                $translationID = '61fd76eafa1577c2-02';
+                $dum['copyright']="Good News Translation® (Today’s English Version, Second Edition) © 1992 American Bible Society. All rights reserved.";
+                $query = 'https://api.scripture.api.bible/v1/bibles/' . $this->translation . '/passages/' . $this->readingfix($reading);
+            }
             try {
                 $dum['text']=$client->request('GET', $query)->getBody()->getContents();
                 $dum['reading']=$reading;

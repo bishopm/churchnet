@@ -93,8 +93,7 @@ class FeedsController extends Controller
                                 } else {
                                     $thisitem['enclosure'] = null;
                                 }
-                                $thisfeed['items'][] = $thisitem;
-                                Feedcache::create(
+                                $cache=Feedcache::create(
                                     ['body'=>$thisitem['body'],
                                     'title'=>$thisitem['title'],
                                     'image'=>$thisitem['image'],
@@ -104,6 +103,7 @@ class FeedsController extends Controller
                                     'enclosure'=>json_encode($thisitem['enclosure']),
                                     'feed_id'=>$ff['feed']['id']
                                 ]);
+                                $thisfeed['items'][]=$cache;
                             }
                         }
                         if (count($thisfeed['items'])) {
