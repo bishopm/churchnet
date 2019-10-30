@@ -126,8 +126,14 @@ class LectionaryController extends Controller
         return $data;
     }
 
-    private function readingfix($rawreading) {
-        return $rawreading;
+    private function setupqueries($translation, $url, $reading) {
+        $queries=array();
+        if ($translation == 'NET') {
+            $queries[]=$url . urlencode($reading);
+        } else {
+            return 
+        }
+        return $queries;
     }
 
     private function fetchReading($reading)
@@ -146,19 +152,20 @@ class LectionaryController extends Controller
         } else {
             $client = new Client();
             if ($this->translation == 'CEV') {
-                $translationID = '555fef9a6cb31151-01';
-                $query = 'https://labs.bible.org/api/?passage=' . urlencode($reading);
+                $queries = $this->setupqueries($this->translation, "https://api.scripture.api.bible/v1/bibles/555fef9a6cb31151-01/verses/",$reading);
                 $dum['copyright']="Contemporary English Version, Second Edition (CEV®) © 2006 American Bible Society. All rights reserved.";
             } elseif ($this->translation == 'NET') {
-                $query = 'https://labs.bible.org/api/?passage=' . urlencode($reading);
+                $queries = $this->setupqueries($this->translation, "https://labs.bible.org/api/?passage=", $reading);
                 $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
             } else {
-                $translationID = '61fd76eafa1577c2-02';
                 $dum['copyright']="Good News Translation® (Today’s English Version, Second Edition) © 1992 American Bible Society. All rights reserved.";
-                $query = 'https://api.scripture.api.bible/v1/bibles/' . $this->translation . '/passages/' . $this->readingfix($reading);
+                $queries = $this->setupqueries($this->translation, "https://api.scripture.api.bible/v1/bibles/61fd76eafa1577c2-02/verses/",$reading);
             }
             try {
-                $dum['text']=$client->request('GET', $query)->getBody()->getContents();
+                $dum['text']="";
+                foreach ($queries as $query) {
+                    $dum['text']=$dum['text'] . $client->request('GET', $query)->getBody()->getContents() . " ";
+                }
                 $dum['reading']=$reading;
                 $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
                 $dum['copyright'].= "Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
