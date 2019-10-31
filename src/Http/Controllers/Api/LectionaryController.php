@@ -131,7 +131,7 @@ class LectionaryController extends Controller
         if ($translation == 'NET') {
             $queries[]=$url . urlencode($reading);
         } else {
-            return $reading;
+            $queries[]=$url . "LUK.19.1-LUK.19.10";
         }
         return $queries;
     }
@@ -150,14 +150,16 @@ class LectionaryController extends Controller
         if ($cache) {
             return json_decode($cache->cached);
         } else {
-            $client = new Client();
             if ($this->translation == 'CEV') {
+                $client = new Client(['headers'=>['api-key'=>'0e2c41d04752c8243d12d20ca342df1d']]);
                 $queries = $this->setupqueries($this->translation, "https://api.scripture.api.bible/v1/bibles/555fef9a6cb31151-01/verses/",$reading);
                 $dum['copyright']="Contemporary English Version, Second Edition (CEV®) © 2006 American Bible Society. All rights reserved.";
             } elseif ($this->translation == 'NET') {
+                $client = new Client();
                 $queries = $this->setupqueries($this->translation, "https://labs.bible.org/api/?passage=", $reading);
                 $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
             } else {
+                $client = new Client(['headers'=>['api-key'=>'0e2c41d04752c8243d12d20ca342df1d']]);
                 $dum['copyright']="Good News Translation® (Today’s English Version, Second Edition) © 1992 American Bible Society. All rights reserved.";
                 $queries = $this->setupqueries($this->translation, "https://api.scripture.api.bible/v1/bibles/61fd76eafa1577c2-02/verses/",$reading);
             }
@@ -170,11 +172,11 @@ class LectionaryController extends Controller
                 $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
                 $dum['copyright'].= "Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
                 if ($dum['text']) {
-                    $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
+                    // $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
                 }
                 $dum['source']="API";
             } catch (GuzzleException $e) {
-                $dum['text'] = "Sorry - we're not able to access bible.org at the moment, please try again later";
+                $dum['text'] = "Sorry - we're not able to access this Bible translation at the moment, please try again later";
                 return $dum;
             }
             return $dum;

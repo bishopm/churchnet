@@ -1,6 +1,7 @@
 <?php
 
 Route::middleware(['handlecors'])->group(function () {
+    Route::get('/api/test/{reading}/{translation}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading', 'as' => 'api.test']);
     Route::post('/api/push', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PushController@store', 'as' => 'api.push.store']);
     Route::post('/api/churchnet/login', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@login', 'as' => 'api.login']);
     Route::post('/api/synodlogin', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@synodlogin', 'as' => 'api.synodlogin']);
