@@ -131,7 +131,7 @@ class LectionaryController extends Controller
         if ($translation == 'NET') {
             $queries[]=$url . urlencode($reading);
         } else {
-            return 
+            return $reading;
         }
         return $queries;
     }
