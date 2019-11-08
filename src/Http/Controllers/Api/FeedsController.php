@@ -15,7 +15,7 @@ use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Reminder;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
-use Feeds;
+use Feeds, DB;
 
 class FeedsController extends Controller
 {
@@ -45,8 +45,17 @@ class FeedsController extends Controller
             } else {
                 $userid = '';    
             }
+            $data['rosteritems'] = DB::table('individual_rosteritem')->join('rosteritems', 'individual_rosteritem.rosteritem_id', '=', 'rosteritems.id')
+                ->join('rostergroups', 'rosteritems.rostergroup_id', '=', 'rostergroups.id')
+                ->join('groups', 'rostergroups.group_id', '=', 'groups.id')
+                ->where('rosteritems.rosterdate','>=',date('Y-m-d'))
+                ->where('individual_rosteritem.individual_id',$request->individual)
+                ->select('rosteritems.rosterdate', 'groups.groupname')
+                ->orderBy('rosteritems.rosterdate','ASC')
+                ->get();
         } else {
             $userid = '';
+            $data['rosteritems'] = array();
         }
         $feeds = Feed::orderBy('title')->get();
         $society = Society::with('circuit.district')->find($request->society);
