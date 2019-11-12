@@ -115,6 +115,13 @@ class LectionaryController extends Controller
             } else {
                 $bookchap = $thisreading;
             }
+            $book = $this->fixbook($thisreading);
+            if (strpos($thisreading,":")) {
+                $chapsection = substr($thisreading,0,strpos($thisreading,":"));
+                $chapter = substr($chapsection,1+strrpos($chapsection," "));
+            } else {
+                $chapter = substr($thisreading,1+strrpos($thisreading," "));
+            }
             foreach ($passages as $ndx=>$passage){
                 $optional="";
                 if (substr($passage, 0, 1)=="[") {
@@ -127,14 +134,18 @@ class LectionaryController extends Controller
                 $passage = str_replace("b","",$passage);
                 $passage = str_replace("c","",$passage);
                 if (strpos($passage,":")){
+                    // Matthew 4:3 -> MAT.4:3
                     $reading=$this->fixbook($bookchap) . $passage;
                 }
                 if ((strpos($passage,":")) and ($ndx>0)){
+                    // John 1:10-2:3
                     $reading = str_replace("-","-" . $this->fixbook(substr($bookchap,0,strrpos($bookchap," ")) . " "),$reading);
                 } else {
                     if ($ndx>0){
+                        // Add book and chapter to second part
                         $reading = str_replace("-","-" . $this->fixbook($bookchap),$reading);
                     } elseif (!strpos($reading,":")) {
+                        // Psalm 1
                         $reading = $this->fixbook($reading);
                     }
                 }
