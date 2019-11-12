@@ -82,104 +82,116 @@ class LectionaryController extends Controller
         return Dailyreading::with('readingplan')->where('readingplan_id',$plan)->where('readingday',$id)->first();
     }
 
+    private function fixbook($book) {
+        $bookonly = substr($book,0,strrpos($book," "));
+        $books = array(
+            'Genesis'=>'GEN','Exodus'=>'EXO','Leviticus'=>'LEV','Numbers'=>'NUM','Deuteronomy'=>'DEU',
+            'Joshua'=>'JOS','Judges'=>'JDG','Ruth'=>'RUT','1 Samuel'=>'1SA','2 Samuel'=>'2SA',
+            '1 Kings'=>'1KI','2 Kings'=>'2KI','1 Chronicles'=>'1CH','2 Chronicles'=>'2CH','Ezra'=>'EZR',
+            'Nehemiah'=>'NEH','Esther'=>'EST','Job'=>'JOB','Psalm'=>'PSA','Proverbs'=>'PRO',
+            'Ecclesiastes'=>'ECC','Song of Songs'=>'SNG','Isaiah'=>'ISA','Jeremiah'=>'JER',
+            'Lamentations'=>'LAM','Ezekiel'=>'EZK','Daniel'=>'DAN','Hosea'=>'HOS','Joel'=>'JOL',
+            'Amos'=>'AMO','Obadiah'=>'OBA','Jonah'=>'JON','Micah'=>'MIC','Nahum'=>'NAM',
+            'Habakkuk'=>'HAB','Zephaniah'=>'ZEP','Haggai'=>'HAG','Zechariah'=>'ZEC','Malachi'=>'MAL',
+            'Matthew'=>'MAT','Mark'=>'MRK','Luke'=>'LUK','John'=>'JHN','Acts'=>'ACT','Romans'=>'ROM',
+            '1 Corinthians'=>'1CO','2 Corinthians'=>'2CO','Galatians'=>'GAL','Ephesians'=>'EPH',
+            'Philippians'=>'PHP','Colossians'=>'COL','1 Thessalonians'=>'1TH','2 Thessalonians'=>'2TH',
+            '1 Timothy'=>'1TI','2 Timothy'=>'2TI','Titus'=>'TIT','Philemon'=>'PHM','Hebrews'=>'HEB',
+            'James'=>'JAS','1 Peter'=>'1PE','2 Peter'=>'2PE','1 John'=>'1JN','2 John'=>'2JN',
+            '3 John'=>'3JN','Jude'=>'JUD','Revelation'=>'REV'
+        );
+        return str_replace($bookonly . " ",$books[$bookonly] . ".",$book);
+    }
+
     public function reading($reading, $translation)
     {
         $this->translation = $translation;
-        $reading = trim(urldecode($reading));
-        $readingset=explode(' or ', $reading);
+        $readingset=explode(' or ', trim(urldecode($reading)));
+        $readings=array();
         foreach ($readingset as $thisreading) {
-            $readings=array();
-            if ((strpos($thisreading, ',')>0) or (strpos($thisreading, '[')!==false)) {
-                $base = explode(':', $thisreading)[0] . ":";
-                $book=substr($base, 0, strrpos($base, ' '));
-                $chapter=substr($base, 1+strrpos($base, ' '), -1);
-                $remainder = substr($thisreading, 1+strpos($thisreading, ':'));
-                $sections = explode(',', $remainder);
-                $optional='';
-                foreach ($sections as $section) {
-                    if (substr($section, 0, 1)=="[") {
-                        $optional='*';
-                    }
-                    if (strpos($section, ':')!==false) {
-                        // ie there is a change of chapter in this section
-                        if (strpos($section, ':') < strpos($section, '-')) {
-                            $chapter = substr($section, 0, strpos($section, ':'));
-                            $section = substr($section, 1+strpos($section, ':'));
-                            $readings[]=$this->fetchReading($optional . $book . ' ' . $chapter . ':' . $section);
-                        } else {
-                            $readings[]=$this->fetchReading($optional . $base . $section);
-                            $chapter = substr($section, 1+strpos($section, '-'), strpos($section, ':')-1-strpos($section, '-'));
-                        }
-                    } else {
-                        $readings[]=$this->fetchReading($optional . $base . $section);
-                    }
-                    //$readings[]=$optional . $base . $section;
-                    if (substr($section, -1)=="]") {
-                        $optional='';
+            $passages=explode(",",$thisreading);
+            if (strpos($thisreading,":")) {
+                $bookchap = substr($thisreading,0,1+strpos($thisreading,":"));
+            } else {
+                $bookchap = $thisreading;
+            }
+            foreach ($passages as $ndx=>$passage){
+                $optional="";
+                if (substr($passage, 0, 1)=="[") {
+                    $optional='*';
+                }
+                if (($ndx==0) and (strpos($passage,":"))){
+                    $passage = substr($passage,1+strrpos($passage,":"));
+                }
+                $passage = str_replace("a","",$passage);
+                $passage = str_replace("b","",$passage);
+                $passage = str_replace("c","",$passage);
+                if (strpos($passage,":")){
+                    $reading=$this->fixbook($bookchap) . $passage;
+                }
+                if ((strpos($passage,":")) and ($ndx>0)){
+                    $reading = str_replace("-","-" . $this->fixbook(substr($bookchap,0,strrpos($bookchap," ")) . " "),$reading);
+                } else {
+                    if ($ndx>0){
+                        $reading = str_replace("-","-" . $this->fixbook($bookchap),$reading);
+                    } elseif (!strpos($reading,":")) {
+                        $reading = $this->fixbook($reading);
                     }
                 }
-            } else {
-                $readings[]=$this->fetchReading($thisreading);
+                $reading = str_replace(":",".",$reading);
+                if (substr($passage, -1)=="]") {
+                    $optional='';
+                }
+                $readings[$thisreading]['passages'][] = $optional . $reading;
             }
-            $data[$thisreading]=$readings;
+            dd($readings);
+            $readings[$thisreading] = $this->fetchReading($thisreading,$readings[$thisreading]['passages']);
         }
-        return $data;
+        return array('texts'=>$readings,'titles'=>$readingset);
     }
 
-    private function setupqueries($translation, $url, $reading) {
-        $queries=array();
-        if ($translation == 'NET') {
-            $queries[]=$url . urlencode($reading);
-        } else {
-            $queries[]=$url . "LUK.19.1-LUK.19.10";
-        }
-        return $queries;
-    }
-
-    private function fetchReading($reading)
+    private function fetchReading($reading,$queries)
     {
-        $reading=str_replace('[', '', $reading);
-        $reading=str_replace(']', '', $reading);
-        if (strpos($reading, '*')!==false) {
-            $reading=str_replace('*', '', $reading);
-            $dum['type']="optional";
-        } else {
-            $dum['type']="required";
-        }
         $cache=Cache::where('ndx', $reading)->where('translation', $this->translation)->first();
         if ($cache) {
             return json_decode($cache->cached);
         } else {
-            if ($this->translation == 'CEV') {
-                $client = new Client(['headers'=>['api-key'=>'0e2c41d04752c8243d12d20ca342df1d']]);
-                $queries = $this->setupqueries($this->translation, "https://api.scripture.api.bible/v1/bibles/555fef9a6cb31151-01/verses/",$reading);
-                $dum['copyright']="Contemporary English Version, Second Edition (CEV®) © 2006 American Bible Society. All rights reserved.";
-            } elseif ($this->translation == 'NET') {
+            if ($this->translation == 'NET') {
                 $client = new Client();
-                $queries = $this->setupqueries($this->translation, "https://labs.bible.org/api/?passage=", $reading);
-                $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
+                $url = "https://labs.bible.org/api/?passage=";
+                $copyright="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
             } else {
                 $client = new Client(['headers'=>['api-key'=>'0e2c41d04752c8243d12d20ca342df1d']]);
-                $dum['copyright']="Good News Translation® (Today’s English Version, Second Edition) © 1992 American Bible Society. All rights reserved.";
-                $queries = $this->setupqueries($this->translation, "https://api.scripture.api.bible/v1/bibles/61fd76eafa1577c2-02/verses/",$reading);
+                $copyright="Good News Translation® (Today’s English Version, Second Edition) © 1992 American Bible Society. All rights reserved. ";
+                $url = "https://api.scripture.api.bible/v1/bibles/61fd76eafa1577c2-02/verses/";
             }
             try {
-                $dum['text']="";
+                $fin['title']=$reading;
+                $fin['copyright']=$copyright . "Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
+                $fin['text']=array();
                 foreach ($queries as $query) {
-                    $dum['text']=$dum['text'] . $client->request('GET', $query)->getBody()->getContents() . " ";
+                    if (strpos($query, '[')!==false) {
+                        $dum['type']="optional";
+                    } else {
+                        $dum['type']="required";
+                    }
+                    $query=str_replace('[', '', $query);
+                    $query=str_replace(']', '', $query);
+                    if (!strpos($reading,":")){
+                        $dum['section']=json_decode($client->request('GET', str_replace("verses","chapters",$url) . $query . "?include-chapter-numbers=true")->getBody()->getContents())->data->content . " ";
+                    } else {
+                        $dum['section']=json_decode($client->request('GET', $url . $query . "?include-chapter-numbers=true")->getBody()->getContents())->data->content . " ";
+                    }
+                    $fin['text'][]=$dum;
                 }
-                $dum['reading']=$reading;
-                $dum['copyright']="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
-                $dum['copyright'].= "Revised Common Lectionary Readings, copyright © 2005 Consultation on Common Texts. <a target=\"_blank\" href=\"http://www.commontexts.org\">www.commontexts.org</a>";
-                if ($dum['text']) {
-                    // $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($dum), 'translation'=>$this->translation]);
+                if (count($fin['text'])) {
+                    $newcache = Cache::create(['ndx' => $reading, 'cached'=>json_encode($fin), 'translation'=>$this->translation]);
                 }
-                $dum['source']="API";
             } catch (GuzzleException $e) {
                 $dum['text'] = "Sorry - we're not able to access this Bible translation at the moment, please try again later";
                 return $dum;
             }
-            return $dum;
+            return $fin;
         }
     }
 
