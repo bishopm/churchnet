@@ -100,7 +100,7 @@ class LectionaryController extends Controller
             'James'=>'JAS','1 Peter'=>'1PE','2 Peter'=>'2PE','1 John'=>'1JN','2 John'=>'2JN',
             '3 John'=>'3JN','Jude'=>'JUD','Revelation'=>'REV'
         );
-        return str_replace($bookonly . " ",$books[$bookonly] . ".",$book);
+        return $books[$bookonly];
     }
 
     public function reading($reading, $translation)
@@ -109,6 +109,7 @@ class LectionaryController extends Controller
         $readingset=explode(' or ', trim(urldecode($reading)));
         $readings=array();
         foreach ($readingset as $thisreading) {
+            // This breaks up each contiguous section
             $passages=explode(",",$thisreading);
             if (strpos($thisreading,":")) {
                 $bookchap = substr($thisreading,0,1+strpos($thisreading,":"));
@@ -123,31 +124,30 @@ class LectionaryController extends Controller
                 $chapter = substr($thisreading,1+strrpos($thisreading," "));
             }
             foreach ($passages as $ndx=>$passage){
+                // Check for single chapter
+                if ((count($passages)==1) and (!strpos($passage,":"))){
+                    $passage = $book . "." . $chapter;
+                } else {
+                    // Remove book from first entry
+                    if (($ndx==0) and (strpos($passage,":"))){
+                        $passage = substr($passage,1+strpos($passage,":"));
+                    }
+                    dd($passage);
+                    $passage = str_replace("a","",$passage);
+                    $passage = str_replace("b","",$passage);
+                    $passage = str_replace("c","",$passage);
+                    $passage = str_replace("-","-" . $book . "." . $chapter . ".",$passage);
+                    if ((strpos($passage,":")) and ($ndx > 0)){
+                        $passage = $book . "." . $passage;
+                    } elseif ($ndx==0){
+                        $passage = $book . "." . $chapter . "." . $passage;
+                    } else {
+                        $passage = $book . "." . $chapter . "." . $passage;
+                    }
+                }
                 $optional="";
                 if (substr($passage, 0, 1)=="[") {
                     $optional='*';
-                }
-                if (($ndx==0) and (strpos($passage,":"))){
-                    $passage = substr($passage,1+strrpos($passage,":"));
-                }
-                $passage = str_replace("a","",$passage);
-                $passage = str_replace("b","",$passage);
-                $passage = str_replace("c","",$passage);
-                if (strpos($passage,":")){
-                    // Matthew 4:3 -> MAT.4:3
-                    $reading=$this->fixbook($bookchap) . $passage;
-                }
-                if ((strpos($passage,":")) and ($ndx>0)){
-                    // John 1:10-2:3
-                    $reading = str_replace("-","-" . $this->fixbook(substr($bookchap,0,strrpos($bookchap," ")) . " "),$reading);
-                } else {
-                    if ($ndx>0){
-                        // Add book and chapter to second part
-                        $reading = str_replace("-","-" . $this->fixbook($bookchap),$reading);
-                    } elseif (!strpos($reading,":")) {
-                        // Psalm 1
-                        $reading = $this->fixbook($reading);
-                    }
                 }
                 $reading = str_replace(":",".",$reading);
                 if (substr($passage, -1)=="]") {
