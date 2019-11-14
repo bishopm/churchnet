@@ -111,11 +111,6 @@ class LectionaryController extends Controller
         foreach ($readingset as $thisreading) {
             // This breaks up each contiguous section
             $passages=explode(",",$thisreading);
-            if (strpos($thisreading,":")) {
-                $bookchap = substr($thisreading,0,1+strpos($thisreading,":"));
-            } else {
-                $bookchap = $thisreading;
-            }
             $book = $this->fixbook($thisreading);
             if (strpos($thisreading,":")) {
                 $chapsection = substr($thisreading,0,strpos($thisreading,":"));
@@ -123,28 +118,8 @@ class LectionaryController extends Controller
             } else {
                 $chapter = substr($thisreading,1+strrpos($thisreading," "));
             }
+            $passages[0]= substr($passages[0],1+strrpos($passages[0]," "));
             foreach ($passages as $ndx=>$passage){
-                // Check for single chapter
-                if ((count($passages)==1) and (!strpos($passage,":"))){
-                    $passage = $book . "." . $chapter;
-                } else {
-                    // Remove book from first entry
-                    if (($ndx==0) and (strpos($passage,":"))){
-                        $passage = substr($passage,1+strpos($passage,":"));
-                    }
-                    dd($passage);
-                    $passage = str_replace("a","",$passage);
-                    $passage = str_replace("b","",$passage);
-                    $passage = str_replace("c","",$passage);
-                    $passage = str_replace("-","-" . $book . "." . $chapter . ".",$passage);
-                    if ((strpos($passage,":")) and ($ndx > 0)){
-                        $passage = $book . "." . $passage;
-                    } elseif ($ndx==0){
-                        $passage = $book . "." . $chapter . "." . $passage;
-                    } else {
-                        $passage = $book . "." . $chapter . "." . $passage;
-                    }
-                }
                 $optional="";
                 if (substr($passage, 0, 1)=="[") {
                     $optional='*';
@@ -153,9 +128,29 @@ class LectionaryController extends Controller
                 if (substr($passage, -1)=="]") {
                     $optional='';
                 }
-                $readings[$thisreading]['passages'][] = $optional . $reading;
+                $passage = str_replace("a","",$passage);
+                $passage = str_replace("b","",$passage);
+                $passage = str_replace("c","",$passage);
+                // Add abbreviated book
+                if (!strpos($passage,":")){
+                    if ($ndx > 0){
+                        $passage = $book . "." . $chapter . "." . $passage;
+                        $passage = str_replace("-","-" . $book . "." . $chapter . ".",$passage);
+                    } else {
+                        $passage = $book . "." . $chapter;
+                    }
+                } else {
+                    $chapter = substr($passage,0,strpos($passage,":"));
+                    $passage = $book . "." . $passage;
+                    if (substr_count($passage,":")>1){
+                        $passage = str_replace("-","-" . $book . ".",$passage);
+                    } else {
+                        $passage = str_replace("-","-" . $book . "." . $chapter . ".",$passage);
+                    }
+                }
+                $passage=str_replace(":",".",$passage);
+                $readings[$thisreading]['passages'][] = $optional . $passage;
             }
-            dd($readings);
             $readings[$thisreading] = $this->fetchReading($thisreading,$readings[$thisreading]['passages']);
         }
         return array('texts'=>$readings,'titles'=>$readingset);
