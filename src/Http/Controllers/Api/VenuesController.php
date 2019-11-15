@@ -34,7 +34,7 @@ class VenuesController extends Controller
 
     public function store(Request $request)
     {
-        $venue = Venue::create(['society_id'=>$request->society_id, 'venuedate'=>substr($request->venuedate, 0, 10), 'pgnumber'=>$request->pgnumber, 'amount'=>$request->amount]);
+        $venue = Venue::create(['society_id'=>$request->society_id, 'venue'=>$request->venue]);
         return "New venue added";
     }
     
