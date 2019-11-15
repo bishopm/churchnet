@@ -249,6 +249,15 @@ Route::middleware(['handlecors'])->group(function () {
         Route::get('api/users/{user}/{auth?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails', 'as' => 'api.users.details']);
         Route::get('api/check', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check', 'as' => 'api.check']);
 
+        // Venues
+        Route::get('api/venues', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@index', 'as' => 'api.venues.index']);
+        Route::get('api/venues/create', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@create', 'as' => 'api.venues.create']);
+        Route::get('api/venues/{venue}/edit', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@edit', 'as' => 'api.venues.edit']);
+        Route::post('api/venues/search', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@search', 'as' => 'api.venues.search']);
+        Route::post('api/venues/{venue}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@update', 'as' => 'api.venues.update']);
+        Route::post('api/venues', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@store', 'as' => 'api.venues.store']);
+        Route::delete('api/venues/{venue}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\VenuesController@destroy', 'as' => 'api.venues.destroy']);
+
         // Weekdays
         Route::post('/api/weekdays/search', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@index', 'as' => 'api.weekdays.index']);
         Route::get('/api/weekdays/{weekday}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\WeekdaysController@edit', 'as' => 'api.weekdays.edit']);

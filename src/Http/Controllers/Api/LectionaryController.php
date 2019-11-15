@@ -162,12 +162,17 @@ class LectionaryController extends Controller
         if ($cache) {
             return json_decode($cache->cached);
         } else {
-            if ($this->translation == 'NET') {
-                $client = new Client();
-                $url = "https://labs.bible.org/api/?passage=";
-                $copyright="Scripture quoted by permission. Scripture quotations taken from the NET Bible® copyright ©1996-2018 by Biblical Studies Press, L.L.C. All rights reserved. ";
+            $client = new Client(['headers'=>['api-key'=>'0e2c41d04752c8243d12d20ca342df1d']]);
+            if ($this->translation == 'CEV') {
+                $copyright="Contemporary English Version © American Bible Society. All rights reserved. ";
+                $url = "https://api.scripture.api.bible/v1/bibles/555fef9a6cb31151-01/verses/";
+            } elseif ($this->translation == 'KJV') {
+                $copyright="King James (Authorized) Version. All rights reserved. ";
+                $url = "https://api.scripture.api.bible/v1/bibles/de4e12af7f28f599-01/verses/";
+            } elseif ($this->translation == 'ASV') {
+                $copyright="American Standard Version. © American Bible Society ";
+                $url = "https://api.scripture.api.bible/v1/bibles/06125adad2d5898a-01/verses/";
             } else {
-                $client = new Client(['headers'=>['api-key'=>'0e2c41d04752c8243d12d20ca342df1d']]);
                 $copyright="Good News Translation® (Today’s English Version, Second Edition) © 1992 American Bible Society. All rights reserved. ";
                 $url = "https://api.scripture.api.bible/v1/bibles/61fd76eafa1577c2-02/verses/";
             }
