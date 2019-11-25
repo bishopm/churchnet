@@ -16,9 +16,9 @@ class CreateVenuebookingsTable extends Migration
         Schema::create('venuebookings', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('venue_id');
-            $table->integer('starttime');
-            $table->integer('endtime');
-            $table->string('notes');
+            $table->string('description');
+            $table->string('starttime');
+            $table->string('endtime');
             $table->string('status');
             $table->timestamps();
         });

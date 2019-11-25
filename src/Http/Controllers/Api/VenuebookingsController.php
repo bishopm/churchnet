@@ -3,9 +3,11 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Venuebooking;
+use Bishopm\Churchnet\Models\Tagg;
 use Bishopm\Churchnet\Models\Society;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use DB;
 
 class VenuebookingsController extends Controller
 {
@@ -34,15 +36,23 @@ class VenuebookingsController extends Controller
 
     public function store(Request $request)
     {
-        $venuebooking = Venuebooking::create(['society_id'=>$request->society_id, 'venuebooking'=>$request->venuebooking]);
-        return "New venuebooking added";
+        $venuebooking = Venuebooking::create([
+            'venue_id'=>$request->venue_id,
+            'description'=>$request->description,
+            'starttime'=>$request->starttime,
+            'endtime'=>$request->endtime,
+            'status'=>$request->status
+        ]);
+        $venuebooking->tag($request->venueuser);
+        DB::table('taggable_tags')->where('name', $request->venueuser)->update(['type' => 'venueuser']);
+        return $venuebooking;
     }
     
     public function update($id, Request $request)
     {
         $venuebooking = Venuebooking::find($id);
         $venuebooking->update($request->all());
-        return "Venuebooking has been updated";
+        return "Venue booking has been updated";
     }
 
     public function destroy($id)
