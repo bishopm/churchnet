@@ -19,21 +19,17 @@
     "require": {
         "guzzlehttp/guzzle": "6.*",
         "tymon/jwt-auth": "1.*",
-        "barryvdh/laravel-cors": "0.11.*",
-        "laravelcollective/html": "5.8.*",
-        "laravel/socialite": "3.*",
-        "cviebrock/eloquent-taggable": "3.*",
-        "lithiumdev/laravel-tagcloud": "~1.0",
+        "fruitcake/laravel-cors": "1.*",
+        "laravelcollective/html": "6.*",
+        "laravel/socialite": "4.*",
+        "cviebrock/eloquent-taggable": "6.*",
+        "lithiumdev/laravel-tagcloud": "1.*",
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "1.*",
-        "laravel-notification-channels/webpush": "3.*",
+        "laravel-notification-channels/webpush": "5.*",
         "laravel/slack-notification-channel": "2.*",
-        "willvincent/feeds": "1.1.*",
-        "queueworker/sansdaemon": "1.*"
-    },
-    "require-dev": {
-        "phpunit/phpunit" : "~4.0||~5.0",        
-        "squizlabs/php_codesniffer": "^2.3"
+        "willvincent/feeds": "2.*",
+        "orobogenius/sansdaemon": "1.*"
     },
     "autoload": {
         "psr-4": {
