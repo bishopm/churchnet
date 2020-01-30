@@ -29,7 +29,7 @@
         "laravel-notification-channels/webpush": "5.*",
         "laravel/slack-notification-channel": "2.*",
         "willvincent/feeds": "2.*",
-        "orobogenius/sansdaemon": "1.*"
+        "queueworker/sansdaemon": "1.*"
     },
     "autoload": {
         "psr-4": {
