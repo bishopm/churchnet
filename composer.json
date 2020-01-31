@@ -29,7 +29,7 @@
         "laravelcollective/html": "6.*",
         "laravel/socialite": "4.*",
         "cviebrock/eloquent-taggable": "6.*",
-        "lithiumdev/laravel-tagcloud": "1.*",
+        "lithiumdev/laravel-tagcloud": "1.0.6",
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "1.*",
         "laravel-notification-channels/webpush": "5.*",
