@@ -16,6 +16,12 @@
             "role": "Developer"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/bishopm/laravel-tagcloud"
+        }
+    ],
     "require": {
         "guzzlehttp/guzzle": "6.*",
         "tymon/jwt-auth": "1.*",
