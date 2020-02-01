@@ -22,6 +22,7 @@
         "fruitcake/laravel-cors": "1.*",
         "laravelcollective/html": "6.*",
         "laravel/socialite": "4.*",
+        "laravel/helpers": "1.*",
         "cviebrock/eloquent-taggable": "6.*",
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "1.*",
