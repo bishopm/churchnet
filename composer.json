@@ -16,12 +16,6 @@
             "role": "Developer"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/bishopm/laravel-tagcloud"
-        }
-    ],
     "require": {
         "guzzlehttp/guzzle": "6.*",
         "tymon/jwt-auth": "1.*",
@@ -29,7 +23,6 @@
         "laravelcollective/html": "6.*",
         "laravel/socialite": "4.*",
         "cviebrock/eloquent-taggable": "6.*",
-        "lithiumdev/laravel-tagcloud": "dev-master",
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "1.*",
         "laravel-notification-channels/webpush": "5.*",
