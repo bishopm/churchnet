@@ -24,11 +24,7 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <div id="myCanvasContainer">
-                <canvas width="375" height="375" style="width:100%" id="myCanvas">
-                    <p>{!! $cloud !!}</p>
-                </canvas>
-            </div>
+            <canvas id='wordcanvas' style="width:100%"></canvas>
         </div>
         <div class="col-md-4">
             <a class="btn btn-secondary" href="{{route('admin.resources.create')}}">Add new content</a>
@@ -51,28 +47,14 @@
                 </div>
             @endif
         </div>
-        
+
     </div>
 </div>
 @endsection
 
 @section('js')
-<script src="{{asset('/vendor/bishopm/js/tagcanvas.js')}}"></script>
+<script src="{{asset('/vendor/bishopm/js/wordcloud.js')}}"></script>
 <script type="text/javascript">
-var options = {
-  weight: true,
-  textColour: 'red',
-  weightFrom: 'size',
-  initial: [-0.080, 0.280],
-  maxSpeed: 0.04
-};
-window.onload = function() {
-    try {
-      TagCanvas.Start('myCanvas','',options);
-    } catch(e) {
-      // something went wrong, hide the canvas container
-      document.getElementById('myCanvasContainer').style.display = 'none';
-    }
-};
+    WordCloud(document.getElementById('wordcanvas'), { list: {!! json_encode($words) !!}, click: (item) => { window.location = 'tag/' + item[0]; } });
 </script>
 @stop

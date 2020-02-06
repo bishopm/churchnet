@@ -10,14 +10,13 @@ use Bishopm\Churchnet\Models\Denomination;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Page;
 use Cviebrock\EloquentTaggable\Models\Tag;
-use LithiumDev\TagCloud\TagCloud;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
     private $resource;
     private $page;
-    
+
     public function __construct(ResourcesRepository $resource, PagesRepository $page)
     {
         $this->resource = $resource;
@@ -32,24 +31,22 @@ class HomeController extends Controller
 
     public function home()
     {
-        $cloud = new TagCloud();
+        $data['words']=array();
+        $dummy = array();
         $resources=$this->resource->all();
-        $data['resourcecount'] = count($resources);
         foreach ($resources as $thisresource) {
             foreach ($thisresource->tags as $tag) {
-                $cloud->addTag($tag->name);
-                $cloud->addTag(array('tag' => $tag->name, 'url' => $tag->normalized));
+                if (array_key_exists($tag->name, $dummy)) {
+                    $dummy[$tag->name]++;
+                } else {
+                    $dummy[$tag->name]=1;
+                }
             }
         }
-        $baseUrl=url('/');
-        $cloud->setOrder('tag', 'ASC');
-        $cloud->setHtmlizeTagFunction(function ($tag, $size) use ($baseUrl) {
-            $size = intval($size) + 10;
-            $link = '<a size="'.$size.'" href="'.$baseUrl.'/tag/'.$tag['url'].'">'.$tag['tag'].'</a>';
-            return "{$link} ";
-        });
+        foreach ($dummy as $key=>$dum) {
+            $data['words'][] = array($key,9+$dum*2);
+        }
         $data['denominations'] = Denomination::orderBy('slug')->get();
-        $data['cloud'] = $cloud->render();
         $data['recentresources'] = $this->resource->recents(15);
         $data['users'] = User::orderBy('created_at', 'DESC')->get()->take(5);
         return view('churchnet::home', $data);
