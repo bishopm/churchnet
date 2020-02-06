@@ -24,7 +24,7 @@
     </div>
     <div class="row">
         <div class="col-md-8">
-            <canvas id='wordcanvas' style="width:100%"></canvas>
+            <canvas id='wordcanvas' style="width:100%; height: 70%;"></canvas>
         </div>
         <div class="col-md-4">
             <a class="btn btn-secondary" href="{{route('admin.resources.create')}}">Add new content</a>
