@@ -10,6 +10,7 @@ use App\Http\Controllers\Controller;
 use DB;
 use Bishopm\Churchnet\Http\Requests\CreateStatisticRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateStatisticRequest;
+use Bishopm\Churchnet\Models\Measure;
 use Illuminate\Http\Request;
 
 class StatisticsController extends Controller
@@ -39,6 +40,15 @@ class StatisticsController extends Controller
     public function index($society,$yr)
     {
         $soc = Society::with('services')->find($society);
+        $data['measures'] = Measure::where('society_id',$society)->where('measureyear',$yr)->orderBy('measuremonth','ASC')->get();
+        foreach ($data['measures'] as $measure){
+            $data['mdatasets']['connect'][]=$measure['connect'];
+            $data['mdatasets']['give'][]=$measure['give'];
+            $data['mdatasets']['grow'][]=$measure['grow'];
+            $data['mdatasets']['serve'][]=$measure['serve'];
+            $data['mdatasets']['worship'][]=$measure['worship'];
+            $data['mlabels'][]=$measure['measuremonth'];
+        }
         $data['society'] = $soc;
         $labels=array();
         foreach ($soc->services as $service){
@@ -108,5 +118,5 @@ class StatisticsController extends Controller
             }
         }
     }
-    
+
 }
