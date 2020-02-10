@@ -21,6 +21,7 @@
         "tymon/jwt-auth": "1.*",
         "fruitcake/laravel-cors": "1.*",
         "laravelcollective/html": "6.*",
+        "laravel/framework": "6.13.*",
         "laravel/socialite": "4.*",
         "laravel/helpers": "1.*",
         "cviebrock/eloquent-taggable": "6.*",
