@@ -53,6 +53,11 @@ Route::middleware(['handlecors'])->group(function () {
     Route::get('api/districts/map/{district}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@showwithmap', 'as' => 'api.districts.showwithmap']);
     Route::get('api/districts/{district}/details', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@details', 'as' => 'api.districts.details']);
     Route::post('api/districts/directory', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@directory', 'as' => 'api.districts.directory']);
+
+    Route::group(['middleware' => ['handlecors']], function () {
+        Route::get('api/users/{user}/{auth?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails', 'as' => 'api.users.details']);
+    });
+
     Route::group(['middleware' => ['jwt.auth', 'handlecors', 'ispermitted']], function () {
 
         // Journey routes
@@ -246,7 +251,6 @@ Route::middleware(['handlecors'])->group(function () {
         Route::post('api/users', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@store', 'as' => 'api.users.store']);
         Route::post('api/permissibles', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@permissibles', 'as' => 'api.users.permissibles']);
         Route::post('api/permissibles/delete', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@deletepermissibles', 'as' => 'api.users.deletepermissibles']);
-        Route::get('api/users/{user}/{auth?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails', 'as' => 'api.users.details']);
         Route::get('api/check', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@check', 'as' => 'api.check']);
 
         // Venues

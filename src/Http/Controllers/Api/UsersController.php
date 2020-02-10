@@ -11,12 +11,20 @@ use Bishopm\Churchnet\Models\Setting;
 use Bishopm\Churchnet\Models\Permissible;
 use Illuminate\Http\Request;
 use Auth;
+use JWTAuth;
 use DB;
 
 class UsersController extends Controller
 {
     public function userdetails($id, $auth='')
     {
+        try {
+            JWTAuth::parseToken()->authenticate();
+        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+            return "Invalid token";
+        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
+            return "No token";
+        }
         $data = User::with('districts', 'circuits', 'societies.location')->where('id', $id)->first();
         $user = array();
         $dists = array();
