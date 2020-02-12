@@ -37,7 +37,7 @@ Route::group(['middleware' => ['web']], function () {
     // Tags
     Route::get('tag/{tag}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\HomeController@tag', 'as' => 'tag']);
 
-    Route::middleware(['auth', 'handlecors'])->group(function () {
+    Route::middleware(['auth'])->group(function () {
         // Resources
         Route::get('admin/resources', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@index', 'as' => 'admin.resources.index']);
         Route::get('admin/resources/create', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\ResourcesController@create', 'as' => 'admin.resources.create']);
