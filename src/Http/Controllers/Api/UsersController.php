@@ -7,6 +7,7 @@ use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\Denomination;
 use Bishopm\Churchnet\Models\Setting;
 use Bishopm\Churchnet\Models\Permissible;
 use Illuminate\Http\Request;
@@ -66,7 +67,9 @@ class UsersController extends Controller
             $user['districts'][$district->id]=$district->pivot->permission;
             $user['districts']['keys'][]=$district->id;
             $user['districts']['full'][$district->id]=$district;
+            $denom = $district->denomination_id;
         }
+        $user['denomination'] = Denomination::find($denom);
         $user['id'] = $data->id;
         $user['name'] = $data->name;
         $user['level'] = $data->level;
