@@ -26,13 +26,14 @@ class UsersController extends Controller
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return "No token";
         }
-        $data = User::with('districts', 'circuits', 'societies.location')->where('id', $id)->first();
+        $data = User::with('districts', 'circuits', 'societies.location','denominations')->where('id', $id)->first();
         $user = array();
         $dists = array();
         $circs = array();
         $socs = array();
+        $denoms = array();
         if ($auth) {
-            $auth = User::with('districts', 'circuits', 'societies')->where('id', $auth)->first();
+            $auth = User::with('districts', 'circuits', 'societies','denominations')->where('id', $auth)->first();
             if (count($auth->districts)) {
                 $user['auth']['districts'] = $auth->districts;
                 foreach ($auth->districts as $dist) {
@@ -52,6 +53,9 @@ class UsersController extends Controller
             } elseif (count($auth->societies)) {
                 $user['auth']['societies'] = $auth->societies;
             }
+            if (count($auth->denominations)) {
+                $user['auth']['denominations'] = $auth->denominations;
+            }
         }
         foreach ($data->circuits as $circuit) {
             $user['circuits'][$circuit->id]=$circuit->pivot->permission;
@@ -68,6 +72,12 @@ class UsersController extends Controller
             $user['districts']['keys'][]=$district->id;
             $user['districts']['full'][$district->id]=$district;
             $denom = $district->denomination_id;
+        }
+        foreach ($data->denominations as $denomination) {
+            $user['denominations'][$denomination->id]=$denomination->pivot->permission;
+            $user['denominations']['keys'][]=$denomination->id;
+            $user['denominations']['full'][$denomination->id]=$denomination;
+            $denom = $denomination->denomination_id;
         }
         $user['denomination'] = Denomination::find($denom);
         $user['id'] = $data->id;

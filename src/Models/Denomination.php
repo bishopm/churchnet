@@ -33,4 +33,9 @@ class Denomination extends Model
         return $this->morphMany('Bishopm\Churchnet\Models\Person', 'personable');
     }
 
+    public function users()
+    {
+        return $this->morphToMany('Bishopm\Churchnet\Models\User', 'permissible');
+    }
+
 }
