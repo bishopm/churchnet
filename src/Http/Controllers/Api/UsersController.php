@@ -7,6 +7,7 @@ use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Circuit;
+use Bishopm\Churchnet\Models\District;
 use Bishopm\Churchnet\Models\Denomination;
 use Bishopm\Churchnet\Models\Setting;
 use Bishopm\Churchnet\Models\Permissible;
@@ -26,6 +27,7 @@ class UsersController extends Controller
         } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
             return "No token";
         }
+        $denom="";
         $data = User::with('districts', 'circuits', 'societies.location','denominations')->where('id', $id)->first();
         $user = array();
         $dists = array();
@@ -34,7 +36,21 @@ class UsersController extends Controller
         $denoms = array();
         if ($auth) {
             $auth = User::with('districts', 'circuits', 'societies','denominations')->where('id', $auth)->first();
-            if (count($auth->districts)) {
+            if (count($auth->denominations)) {
+                $user['auth']['denominations'] = $auth->denominations;
+                foreach ($auth->denominations as $den) {
+                    $denoms[] = $den->id;
+                }
+                $user['auth']['districts'] = District::whereIn('denomination_id', $denoms)->get(); 
+                foreach ($auth->districts as $dist) {
+                    $dists[] = $dist->id;
+                }
+                $user['auth']['circuits'] = Circuit::whereIn('district_id', $dists)->get();
+                foreach ($auth['circuits'] as $circ) {
+                    $circs[] = $circ->id;
+                }
+                $user['auth']['societies'] = Society::whereIn('circuit_id', $circs)->orderBy('society')->get();
+            } elseif (count($auth->districts)) {
                 $user['auth']['districts'] = $auth->districts;
                 foreach ($auth->districts as $dist) {
                     $dists[] = $dist->id;
@@ -52,9 +68,6 @@ class UsersController extends Controller
                 $user['auth']['societies'] = Society::whereIn('circuit_id', $circs)->get();
             } elseif (count($auth->societies)) {
                 $user['auth']['societies'] = $auth->societies;
-            }
-            if (count($auth->denominations)) {
-                $user['auth']['denominations'] = $auth->denominations;
             }
         }
         foreach ($data->circuits as $circuit) {
@@ -77,7 +90,9 @@ class UsersController extends Controller
             $user['denominations'][$denomination->id]=$denomination->pivot->permission;
             $user['denominations']['keys'][]=$denomination->id;
             $user['denominations']['full'][$denomination->id]=$denomination;
-            $denom = $denomination->denomination_id;
+            if ($denom == '') {
+                $denom = $denomination->id;
+            }
         }
         $user['denomination'] = Denomination::find($denom);
         $user['id'] = $data->id;
