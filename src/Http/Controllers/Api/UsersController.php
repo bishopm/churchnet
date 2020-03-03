@@ -35,7 +35,7 @@ class UsersController extends Controller
         $socs = array();
         $denoms = array();
         if ($auth) {
-            $auth = User::with('districts', 'circuits', 'societies','denominations')->where('id', $auth)->first();
+            $auth = User::with('districts', 'circuits', 'societies','denominations.individuals')->where('id', $auth)->first();
             if (count($auth->denominations)) {
                 $user['auth']['denominations'] = $auth->denominations;
                 foreach ($auth->denominations as $den) {
@@ -90,6 +90,7 @@ class UsersController extends Controller
             $user['denominations'][$denomination->id]=$denomination->pivot->permission;
             $user['denominations']['keys'][]=$denomination->id;
             $user['denominations']['full'][$denomination->id]=$denomination;
+            $user['denominations']['full'][$denomination->id]['indivs']=$denomination->individuals;
             if ($denom == '') {
                 $denom = $denomination->id;
             }
