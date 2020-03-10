@@ -5,6 +5,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Repositories\ReadingsRepository;
 use Bishopm\Churchnet\Models\Cache;
+use Bishopm\Churchnet\Models\Customreading;
 use Bishopm\Churchnet\Models\Readingplan;
 use Bishopm\Churchnet\Models\Dailyreading;
 use Bishopm\Churchnet\Models\Denomination;
@@ -22,7 +23,7 @@ class LectionaryController extends Controller
         $this->reading = $reading;
     }
 
-    public function sunday($date="")
+    public function sunday($society="",$date="")
     {
         if ($date=="") {
             $this->sunday = strtotime(date('Y-m-d', strtotime('sunday')));
@@ -33,6 +34,9 @@ class LectionaryController extends Controller
         $this->setUpArray();
         $fin = $this->buildYear();
         $res['date']=date("j F Y", strtotime($fin['date']));
+        if ($society) {
+            $res['customreadings'] = explode(';',Customreading::where('servicedate',$fin['date'])->where('society_id',$society)->first()->customreading);
+        }
         $res['description']=$fin['lection']['description'] . ' [' . $fin['lection']['year'] . '] - ' . $fin['lection']['colour'];
         $res['readings']=explode(';', $fin['lection']['readings']);
         $res['colour']=$fin['lection']['colour'];
@@ -55,7 +59,6 @@ class LectionaryController extends Controller
         } elseif ($fin['lection']['description'] == "Christmas Day") {
             $res['extras'][date("Y", strtotime($fin['date'])) . "-12-24"]=$this->reading->findByDesc($this->lyear, 'Christmas Eve');
         }
-
         return $res;
     }
 
