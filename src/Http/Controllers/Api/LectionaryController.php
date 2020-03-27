@@ -35,7 +35,12 @@ class LectionaryController extends Controller
         $fin = $this->buildYear();
         $res['date']=date("j F Y", strtotime($fin['date']));
         if ($society) {
-            $res['customreadings'] = explode(';',Customreading::where('servicedate',$fin['date'])->where('society_id',$society)->first()->customreading);
+            $customreadings = Customreading::where('servicedate',$fin['date'])->where('society_id',$society)->first();
+            if ($customreadings) {
+                $res['customreadings'] = explode(';',$customreadings->customreading);
+            } else {
+                $res['customreadings'] = array();
+            }
         }
         $res['description']=$fin['lection']['description'] . ' [' . $fin['lection']['year'] . '] - ' . $fin['lection']['colour'];
         $res['readings']=explode(';', $fin['lection']['readings']);

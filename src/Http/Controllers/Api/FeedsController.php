@@ -43,7 +43,7 @@ class FeedsController extends Controller
             if ($user) {
                 $userid = $user->id;
             } else {
-                $userid = '';    
+                $userid = '';
             }
             $data['rosteritems'] = DB::table('individual_rosteritem')->join('rosteritems', 'individual_rosteritem.rosteritem_id', '=', 'rosteritems.id')
                 ->join('rostergroups', 'rosteritems.rostergroup_id', '=', 'rostergroups.id')
@@ -99,6 +99,7 @@ class FeedsController extends Controller
                                 $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
                                 if ($ff['feed']['category'] == 'sermon') {
                                     $thisitem['enclosure'] = $item->get_enclosure();
+                                    $thisitem['enclosure']->player = $item->get_description();
                                 } else {
                                     $thisitem['enclosure'] = null;
                                 }
@@ -125,7 +126,7 @@ class FeedsController extends Controller
                         $feed->subs = $myfeeds[$feed->id];
                     }
                     $data['feeds'][] = $feed;
-                }    
+                }
             }
             $data['events'] = Group::where('society_id', $society->id)->where('eventdatetime', '>', time())->get();
             $data['diary'] = Meeting::with('society:society,id')->where('meetable_type', 'Bishopm\Churchnet\Models\Society')->where('meetable_id', $society->id)->where('meetingdatetime', '>=', time())->where('meetingdatetime', '<=', time() + 24 * 60 * 60 * 10)
