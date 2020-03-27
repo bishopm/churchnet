@@ -19,7 +19,7 @@
     "require": {
         "tymon/jwt-auth": "1.*",
         "spatie/laravel-cors": "1.*",
-        "laravelcollective/html": "7.*",
+        "laravelcollective/html": "6.*",
         "laravel/framework": "7.*",
         "laravel/socialite": "4.*",
         "laravel/helpers": "1.*",
