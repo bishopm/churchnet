@@ -18,6 +18,7 @@ Route::post('api/societies/useradded', ['uses' => 'Bishopm\Churchnet\Http\Contro
 Route::post('/api/feeditemlist', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditems', 'as' => 'api.feeds.feeditems']);
 Route::get('/api/feedlibrary/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedlibrary', 'as' => 'api.feeds.feedlibrary']);
 Route::get('/api/hymns/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@hymns', 'as' => 'api.feeds.hymns']);
+Route::get('/api/videos/{society}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@videos', 'as' => 'api.feeds.videos']);
 Route::get('/api/feedpost/{post}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feedpost', 'as' => 'api.feeds.feedpost']);
 Route::get('/api/feeditem/{id}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@feeditem', 'as' => 'api.feeds.feeditem']);
 Route::post('/api/feedarchive', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\FeedsController@archive', 'as' => 'api.feeds.archive']);

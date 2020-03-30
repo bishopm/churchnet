@@ -262,6 +262,26 @@ class FeedsController extends Controller
         return $data;
     }
 
+    public function videos($society)
+    {
+        $data = array();
+        $this->soc = Society::with('circuit.district')->find($society);
+        $this->cir = $this->soc->circuit;
+        $this->dis = $this->cir->district;
+        $feeditems = Feeditem::where('library', 'yes')->with('feedpost')->whereHas('feedpost', function ($q) {
+            $q->where('category', '=', 'video');
+        })->where(function ($query) {
+            $query->where('distributable_type', 'Bishopm\Churchnet\Models\Society')->where('distributable_id', $this->soc->id)
+                ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\Circuit')->where('distributable_id', $this->cir->id)
+                ->orWhere('distributable_type', 'Bishopm\Churchnet\Models\District')->where('distributable_id', $this->dis->id);
+        })->get();
+        foreach ($feeditems as $item) {
+            $data[$item->feedpost->title] = ['title' => $item->feedpost->title, 'id' => $item->feedpost_id];
+        }
+        asort($data);
+        return $data;
+    }
+
     public function myfeeds(Request $request)
     {
         $feeds = Feeditem::with('feedpost', 'distributable')
