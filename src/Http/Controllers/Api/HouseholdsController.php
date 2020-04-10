@@ -14,6 +14,7 @@ use Auth;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateHouseholdRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateHouseholdRequest;
+use Bishopm\Churchnet\Models\Location;
 use Bishopm\Churchnet\Models\Society;
 
 class HouseholdsController extends Controller
@@ -51,9 +52,14 @@ class HouseholdsController extends Controller
             }
         }
         if ($request->scope === true) {
-            return Household::with('individuals','society.circuit','location')->where('addressee', 'like', '%' . $request->search . '%')->orderBy('sortsurname')->get();
+            return Individual::with('household.Location','household.society.circuit')->where('firstname', 'like', '%' . $request->search . '%')->orWhere('surname', 'like', '%' . $request->search . '%')->orWhere('cellphone', 'like', '%' . $request->search . '%')
+            ->orderBy('surname')->get();
         } else {
-            return Household::with('individuals','society','location')->whereIn('society_id', $socs)->where('addressee', 'like', '%' . $request->search . '%')->orderBy('sortsurname')->get();
+            return Individual::with('household.Location','household.society')->where('firstname', 'like', '%' . $request->search . '%')
+            ->orWhere('surname', 'like', '%' . $request->search . '%')->orWhere('cellphone', 'like', '%' . $request->search . '%')
+            ->whereHas('household.society', function ($q) use ($socs) {
+                $q->whereIn('id', $socs);
+            })->orderBy('surname')->get();
         }
     }
 
@@ -180,7 +186,7 @@ class HouseholdsController extends Controller
         $household->location->phone = $request->location['phone'];
         $household->location->address = $request->location['address'];
         $household->location->save();
-        $household->save();        
+        $household->save();
         return $household;
     }
 

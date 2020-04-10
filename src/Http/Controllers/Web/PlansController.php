@@ -8,6 +8,7 @@ use Bishopm\Churchnet\Libraries\Fpdf\Fpdf;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
+use Bishopm\Churchnet\Models\Household;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\District;
@@ -575,42 +576,94 @@ class PlansController extends Controller
 
     public function groupreport(Request $request)
     {
-        $indivs = json_decode($request->members);
         $group = json_decode($request->group);
         $society = Society::find($group->society_id);
-        $pdf = new Fpdf();
+        $indivs = json_decode($request->members);
+        $logopath=base_path() . '/public/vendor/bishopm/images/mcsa.jpg';
         $pg=1;
         $yy=40;
-        $totpages = ceil(count($indivs)/24);
-        foreach ($indivs as $indiv) {
-            if ($yy == 40) {
-                $pdf->AddPage('P');
-                $logopath=base_path() . '/public/vendor/bishopm/images/mcsa.jpg';
-                $pdf->SetAutoPageBreak(true, 0);
-                $pdf->Image($logopath, 5, 5, 0, 21);
-                $pdf->SetFillColor(0, 0, 0);
-                $pdf->SetFont('Arial', 'B', 18);
-                $pdf->text(35, 10, $society->society . " Methodist Church");
-                $pdf->SetFont('Arial', 'B', 14);
-                $pdf->text(35, 24, $group->groupname);
-                $pdf->SetFont('Arial', '', 9);
-                $pdf->text(184, 10, date("d M Y"));
-                $pdf->text(190, 24, "pg " . $pg . " of " . $totpages);
-                $pdf->line(8, 30, 202, 30);
+        $pdf = new Fpdf();
+        if ($group->memberunit == "household"){
+            $iids = array(571);
+            foreach ($indivs as $indiv) {
+                $iids[]=$indiv->id;
             }
-            $pdf->SetFont('Arial', 'B', 12);
-            $pdf->text(10, $yy, $indiv->surname . ', ' . $indiv->firstname);
-            $pdf->SetFont('Arial', '', 12);
-            $pdf->text(75, $yy, $indiv->cellphone);
-            $pdf->text(105, $yy, $indiv->email);
-            $pdf->rect(8, $yy-6, 194, 9);
-            $yy=$yy+10;
-            if ($yy > 270) {
-                $yy = 40;
-                $pg++;
+            $allindivs = Individual::whereIn('id',$iids)->select('household_id')->get()->toArray();
+            $hids = array();
+            foreach ($allindivs as $ai) {
+                if (!in_array($ai['household_id'],$hids)){
+                    $hids[] = $ai['household_id'];
+                }
             }
+            $households = Household::with('individuals')->whereIn('id',$hids)->orderBy('sortsurname','ASC')->get();
+            $totpages = ceil(count($households)/12);
+            foreach ($households as $household) {
+                if ($yy == 40) {
+                    $pdf->AddPage('P');
+                    $pdf->SetAutoPageBreak(true, 0);
+                    $pdf->Image($logopath, 5, 5, 0, 21);
+                    $pdf->SetFillColor(0, 0, 0);
+                    $pdf->SetFont('Arial', 'B', 18);
+                    $pdf->text(35, 10, $society->society . " Methodist Church");
+                    $pdf->SetFont('Arial', 'B', 14);
+                    $pdf->text(35, 24, $group->groupname);
+                    $pdf->SetFont('Arial', '', 9);
+                    $pdf->text(184, 10, date("d M Y"));
+                    $pdf->text(190, 24, "pg " . $pg . " of " . $totpages);
+                    $pdf->line(8, 30, 202, 30);
+                }
+                $pdf->SetFont('Arial', 'B', 12);
+                $pdf->text(10, $yy, $household->addressee . ' (' . $household->homephone . ')');
+                $yy=$yy+6;
+                $msg="";
+                foreach ($household->individuals as $ind) {
+                    if ($ind->cellphone) {
+                        $msg = $msg . $ind->firstname . ' (' . $ind->cellphone . '), ';
+                    } else {
+                        $msg = $msg . $ind->firstname . ', ';
+                    }
+                }
+                $pdf->SetFont('Arial', '', 10);
+                $pdf->text(13, $yy, substr($msg,0,-2));
+                $pdf->rect(8, $yy-13, 194, 15);
+                $yy=$yy+10;
+                if ($yy > 270) {
+                    $yy = 40;
+                    $pg++;
+                }
+            }
+            $pdf->Output();
+        } else {
+            $totpages = ceil(count($indivs)/24);
+            foreach ($indivs as $indiv) {
+                if ($yy == 40) {
+                    $pdf->AddPage('P');
+                    $pdf->SetAutoPageBreak(true, 0);
+                    $pdf->Image($logopath, 5, 5, 0, 21);
+                    $pdf->SetFillColor(0, 0, 0);
+                    $pdf->SetFont('Arial', 'B', 18);
+                    $pdf->text(35, 10, $society->society . " Methodist Church");
+                    $pdf->SetFont('Arial', 'B', 14);
+                    $pdf->text(35, 24, $group->groupname);
+                    $pdf->SetFont('Arial', '', 9);
+                    $pdf->text(184, 10, date("d M Y"));
+                    $pdf->text(190, 24, "pg " . $pg . " of " . $totpages);
+                    $pdf->line(8, 30, 202, 30);
+                }
+                $pdf->SetFont('Arial', 'B', 12);
+                $pdf->text(10, $yy, $indiv->surname . ', ' . $indiv->firstname);
+                $pdf->SetFont('Arial', '', 12);
+                $pdf->text(75, $yy, $indiv->cellphone);
+                $pdf->text(105, $yy, $indiv->email);
+                $pdf->rect(8, $yy-6, 194, 9);
+                $yy=$yy+10;
+                if ($yy > 270) {
+                    $yy = 40;
+                    $pg++;
+                }
+            }
+            $pdf->Output();
         }
-        $pdf->Output();
         exit;
     }
 }
