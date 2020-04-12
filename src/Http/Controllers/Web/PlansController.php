@@ -584,7 +584,7 @@ class PlansController extends Controller
         $yy=40;
         $pdf = new Fpdf();
         if ($group->memberunit == "household"){
-            $iids = array(571);
+            $iids = array();
             foreach ($indivs as $indiv) {
                 $iids[]=$indiv->id;
             }

@@ -52,13 +52,18 @@ class HouseholdsController extends Controller
             }
         }
         if ($request->scope === true) {
-            return Individual::with('household.Location','household.society.circuit')->where('firstname', 'like', '%' . $request->search . '%')->orWhere('surname', 'like', '%' . $request->search . '%')->orWhere('cellphone', 'like', '%' . $request->search . '%')
-            ->orderBy('surname')->get();
+            return Individual::with('household.Location','household.society.circuit')
+            ->where(function ($q) use ($request) {
+                $q->where('firstname', 'like', '%' . $request->search . '%')
+                ->orWhere('surname', 'like', '%' . $request->search . '%')
+                ->orWhere('cellphone', 'like', '%' . $request->search . '%');
+            })->orderBy('surname')->get();
         } else {
-            return Individual::with('household.Location','household.society')->where('firstname', 'like', '%' . $request->search . '%')
-            ->orWhere('surname', 'like', '%' . $request->search . '%')->orWhere('cellphone', 'like', '%' . $request->search . '%')
-            ->whereHas('household.society', function ($q) use ($socs) {
-                $q->whereIn('id', $socs);
+            return Individual::societymember($socs)->with('household.Location','household.society')
+            ->where(function ($q) use ($request) {
+                $q->where('firstname', 'like', '%' . $request->search . '%')
+                ->orWhere('surname', 'like', '%' . $request->search . '%')
+                ->orWhere('cellphone', 'like', '%' . $request->search . '%');
             })->orderBy('surname')->get();
         }
     }
