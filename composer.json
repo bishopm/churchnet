@@ -28,6 +28,7 @@
         "laravel-notification-channels/webpush": "5.*",
         "laravel/slack-notification-channel": "2.*",
         "willvincent/feeds": "2.*",
+        "laravel/ui": "2.*",
         "queueworker/sansdaemon": "1.*"
     },
     "autoload": {
