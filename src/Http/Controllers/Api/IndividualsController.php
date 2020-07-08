@@ -88,15 +88,19 @@ class IndividualsController extends Controller
         $this->society = $id;
         $givers = Individual::where('giving', '<>', '0')->where('giving', '<>', '')->whereHas('household', function ($q) {
             $q->where('society_id', $this->society);
-        })->select('giving')->orderBy('giving')->get();
+        })->select('giving','surname','firstname')->orderBy('giving')->get();
         $data = array();
         $dum = array();
         foreach ($givers as $giver) {
             if (!in_array($giver->giving, $dum)) {
-                $dum[] = $giver->giving;
+                $dum[$giver->giving]['number'] = $giver->giving;
+            }
+            if (array_key_exists('name', $dum[$giver->giving])) {
+                $dum[$giver->giving]['name']=$dum[$giver->giving]['name'] . ' and ' . $giver->firstname;
+            } else {
+                $dum[$giver->giving]['name']=$giver->surname . ", " . $giver->firstname;
             }
         }
-        sort($dum, SORT_NUMERIC);
         $data['givers'] = $dum;
         $data['society'] = Society::find($id)->society;
         return $data;
