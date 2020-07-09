@@ -4,6 +4,7 @@ namespace Bishopm\Churchnet\Http\Controllers\Web;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Auth;
+use DB;
 use Bishopm\Churchnet\Libraries\Fpdf\Fpdf;
 use App\Http\Controllers\Controller;
 use Bishopm\Churchnet\Models\Person;
@@ -664,6 +665,57 @@ class PlansController extends Controller
             }
             $pdf->Output();
         }
+        exit;
+    }
+
+    public function birthdays($society,$period,$startdate)
+    {
+        if ($period == "month") {
+            $start = substr($startdate,5,2) . "-01";
+            $end = substr($startdate,5,2) . "-31";
+            $title = date("F Y",strtotime($startdate));
+        } else {
+            $dn=intval(date("N",strtotime($startdate)))-1;
+            $mon=strtotime($startdate)-(3600*24*$dn);
+            $sun=strtotime($startdate)+(3600*24*(6-$dn));
+            $start=date("m-d",$mon);
+            $end=date("m-d",$sun);
+            $title = date("d M",$mon) . " - " . date("d M Y",$sun);
+        }
+        $indivs = Individual::inSociety($society)->where(DB::raw('substr(birthdate, 6, 5)'),'>=',$start)->where(DB::raw('substr(birthdate, 6, 5)'),'<=',$end)->where('memberstatus','member')
+        ->where(function ($q) {
+            $q->whereNull('individuals.deleted_at')->orWhere('individuals.deleted_at', '0000-00-00');
+        })->orderBy(DB::raw('substr(birthdate, 6, 5)'))->get();
+        $society = Society::find($society);
+        $logopath=base_path() . '/public/vendor/bishopm/images/mcsa.jpg';
+        $pg=1;
+        $yy=40;
+        $pdf = new Fpdf();
+        foreach ($indivs as $indiv) {
+            if ($yy == 40) {
+                $pdf->AddPage('P');
+                $pdf->SetAutoPageBreak(true, 0);
+                $pdf->Image($logopath, 5, 5, 0, 21);
+                $pdf->SetFillColor(0, 0, 0);
+                $pdf->SetFont('Arial', 'B', 18);
+                $pdf->text(35, 10, $society->society . " Methodist Church");
+                $pdf->SetFont('Arial', 'B', 14);
+                $pdf->text(35, 24, "Birthday report: " . $title);
+                $pdf->SetFont('Arial', '', 9);
+                $pdf->text(184, 10, date("d M Y"));
+                $pdf->text(190, 24, "pg " . $pg);
+                $pdf->line(8, 30, 202, 30);
+            }
+            $pdf->SetFont('Arial', '', 11);
+            $pdf->text(10, $yy, date("j M",strtotime($indiv->birthdate)));
+            $pdf->text(24, $yy, $indiv->firstname . ' ' . $indiv->surname . ' (' . $indiv->cellphone . ')');
+            $yy=$yy+4.5;
+            if ($yy > 270) {
+                $yy = 40;
+                $pg++;
+            }
+        }
+        $pdf->Output();    
         exit;
     }
 }
