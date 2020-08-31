@@ -668,7 +668,7 @@ class PlansController extends Controller
         exit;
     }
 
-    public function birthdays($society,$period,$startdate)
+    public function birthdays($society,$period,$startdate,$phones)
     {
         if ($period == "month") {
             $start = substr($startdate,5,2) . "-01";
@@ -708,7 +708,11 @@ class PlansController extends Controller
             }
             $pdf->SetFont('Arial', '', 11);
             $pdf->text(10, $yy, date("j M",strtotime($indiv->birthdate)));
-            $pdf->text(24, $yy, $indiv->firstname . ' ' . $indiv->surname . ' (' . $indiv->cellphone . ')');
+            if ($phones == "phone") {
+                $pdf->text(24, $yy, $indiv->firstname . ' ' . $indiv->surname . ' (' . $indiv->cellphone . ')');
+            } else {
+                $pdf->text(24, $yy, $indiv->firstname . ' ' . $indiv->surname);
+            }
             $yy=$yy+4.5;
             if ($yy > 270) {
                 $yy = 40;

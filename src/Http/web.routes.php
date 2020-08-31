@@ -13,7 +13,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::get('password/reset/{token}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ResetPasswordController@showResetForm', 'as' => 'showResetForm']);
     Route::post('logout', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\LoginController@logout', 'as' => 'logout']);
     Route::get('plan/{slug}/{year?}/{month?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PlansController@plan', 'as' => 'plan']);
-    Route::get('birthdays/{society}/{period}/{startdate}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PlansController@birthdays', 'as' => 'birthdays']);
+    Route::get('birthdays/{society}/{period}/{startdate}/{phones}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\PlansController@birthdays', 'as' => 'birthdays']);
     Route::post('search', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Web\HomeController@search', 'as' => 'search']);
     Route::get('/redirect/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@redirect');
     Route::get('/callback/{service}', 'Bishopm\Churchnet\Http\Controllers\Web\SocialAuthController@callback');

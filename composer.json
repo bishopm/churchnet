@@ -17,11 +17,11 @@
         }
     ],
     "require": {
-        "tymon/jwt-auth": "1.*",
         "laravelcollective/html": "6.*",
         "laravel/framework": "7.*",
         "laravel/socialite": "4.*",
         "laravel/helpers": "1.*",
+        "laravel/sanctum": "2.*",
         "cviebrock/eloquent-taggable": "7.*",
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "dev-master",
