@@ -94,7 +94,7 @@ class FeedsController extends Controller
                                 $thisitem['body'] = $item->get_content();
                                 $thisitem['title'] = $item->get_title();
                                 $thisitem['image'] = $item->get_link();
-                                $thisitem['description'] = $ff['feed']['description'];
+                                $thisitem['description'] = $item->get_content();
                                 $thisitem['author'] = $item->get_author()->name;
                                 $thisitem['pubdate'] = Carbon::parse(date('D, d M Y H:i:s',strtotime($item->get_date())))->diffForHumans();
                                 if ($ff['feed']['category'] == 'sermon') {

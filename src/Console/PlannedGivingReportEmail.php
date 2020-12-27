@@ -35,7 +35,7 @@ class PlannedGivingReportEmail extends Command
      */
     public function handle()
     {
-        $societies = Society::whereNotNull('giving_user')->whereNotNull('giving_lag')->whereNotNull('giving_reports')->get();
+        $societies = Society::where('id',667)->whereNotNull('giving_user')->whereNotNull('giving_lag')->whereNotNull('giving_reports')->get();
         foreach ($societies as $society) {
             $today=date('Y-m-d');
             $lagtime=intval($society->giving_lag);
