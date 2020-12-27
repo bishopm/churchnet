@@ -17,18 +17,17 @@
         }
     ],
     "require": {
-        "tymon/jwt-auth": "1.*",
         "laravelcollective/html": "6.*",
-        "laravel/framework": "7.*",
-        "laravel/socialite": "4.*",
+        "laravel/framework": "8.*",
+        "laravel/socialite": "5.*",
         "laravel/helpers": "1.*",
-        "cviebrock/eloquent-taggable": "7.*",
+        "cviebrock/eloquent-taggable": "8.*",
         "simplepie/simplepie": "1.5.*",
         "beyondcode/laravel-comments": "dev-master",
         "laravel-notification-channels/webpush": "5.*",
         "laravel/slack-notification-channel": "2.*",
         "willvincent/feeds": "2.*",
-        "laravel/ui": "2.*",
+        "laravel/ui": "3.*",
         "queueworker/sansdaemon": "1.*"
     },
     "autoload": {
