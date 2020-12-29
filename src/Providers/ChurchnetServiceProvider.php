@@ -74,14 +74,11 @@ class ChurchnetServiceProvider extends ServiceProvider
     {
         $this->commands($this->commands);
         AliasLoader::getInstance()->alias("Mapper", 'Cornford\Googlmapper\Facades\MapperFacade');
-        AliasLoader::getInstance()->alias("JWTFactory", 'Tymon\JWTAuth\Facades\JWTFactory');
-        AliasLoader::getInstance()->alias("JWTAuth", 'Tymon\JWTAuth\Facades\JWTAuth');
         AliasLoader::getInstance()->alias("Form", 'Collective\Html\FormFacade');
         AliasLoader::getInstance()->alias("HTML", 'Collective\Html\HtmlFacade');
         AliasLoader::getInstance()->alias("Feeds", 'willvincent\Feeds\Facades\FeedsFacade');
         AliasLoader::getInstance()->alias("Socialite", 'Laravel\Socialite\Facades\Socialite');
         $this->app['router']->middleware('cors', 'Spatie\Cors\Cors');
-        $this->app['router']->aliasMiddleware('jwt.auth', 'Tymon\JWTAuth\Middleware\GetUserFromToken');
         $this->app['router']->aliasMiddleware('ispermitted', 'Bishopm\Churchnet\Middleware\IsPermitted');
         $this->app['router']->aliasMiddleware('isspecial', 'Bishopm\Churchnet\Middleware\IsSpecial');
         $this->app['router']->aliasMiddleware('isnametags', 'Bishopm\Churchnet\Middleware\IsNametags');

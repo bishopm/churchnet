@@ -2,8 +2,6 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Auth;
 
-use JWTAuth;
-use Tymon\JWTAuth\Exceptions\JWTException;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;

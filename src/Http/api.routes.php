@@ -61,7 +61,7 @@ Route::group(['middleware' => ['jwt.auth', 'ispermitted']], function () {
     Route::post('/api/phone', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@phone', 'as' => 'api.individuals.phone']);
     Route::get('/api/message/{id}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@message', 'as' => 'api.individuals.message']);
     Route::post('/api/message', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@addmessage', 'as' => 'api.individuals.addmessage']);
-    Route::post('api/circuits/{circuit}/preachers/phone', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@phone', 'as' => 'api.preachers.phone']);
+    // Route::post('api/circuits/{circuit}/preachers/phone', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@phone', 'as' => 'api.preachers.phone']);
     Route::post('/api/combined', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@addcombined', 'as' => 'api.individuals.addcombined']);
     Route::post('/api/individual', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@journeyadd', 'as' => 'api.individuals.journeyadd']);
     Route::post('/api/household', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\HouseholdsController@journeyedit', 'as' => 'api.individuals.journeyedit']);
@@ -177,11 +177,11 @@ Route::group(['middleware' => ['jwt.auth', 'ispermitted']], function () {
     Route::get('/api/circuits/{circuit}/positions/identify/{position}/{type}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\TagsController@identify', 'as' => 'api.positions.identify']);
 
     // Preachers
-    Route::get('/api/circuits/{circuit}/preachers', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@index', 'as' => 'api.preachers.index']);
-    Route::get('/api/circuits/{circuit}/preachers/{preacher}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@show', 'as' => 'api.preachers.show']);
-    Route::post('api/circuits/{circuit}/preachers', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@store', 'as' => 'api.preachers.store']);
-    Route::put('/api/circuits/{circuit}/preachers/{preacher}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@update', 'as' => 'api.preachers.update']);
-    Route::delete('api/circuits/{circuit}/preachers/{preacher}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@destroy', 'as' => 'api.preachers.destroy']);
+    // Route::get('/api/circuits/{circuit}/preachers', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@index', 'as' => 'api.preachers.index']);
+    // Route::get('/api/circuits/{circuit}/preachers/{preacher}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@show', 'as' => 'api.preachers.show']);
+    // Route::post('api/circuits/{circuit}/preachers', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@store', 'as' => 'api.preachers.store']);
+    // Route::put('/api/circuits/{circuit}/preachers/{preacher}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@update', 'as' => 'api.preachers.update']);
+    // Route::delete('api/circuits/{circuit}/preachers/{preacher}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\PreachersController@destroy', 'as' => 'api.preachers.destroy']);
 
     // Queries
     Route::post('/api/circuits/{circuit}/query', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\CircuitsController@query', 'as' => 'api.circuits.query']);

@@ -20,6 +20,7 @@
         "laravelcollective/html": "6.*",
         "laravel/framework": "8.*",
         "laravel/socialite": "5.*",
+        "laravel/sanctum": "2.*",
         "laravel/helpers": "1.*",
         "cviebrock/eloquent-taggable": "8.*",
         "simplepie/simplepie": "1.5.*",
