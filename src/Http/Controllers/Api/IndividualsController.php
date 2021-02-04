@@ -13,14 +13,14 @@ use Bishopm\Churchnet\Models\Payment;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Chat;
 use Bishopm\Churchnet\Models\Message;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Cviebrock\EloquentTaggable\Models\Tag;
 use Bishopm\Churchnet\Notifications\SlackNotification;
 
-class IndividualsController extends Controller
+class IndividualsController extends ApiController
 {
 
     /**

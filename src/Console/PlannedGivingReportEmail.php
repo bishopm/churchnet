@@ -35,17 +35,18 @@ class PlannedGivingReportEmail extends Command
      */
     public function handle()
     {
-        $societies = Society::where('id',667)->whereNotNull('giving_user')->whereNotNull('giving_lag')->whereNotNull('giving_reports')->get();
+        $societies = Society::whereNotNull('giving_user')->whereNotNull('giving_lag')->whereNotNull('giving_reports')->get();
         foreach ($societies as $society) {
+            $data=array();
             $today=date('Y-m-d');
             $lagtime=intval($society->giving_lag);
-            //echo "You have a lag setting of " . $lagtime . " days\n";
+            //echo $society->society . "You have a lag setting of " . $lagtime . " days\n";
             $effdate=strtotime($today)-$lagtime*86400;
-            //echo "Effdate: " . date("d M Y", $effdate) . "\n";
+            // echo "Effdate: " . date("d M Y", $effdate) . "\n";
             $repyr=date('Y', $effdate);
-            //echo "Your report year is " . $repyr . "\n";
+            // echo "Your report year is " . $repyr . "\n";
             $reportnums=intval($society->giving_reports);
-            //echo "Your system will deliver " . $reportnums . " reports per year\n";
+            // echo "Your system will deliver " . $reportnums . " reports per year\n";
             $adminuser=$society->giving_user;
             $administrator=User::find($adminuser)->individual->email;
             switch ($reportnums) {
@@ -82,8 +83,8 @@ class PlannedGivingReportEmail extends Command
                 }
                 $startofperiod=$repyr . "-" . $sm . "-01";
                 // echo "Calculating totals for the period: " . $startofperiod . " to " . $endofperiod . "\n";
-                $givers=Individual::where('giving', '>', 0)->where('email', '<>', '')->get();
-                $noemailgivers=Individual::where('giving', '>', 0)->where('email', '')->get();
+                $givers=Individual::insociety($society->id)->where('giving', '>', 0)->where('email', '<>', '')->get();
+                $noemailgivers=Individual::insociety($society->id)->where('giving', '>', 0)->where('email', '')->get();
                 $msg="Planned giving emails were sent today to " . count($givers) . " planned givers.";
                 if (count($noemailgivers)) {
                     $msg.="<br><br>The following people are listed as planned givers but do not have email addresses and therefore require a hardcopy report:<br><br>";
@@ -100,12 +101,16 @@ class PlannedGivingReportEmail extends Command
                 $nodat['society']=$society->society;
                 $nodat['website']=$society->website;
                 $nodat['body']=$msg;
-                Mail::to($administrator)->queue(new SimpleMail($nodat));
+                // Mail::to($administrator)->queue(new SimpleMail($nodat));
                 foreach ($givers as $giver) {
                     $data[$giver->giving]['email'][]=$giver->email;
                     if (count($data[$giver->giving]['email'])==1) {
                         $data[$giver->giving]['period']=$startofperiod . " to " . $endofperiod;
-                        $data[$giver->giving]['sender']=$society->email;
+                        if ($society->email) {
+                            $data[$giver->giving]['sender']=$society->email;
+                        } else {
+                            $data[$giver->giving]['sender']="admin@church.net.za";
+                        }
                         $data[$giver->giving]['pg']=$giver->giving;
                         $data[$giver->giving]['pgyr']=$repyr;
                         $data[$giver->giving]['church']=$society->society . " Methodist Church";
@@ -130,7 +135,8 @@ class PlannedGivingReportEmail extends Command
                 }
                 foreach ($data as $key=>$pg) {
                     foreach ($pg['email'] as $indiv) {
-                        Mail::to($indiv)->queue(new GivingMail($pg));
+                        echo $indiv . " [" . $key . "] (" . $pg['church'] . ")\n";
+                        // Mail::to($indiv)->queue(new GivingMail($pg));
                     }
                 }
             } else {
@@ -145,7 +151,7 @@ class PlannedGivingReportEmail extends Command
                     $warndat['body']=$msg;
                     $warndat['society']=$society->society;
                     $warndat['website']=$society->website;
-                    Mail::to($administrator)->queue(new SimpleMail($warndat));
+                    // Mail::to($administrator)->queue(new SimpleMail($warndat));
                 } else {
                     // echo "Today is not a report date\n";
                 }

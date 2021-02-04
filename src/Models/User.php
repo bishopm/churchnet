@@ -5,11 +5,11 @@ namespace Bishopm\Churchnet\Models;
 use Illuminate\Notifications\Notifiable;
 use NotificationChannels\WebPush\HasPushSubscriptions;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use Notifiable;
-    use HasPushSubscriptions;
+    use Notifiable, HasPushSubscriptions, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.

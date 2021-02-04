@@ -2,7 +2,7 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Repositories\ReadingsRepository;
 use Bishopm\Churchnet\Models\Cache;
 use Bishopm\Churchnet\Models\Customreading;
@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\DB;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 
-class LectionaryController extends Controller
+class LectionaryController extends ApiController
 {
     private $reading;
 

@@ -4,11 +4,11 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\SettingsRepository;
 use Bishopm\Churchnet\Models\Setting;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Http\Requests\CreateSettingRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSettingRequest;
 
-class SettingsController extends Controller
+class SettingsController extends ApiController
 {
 
     /**
@@ -54,7 +54,7 @@ class SettingsController extends Controller
         return redirect()->route('admin.settings.index')
             ->withSuccess('New setting added');
     }
-    
+
     public function update($circuit, Setting $setting, UpdateSettingRequest $request)
     {
         $this->setting->update($setting, $request->except('token'));

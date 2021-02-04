@@ -6,14 +6,14 @@ use Bishopm\Churchnet\Repositories\StatisticsRepository;
 use Bishopm\Churchnet\Models\Statistic;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Service;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use DB;
 use Bishopm\Churchnet\Http\Requests\CreateStatisticRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateStatisticRequest;
 use Bishopm\Churchnet\Models\Measure;
 use Illuminate\Http\Request;
 
-class StatisticsController extends Controller
+class StatisticsController extends ApiController
 {
 
     /*

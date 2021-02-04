@@ -3,11 +3,11 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Attendance;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class AttendancesController extends Controller
+class AttendancesController extends ApiController
 {
 
     /**
@@ -20,7 +20,7 @@ class AttendancesController extends Controller
     {
         return Attendance::all();
     }
-    
+
     public function show($id)
     {
         return Attendance::with('users', 'societies')->where('id', $id)->first();
@@ -30,13 +30,13 @@ class AttendancesController extends Controller
     {
         foreach ($request->individuals as $indiv) {
             $att=Attendance::create([
-                'service_id'=>$request->service_id, 
+                'service_id'=>$request->service_id,
                 'individual_id'=>$indiv
             ]);
         }
         return "Attendance recorded";
     }
-    
+
     public function update($attendance, Request $request)
     {
         $cir = $this->attendance->find($attendance);

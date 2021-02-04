@@ -8,7 +8,7 @@ use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Circuit;
 use Cviebrock\EloquentTaggable\Models\Tag;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Auth;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ use Bishopm\Churchnet\Http\Requests\UpdateHouseholdRequest;
 use Bishopm\Churchnet\Models\Location;
 use Bishopm\Churchnet\Models\Society;
 
-class HouseholdsController extends Controller
+class HouseholdsController extends ApiController
 {
 
     /**
@@ -30,6 +30,7 @@ class HouseholdsController extends Controller
 
     public function __construct(HouseholdsRepository $household)
     {
+        parent::__construct();
         $this->household = $household;
     }
 
@@ -153,9 +154,9 @@ class HouseholdsController extends Controller
     {
         $household = Household::with('individuals', 'individuals.groups', 'individuals.tags', 'pastorals.individual', 'specialdays', 'location', 'society.location')->where('id', $id)->first();
         $household->alltags = Tag::where('type', 'leader')->get();
-        if (in_array($household->society->id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
+        if (in_array($household->society->id, $this->user_soc)) {
             return $household;
-        } elseif (\Illuminate\Support\Facades\Request::get('super_admin') == 'true') {
+        } elseif ($this->super_admin == 'true') {
             return $household;
         } else {
             return "Unauthorised";

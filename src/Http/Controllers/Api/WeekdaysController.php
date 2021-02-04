@@ -3,10 +3,10 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Weekday;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class WeekdaysController extends Controller
+class WeekdaysController extends ApiController
 {
 
     /**
@@ -46,7 +46,7 @@ class WeekdaysController extends Controller
         $wk = Weekday::create($request->all());
         return "New weekday added";
     }
-    
+
     public function update($id, Request $request)
     {
         $wkday = Weekday::find($id);
@@ -54,7 +54,7 @@ class WeekdaysController extends Controller
         $wkday->update($request->all());
         return "Weekday has been updated";
     }
-    
+
     public function destroy($id)
     {
         $wk=Weekday::find($id);

@@ -8,10 +8,10 @@ use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Mail\SimpleMail;
 use Illuminate\Support\Facades\Mail;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class SynodsController extends Controller
+class SynodsController extends ApiController
 {
 
     /**

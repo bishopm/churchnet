@@ -8,12 +8,12 @@ use Bishopm\Churchnet\Models\Rosteritem;
 use Bishopm\Churchnet\Models\Rostergroup;
 use Bishopm\Churchnet\Models\Service;
 use Bishopm\Churchnet\Models\Society;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Services\BulkSMSService;
 use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
 
-class RostersController extends Controller
+class RostersController extends ApiController
 {
 
     /**

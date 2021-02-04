@@ -3,9 +3,9 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Denomination;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 
-class DenominationsController extends Controller
+class DenominationsController extends ApiController
 {
 
     public function index()
@@ -19,7 +19,7 @@ class DenominationsController extends Controller
         $socs = array();
         foreach ($societies->circuits as $circuit) {
             foreach ($circuit->societies as $society) {
-                $key = strtoupper($society->society) . '_' . $society->id; 
+                $key = strtoupper($society->society) . '_' . $society->id;
                 $socs[$key]['society'] = $society->society;
                 $socs[$key]['society_id'] = $society->id;
                 $socs[$key]['circuit'] = $society->circuit->circuit;

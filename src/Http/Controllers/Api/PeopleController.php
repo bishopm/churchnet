@@ -8,13 +8,13 @@ use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Individual;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreatePersonRequest;
 use Bishopm\Churchnet\Http\Requests\UpdatePersonRequest;
 use DB;
 
-class PeopleController extends Controller
+class PeopleController extends ApiController
 {
 
     /**
@@ -121,7 +121,7 @@ class PeopleController extends Controller
         }
         return $person;
     }
-    
+
     public function update($circuit, $id, Request $request)
     {
         $person = $this->person->find($id);

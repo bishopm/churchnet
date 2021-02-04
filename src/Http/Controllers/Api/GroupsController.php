@@ -6,14 +6,14 @@ use Bishopm\Churchnet\Repositories\GroupsRepository;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\User;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Bishopm\Churchnet\Mail\GenericMail;
 use Illuminate\Support\Facades\Mail;
 
-class GroupsController extends Controller
+class GroupsController extends ApiController
 {
 
     /**
@@ -26,6 +26,7 @@ class GroupsController extends Controller
 
     public function __construct(GroupsRepository $group)
     {
+        parent::__construct();
         $this->group = $group;
     }
 
@@ -33,7 +34,7 @@ class GroupsController extends Controller
     {
         return Group::orderBy('groupname')->get();
     }
-    
+
     public function search(Request $request)
     {
         $socs=array();
@@ -63,10 +64,10 @@ class GroupsController extends Controller
             //$leader = User::with('individual')->where('individual_id',$group->leader)->first();
             $leader = User::with('individual')->where('individual_id',570)->first();
             // Email to group leader
-            $leadermessage =  'Dear ' . $leader->individual->firstname . '<br><br>This is to let you know that <b>' . 
-                        $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent you a 
-                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . 
-                        ') that you co-ordinate.<br><br>Please could you get in touch with ' . $person->individual->firstname . 
+            $leadermessage =  'Dear ' . $leader->individual->firstname . '<br><br>This is to let you know that <b>' .
+                        $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent you a
+                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname .
+                        ') that you co-ordinate.<br><br>Please could you get in touch with ' . $person->individual->firstname .
                         ' (' . $person->individual->cellphone . ').<br><br>Thank you!';
             if (!$leader->individual->email) {
                 $leadermessage = $leadermessage . "<br><br><b>Note to the church office: The group leader does not have an email address!</b>";
@@ -88,8 +89,8 @@ class GroupsController extends Controller
             }
         } else {
             // Email to church office
-            $leadermessage =  'This is to let you know that <b>' . $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent a 
-                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . ').<br><br>The group does not have a leader / co-ordinator. Please could you get in touch with ' . $person->individual->firstname . 
+            $leadermessage =  'This is to let you know that <b>' . $person->individual->firstname . ' ' . $person->individual->surname . '</b> has sent a
+                        message via the Journey App, expressing interest in joining the ' . $gtype . ' (' . $group->groupname . ').<br><br>The group does not have a leader / co-ordinator. Please could you get in touch with ' . $person->individual->firstname .
                         ' (' . $person->individual->cellphone . ').<br><br>Thank you!';
             Mail::to($group->society->email)->queue(new GenericMail([
                 'title'=>'Potential new ' . $gtype . ' member (' . $group->groupname . ')',
@@ -141,9 +142,9 @@ class GroupsController extends Controller
         if ($group->leader) {
             $data['leader'] = Individual::find($group->leader);
         }
-        if (in_array($data['group']->society_id, \Illuminate\Support\Facades\Request::get('user_soc'))) {
+        if (in_array($data['group']->society_id, $this->user_soc)) {
             return $data;
-        } elseif (\Illuminate\Support\Facades\Request::get('super_admin') == 'true') {
+        } elseif ($this->super_admin == 'true') {
             return $data;
         } else {
             return "Unauthorised";
@@ -156,7 +157,7 @@ class GroupsController extends Controller
         $grp=$this->group->create(array_merge($request->all(), ['slug' => str_slug($request->groupname)]));
         return $grp->id;
     }
-    
+
     public function remove($gid, Request $request)
     {
         DB::table('group_individual')->where('group_id', $gid)->where('individual_id', $request->id)->update(array('deleted_at' => DB::raw('NOW()')));

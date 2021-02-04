@@ -4,10 +4,10 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Venue;
 use DB;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class VenuesController extends Controller
+class VenuesController extends ApiController
 {
 
     /**
@@ -75,7 +75,7 @@ class VenuesController extends Controller
         $venue = Venue::create(['society_id'=>$request->society_id, 'venue'=>$request->venue]);
         return "New venue added";
     }
-    
+
     public function update($id, Request $request)
     {
         $venue = Venue::find($id);

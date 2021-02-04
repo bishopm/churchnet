@@ -4,13 +4,13 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Models\Circuit;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Http\Requests\CreateCircuitRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateCircuitRequest;
 
-class CircuitsController extends Controller
+class CircuitsController extends ApiController
 {
 
     /**

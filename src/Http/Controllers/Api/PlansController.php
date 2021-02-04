@@ -7,7 +7,7 @@ use Bishopm\Churchnet\Models\Plan;
 use Auth;
 use Bishopm\Churchnet\Http\Requests\PlansRequest;
 use Redirect;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Models\Person;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
@@ -21,7 +21,7 @@ use Bishopm\Churchnet\Repositories\CircuitsRepository;
 use Bishopm\Churchnet\Repositories\PlansRepository;
 use Bishopm\Churchnet\Repositories\LabelsRepository;
 
-class PlansController extends Controller
+class PlansController extends ApiController
 {
     private $meetings;
     private $societies;
@@ -29,7 +29,7 @@ class PlansController extends Controller
     private $circuit;
     private $plans;
     private $labels;
-  
+
     public function __construct(
         MeetingsRepository $meetings,
         SocietiesRepository $societies,
@@ -372,7 +372,7 @@ class PlansController extends Controller
         return $data;
     }
 
-    
+
 
     /**
      * Show the form for editing the specified resource.

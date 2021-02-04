@@ -3,10 +3,10 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Synod;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class DocumentsController extends Controller
+class DocumentsController extends ApiController
 {
 
     /**
@@ -26,7 +26,7 @@ class DocumentsController extends Controller
         return $file;
         $file->move(public_path() . '/vendor/bishopm/docs/', $file->file_name);
         $fname = public_path() . '/vendor/bishopm/images/profile/' . $file->file_name;
-        return $fname;        
+        return $fname;
     }
 
 }

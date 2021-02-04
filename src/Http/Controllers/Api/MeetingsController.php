@@ -8,10 +8,10 @@ use Bishopm\Churchnet\Models\Meeting;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\District;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class MeetingsController extends Controller
+class MeetingsController extends ApiController
 {
 
     /**
@@ -102,7 +102,7 @@ class MeetingsController extends Controller
         ]);
         return $meeting;
     }
-    
+
     public function update($id, Request $request)
     {
         $meeting = Meeting::find($id);

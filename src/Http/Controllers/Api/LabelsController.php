@@ -4,11 +4,11 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\LabelsRepository;
 use Bishopm\Churchnet\Models\Label;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Http\Requests\CreateLabelRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateLabelRequest;
 
-class LabelsController extends Controller
+class LabelsController extends ApiController
 {
 
     /**
@@ -39,7 +39,7 @@ class LabelsController extends Controller
         $this->label->create($request->except('image', 'token'));
         return 'New label added';
     }
-    
+
     public function update($circuit, Label $label, UpdateLabelRequest $request)
     {
         $this->label->update($label, $request->except('token'));

@@ -4,12 +4,12 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Repositories\ServicesRepository;
 use Bishopm\Churchnet\Models\Service;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Http\Requests\CreateServiceRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateServiceRequest;
 use Illuminate\Http\Request;
 
-class ServicesController extends Controller
+class ServicesController extends ApiController
 {
 
     /**
@@ -51,7 +51,7 @@ class ServicesController extends Controller
 
         return "New service added";
     }
-    
+
     public function update($circuit, $service, Request $request)
     {
         $serv = $this->service->find($service);

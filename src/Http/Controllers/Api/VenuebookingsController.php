@@ -5,11 +5,11 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Models\Venuebooking;
 use Bishopm\Churchnet\Models\Tagg;
 use Bishopm\Churchnet\Models\Society;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use DB;
 
-class VenuebookingsController extends Controller
+class VenuebookingsController extends ApiController
 {
 
     /**
@@ -47,7 +47,7 @@ class VenuebookingsController extends Controller
         DB::table('taggable_tags')->where('name', $request->venueuser)->update(['type' => 'venueuser']);
         return $venuebooking;
     }
-    
+
     public function update($id, Request $request)
     {
         $venuebooking = Venuebooking::find($id);

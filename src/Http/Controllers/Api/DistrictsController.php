@@ -7,11 +7,11 @@ use Bishopm\Churchnet\Models\District;
 use Bishopm\Churchnet\Models\Feeditem;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Person;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class DistrictsController extends Controller
+class DistrictsController extends ApiController
 {
 
     /**

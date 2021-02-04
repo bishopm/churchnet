@@ -3,10 +3,10 @@
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Pastoral;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class PastoralsController extends Controller
+class PastoralsController extends ApiController
 {
 
     public function update(Request $request)

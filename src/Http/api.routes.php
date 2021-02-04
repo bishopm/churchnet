@@ -7,7 +7,7 @@ Route::post('/api/synodlogin', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Au
 Route::post('/api/register', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@register', 'as' => 'api.register']);
 
 // Journey routes
-Route::post('/api/login', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@journeylogin', 'as' => 'api.journey.login']);
+Route::post('/api/login', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Auth\ApiAuthController@login', 'as' => 'api.login']);
 Route::post('/api/checkphone', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@checkphone', 'as' => 'api.individuals.checkphone']);
 Route::get('api/sunday/{society?}/{date?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@sunday', 'as' => 'api.lectionary.sunday']);
 Route::get('api/reading/{reading}/{bible}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\LectionaryController@reading', 'as' => 'api.lectionary.reading']);
@@ -53,10 +53,9 @@ Route::get('api/districts/{district}', ['uses' => 'Bishopm\Churchnet\Http\Contro
 Route::get('api/districts/map/{district}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@showwithmap', 'as' => 'api.districts.showwithmap']);
 Route::get('api/districts/{district}/details', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@details', 'as' => 'api.districts.details']);
 Route::post('api/districts/directory', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\DistrictsController@directory', 'as' => 'api.districts.directory']);
-Route::get('api/users/{user}/{auth?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails', 'as' => 'api.users.details']);
 
-Route::group(['middleware' => ['jwt.auth', 'ispermitted']], function () {
-
+Route::group(['middleware' => ['auth:sanctum', 'ispermitted']], function () {
+    Route::get('api/users/{user}/{auth?}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\UsersController@userdetails', 'as' => 'api.users.details']);
     // Journey routes
     Route::post('/api/phone', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@phone', 'as' => 'api.individuals.phone']);
     Route::get('/api/message/{id}', ['uses' => 'Bishopm\Churchnet\Http\Controllers\Api\IndividualsController@message', 'as' => 'api.individuals.message']);

@@ -5,9 +5,9 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 use Bishopm\Churchnet\Repositories\TagsRepository;
 use Cviebrock\EloquentTaggable\Models\Tag;
 use Bishopm\Churchnet\Models\Person;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 
-class TagsController extends Controller
+class TagsController extends ApiController
 {
 
     /**

@@ -4,10 +4,10 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Reminder;
 use Bishopm\Churchnet\Models\User;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class RemindersController extends Controller
+class RemindersController extends ApiController
 {
 
     /**
@@ -25,7 +25,7 @@ class RemindersController extends Controller
             return null;
         }
     }
-    
+
     public function destroy(Request $request)
     {
         Reminder::find($request->id)->delete();

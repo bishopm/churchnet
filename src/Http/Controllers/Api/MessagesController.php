@@ -2,7 +2,7 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Mail\GenericMail;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Household;
@@ -15,7 +15,7 @@ use Bishopm\Churchnet\Services\SMSPortalService;
 use Illuminate\Http\Request;
 use Bishopm\Churchnet\Jobs\DeliverSMS;
 
-class MessagesController extends Controller
+class MessagesController extends ApiController
 {
 
     /**

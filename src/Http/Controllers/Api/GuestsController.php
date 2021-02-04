@@ -4,11 +4,11 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Guest;
 use Bishopm\Churchnet\Models\Individual;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
-class GuestsController extends Controller
+class GuestsController extends ApiController
 {
 
     /**

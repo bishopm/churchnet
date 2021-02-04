@@ -7,13 +7,13 @@ use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Service;
 use Bishopm\Churchnet\Models\Circuit;
 use Bishopm\Churchnet\Models\Plan;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Auth;
 use Bishopm\Churchnet\Http\Requests\CreateSocietyRequest;
 use Bishopm\Churchnet\Http\Requests\UpdateSocietyRequest;
 
-class SocietiesController extends Controller
+class SocietiesController extends ApiController
 {
 
     /**
@@ -125,7 +125,7 @@ class SocietiesController extends Controller
         $soc->save();
         return $soc;
     }
-    
+
     public function update(Request $request)
     {
         $upd = $request->society;

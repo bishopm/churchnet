@@ -4,10 +4,10 @@ namespace Bishopm\Churchnet\Http\Controllers\Api;
 
 use Bishopm\Churchnet\Models\Payment;
 use Bishopm\Churchnet\Models\Society;
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 
-class PaymentsController extends Controller
+class PaymentsController extends ApiController
 {
 
     /**
@@ -87,7 +87,7 @@ class PaymentsController extends Controller
         $payment = Payment::create(['society_id'=>$request->society_id, 'paymentdate'=>substr($request->paymentdate, 0, 10), 'pgnumber'=>$request->pgnumber, 'amount'=>$request->amount]);
         return "New payment added";
     }
-    
+
     public function update($id, Request $request)
     {
         $payment = Payment::find($id);

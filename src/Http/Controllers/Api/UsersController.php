@@ -2,7 +2,7 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Models\User;
 use Bishopm\Churchnet\Models\Individual;
 use Bishopm\Churchnet\Models\Society;
@@ -13,20 +13,12 @@ use Bishopm\Churchnet\Models\Setting;
 use Bishopm\Churchnet\Models\Permissible;
 use Illuminate\Http\Request;
 use Auth;
-use JWTAuth;
 use DB;
 
-class UsersController extends Controller
+class UsersController extends ApiController
 {
     public function userdetails($id, $auth='')
     {
-        try {
-            JWTAuth::parseToken()->authenticate();
-        } catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
-            return "Invalid token";
-        } catch (\Tymon\JWTAuth\Exceptions\JWTException $e) {
-            return "No token";
-        }
         $denom="";
         $data = User::with('districts', 'circuits', 'societies.location','denominations')->where('id', $id)->first();
         $user = array();
@@ -41,7 +33,7 @@ class UsersController extends Controller
                 foreach ($auth->denominations as $den) {
                     $denoms[] = $den->id;
                 }
-                $user['auth']['districts'] = District::whereIn('denomination_id', $denoms)->get(); 
+                $user['auth']['districts'] = District::whereIn('denomination_id', $denoms)->get();
                 foreach ($auth->districts as $dist) {
                     $dists[] = $dist->id;
                 }
@@ -113,8 +105,13 @@ class UsersController extends Controller
             if ($user->individual){
                 $dum=array();
                 $dum['name'] = $user->individual->title . ' ' . $user->individual->firstname . ' ' . $user->individual->surname;
-                $dum['society'] = $user->individual->household->society->society;
-                $dum['circuit'] = $user->individual->household->society->circuit->circuit;
+                if ($user->individual->household->society) {
+                    $dum['society'] = $user->individual->household->society->society;
+                    $dum['circuit'] = $user->individual->household->society->circuit->circuit;
+                } else {
+                    $dum['society'] = "None";
+                    $dum['circuit'] = "None";
+                }
                 $dum['phonetoken'] = $user->phonetoken;
                 $dum['id'] = $user->id;
                 $data[] = $dum;

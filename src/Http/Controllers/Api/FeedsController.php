@@ -2,7 +2,7 @@
 
 namespace Bishopm\Churchnet\Http\Controllers\Api;
 
-use App\Http\Controllers\Controller;
+use Bishopm\Churchnet\Http\Controllers\Api\ApiController;
 use Bishopm\Churchnet\Models\Society;
 use Bishopm\Churchnet\Models\Group;
 use Bishopm\Churchnet\Models\Meeting;
@@ -17,7 +17,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Feeds, DB;
 
-class FeedsController extends Controller
+class FeedsController extends ApiController
 {
 
     /**
